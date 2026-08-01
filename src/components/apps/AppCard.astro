@@ -26,7 +26,7 @@ const detailLabel = actionLabel ?? t.learnMore;
   data-platform={app.platformGroup}
 >
   <div class="app-card-top">
-    <img src={app.icon} width="112" height="112" alt={`${app.name} icon`} loading="lazy" />
+    <img src={app.icon} width="112" height="112" alt="" loading="lazy" />
     <div>
       <PlatformBadge platform={app.platform} />{
         app.status === 'coming-soon' && <span class="status-inline">{t.comingSoon}</span>
