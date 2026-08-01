@@ -1,15 +1,20 @@
 ---
 import type { Locale } from '~/config/site';
 import { siteConfig } from '~/config/site';
+import { getApp } from '~/data/apps';
 import { getUI } from '~/data/i18n';
 import { localizedPath } from '~/utils/site';
 
 interface Props {
   locale: Locale;
+  pagePath: string;
 }
-const { locale } = Astro.props;
+const { locale, pagePath } = Astro.props;
 const t = getUI(locale);
 const year = new Date().getFullYear();
+const [section = '', slug] = pagePath.split('/');
+const currentApp = getApp(slug ?? section) ?? getApp(section);
+const privacyPath = currentApp ? `privacy/${currentApp.slug}` : 'privacy';
 ---
 
 <footer class="site-footer">
@@ -23,7 +28,7 @@ const year = new Date().getFullYear();
     <nav class="footer-links" aria-label="Footer">
       <a href={localizedPath(locale, 'apps')}>{t.nav.apps}</a>
       <a href={localizedPath(locale, 'support')}>{t.nav.support}</a>
-      <a href={localizedPath(locale, 'privacy/assetscaler')}>{t.privacy}</a>
+      <a href={localizedPath(locale, privacyPath)}>{t.privacy}</a>
       <a href={localizedPath(locale, 'blog')}>{t.nav.blog}</a>
       <a href={siteConfig.githubUrl} rel="me">GitHub</a>
       <a href={`mailto:${siteConfig.supportEmail}`}>{t.contact}</a>

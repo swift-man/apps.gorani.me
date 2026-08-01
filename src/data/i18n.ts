@@ -55,6 +55,7 @@ export const ui = {
     contactSupport: '이메일로 문의',
     supportFor: '지원',
     privacyPolicy: '개인정보처리방침',
+    privacyIndexDescription: '앱을 선택하여 해당 앱의 개인정보 처리와 권한에 관한 안내를 확인하세요.',
     privacyIntro:
       '이 문서는 현재 확인 가능한 앱 구성에 맞춰 쉽게 수정할 수 있도록 작성된 안내 초안입니다. 법률 자문을 대신하지 않습니다.',
     collectedInfo: '수집하는 정보',
@@ -140,6 +141,7 @@ export const ui = {
     contactSupport: 'Email support',
     supportFor: 'Support',
     privacyPolicy: 'Privacy Policy',
+    privacyIndexDescription: 'Choose an app to review its information handling and permissions notice.',
     privacyIntro: 'This editable notice reflects the currently documented app configuration. It is not legal advice.',
     collectedInfo: 'Information collected',
     permissions: 'App permissions',
@@ -224,6 +226,7 @@ export const ui = {
     contactSupport: 'メールで問い合わせる',
     supportFor: 'サポート',
     privacyPolicy: 'プライバシーポリシー',
+    privacyIndexDescription: 'アプリを選択して、情報の取り扱いと権限に関する案内をご確認ください。',
     privacyIntro: 'この編集可能な文書は、現在確認できるアプリ構成に基づく案内です。法的助言ではありません。',
     collectedInfo: '収集する情報',
     permissions: 'アプリの権限',

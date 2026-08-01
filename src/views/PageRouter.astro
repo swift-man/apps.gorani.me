@@ -7,6 +7,7 @@ import AppsPage from './AppsPage.astro';
 import BlogIndexPage from './BlogIndexPage.astro';
 import BlogPostPage from './BlogPostPage.astro';
 import HomePage from './HomePage.astro';
+import PrivacyIndexPage from './PrivacyIndexPage.astro';
 import PrivacyPage from './PrivacyPage.astro';
 import SupportDetailPage from './SupportDetailPage.astro';
 import SupportIndexPage from './SupportIndexPage.astro';
@@ -35,4 +36,5 @@ const post =
 {section === 'blog' && post && <BlogPostPage locale={locale} post={post} />}
 {section === 'support' && !slug && <SupportIndexPage locale={locale} />}
 {section === 'support' && app && <SupportDetailPage locale={locale} app={app} />}
+{section === 'privacy' && !slug && <PrivacyIndexPage locale={locale} />}
 {section === 'privacy' && app && <PrivacyPage locale={locale} app={app} />}

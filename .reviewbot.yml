@@ -37,8 +37,6 @@ review:
     - 'public/CNAME'
     - 'public/robots.txt'
     - 'public/manifest.webmanifest'
-    - 'public/decapcms/**/*.html'
-    - 'public/decapcms/**/*.yml'
 
     # Repository guidance and documentation
     - '.reviewbot.yml'

@@ -1,0 +1,50 @@
+---
+import type { Locale } from '~/config/site';
+import { apps } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import { localizedPath } from '~/utils/site';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getUI(locale);
+---
+
+<SiteLayout
+  locale={locale}
+  pagePath="privacy"
+  title={`${t.privacyPolicy} — Gorani Apps`}
+  description={t.privacyIndexDescription}
+>
+  <section class="page-hero compact">
+    <div class="shell">
+      <p class="eyebrow">Privacy</p>
+      <h1>{t.privacyPolicy}</h1>
+      <p>{t.privacyIndexDescription}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <div class="privacy-directory">
+        {
+          apps.map((app) => (
+            <article>
+              <img src={app.icon} width="72" height="72" alt="" loading="lazy" />
+              <div>
+                <p>{app.platform}</p>
+                <h2>{app.name}</h2>
+              </div>
+              <a href={localizedPath(locale, `privacy/${app.slug}`)}>
+                {t.readPrivacy}
+                <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</SiteLayout>

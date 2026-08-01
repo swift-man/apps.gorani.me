@@ -14,6 +14,7 @@ export const routeDefinitions = [
   'updates',
   'blog',
   'support',
+  'privacy',
   ...['assetscaler', 'andromeda-17k', 'word-rush', 'answer-by-chance'].flatMap((slug) => [
     slug,
     `support/${slug}`,

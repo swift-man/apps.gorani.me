@@ -805,6 +805,35 @@ p {
 .support-overlay-link:focus-visible {
   outline-offset: -5px;
 }
+.privacy-directory {
+  border-top: 1px solid var(--line);
+}
+.privacy-directory article {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+}
+.privacy-directory img {
+  border-radius: 20%;
+}
+.privacy-directory p {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.privacy-directory h2 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+.privacy-directory a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 720;
+}
 
 .app-theme-page {
   --app-bg: var(--page);
@@ -1420,6 +1449,14 @@ p {
   }
   .filter-bar button {
     white-space: nowrap;
+  }
+  .privacy-directory article {
+    grid-template-columns: auto 1fr;
+  }
+  .privacy-directory a {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    padding-top: 10px;
   }
   .app-hero {
     min-height: auto;
