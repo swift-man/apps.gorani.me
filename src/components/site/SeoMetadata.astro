@@ -5,29 +5,40 @@ import { absoluteUrl, localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
   pagePath: string;
+  availableLocales?: readonly Locale[];
   title: string;
   description: string;
   ogImage?: string;
   type?: 'website' | 'article';
 }
 
-const { locale, pagePath, title, description, ogImage = '/og-gorani.webp', type = 'website' } = Astro.props;
+const {
+  locale,
+  pagePath,
+  availableLocales = SUPPORTED_LOCALES,
+  title,
+  description,
+  ogImage = '/og-gorani.webp',
+  type = 'website',
+} = Astro.props;
 const canonical = absoluteUrl(siteConfig.siteUrl, localizedPath(locale, pagePath));
 const imageUrl = absoluteUrl(siteConfig.siteUrl, ogImage);
+const alternateLocales = [...new Set(availableLocales)];
+const xDefaultLocale = alternateLocales.includes(siteConfig.defaultLocale) ? siteConfig.defaultLocale : locale;
 ---
 
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 {
-  SUPPORTED_LOCALES.map((item) => (
+  alternateLocales.map((item) => (
     <link rel="alternate" hreflang={item} href={absoluteUrl(siteConfig.siteUrl, localizedPath(item, pagePath))} />
   ))
 }
 <link
   rel="alternate"
   hreflang="x-default"
-  href={absoluteUrl(siteConfig.siteUrl, localizedPath(siteConfig.defaultLocale, pagePath))}
+  href={absoluteUrl(siteConfig.siteUrl, localizedPath(xDefaultLocale, pagePath))}
 />
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteConfig.siteName} />

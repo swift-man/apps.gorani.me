@@ -7,8 +7,9 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 interface Props {
   locale: Locale;
   pagePath: string;
+  availableLocales?: readonly Locale[];
 }
-const { locale, pagePath } = Astro.props;
+const { locale, pagePath, availableLocales } = Astro.props;
 const t = getUI(locale);
 const currentSection = pagePath.split('/')[0];
 const links = [
@@ -22,7 +23,7 @@ const links = [
 <a class="skip-link" href="#main-content">{t.skipToContent}</a>
 <header class="site-header" data-site-header>
   <div class="header-inner shell">
-    <a class="brand" href={localizedPath(locale)} aria-label="Gorani Apps home">
+    <a class="brand" href={localizedPath(locale)} aria-label={t.homeLinkLabel}>
       <span class="brand-mark" aria-hidden="true">G</span>
       <span>Gorani Apps</span>
     </a>
@@ -52,7 +53,12 @@ const links = [
       </ul>
     </nav>
     <div class="header-tools">
-      <LanguageSwitcher locale={locale} pagePath={pagePath} label={t.languageSwitcher} />
+      <LanguageSwitcher
+        locale={locale}
+        pagePath={pagePath}
+        availableLocales={availableLocales}
+        label={t.languageSwitcher}
+      />
       <button class="theme-toggle" type="button" aria-label={t.themeToggle} title={t.themeToggle} data-theme-toggle
         ><span aria-hidden="true">◐</span></button
       >

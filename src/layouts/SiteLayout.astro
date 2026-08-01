@@ -10,6 +10,7 @@ import { localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
   pagePath: string;
+  availableLocales?: readonly Locale[];
   title: string;
   description: string;
   ogImage?: string;
@@ -18,7 +19,17 @@ interface Props {
   bodyClass?: string;
 }
 
-const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd, bodyClass = '' } = Astro.props;
+const {
+  locale,
+  pagePath,
+  availableLocales,
+  title,
+  description,
+  ogImage,
+  type = 'website',
+  jsonLd,
+  bodyClass = '',
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -36,6 +47,7 @@ const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd,
     <SeoMetadata
       locale={locale}
       pagePath={pagePath}
+      availableLocales={availableLocales}
       title={title}
       description={description}
       ogImage={ogImage}
@@ -57,7 +69,7 @@ const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd,
     </script>
   </head>
   <body class={bodyClass}>
-    <Header locale={locale} pagePath={pagePath} />
+    <Header locale={locale} pagePath={pagePath} availableLocales={availableLocales} />
     <main id="main-content"><slot /></main>
     <Footer locale={locale} pagePath={pagePath} />
     <script is:inline>

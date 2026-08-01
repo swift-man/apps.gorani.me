@@ -6,9 +6,12 @@ import { localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
   pagePath: string;
+  availableLocales?: readonly Locale[];
   label: string;
 }
-const { locale, pagePath, label } = Astro.props;
+const { locale, pagePath, availableLocales = SUPPORTED_LOCALES, label } = Astro.props;
+const availableLocaleSet = new Set(availableLocales);
+const parentPath = pagePath.includes('/') ? pagePath.slice(0, pagePath.lastIndexOf('/')) : '';
 ---
 
 <div class="language-switcher">
@@ -16,7 +19,10 @@ const { locale, pagePath, label } = Astro.props;
   <select id="language-select" aria-label={label} data-language-select>
     {
       SUPPORTED_LOCALES.map((item) => (
-        <option value={localizedPath(item, pagePath)} selected={item === locale}>
+        <option
+          value={localizedPath(item, availableLocaleSet.has(item) ? pagePath : parentPath)}
+          selected={item === locale}
+        >
           {localeLabels[item]}
         </option>
       ))

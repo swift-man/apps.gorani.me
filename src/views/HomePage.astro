@@ -19,7 +19,7 @@ const appCount = apps.length;
 const platformCount = new Set(apps.map((app) => app.platformGroup)).size;
 const localizedPosts = posts
   .filter((post) => post.data.locale === locale)
-  .sort((a, b) => (b.data.publishDate?.valueOf() ?? 0) - (a.data.publishDate?.valueOf() ?? 0));
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 const title =
   locale === 'ko'
     ? 'Gorani Apps — Apple 플랫폼을 위한 앱'

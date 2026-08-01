@@ -26,6 +26,13 @@ const post =
   section === 'blog' && slug
     ? posts.find((entry) => entry.data.locale === locale && entry.data.permalink === slug)
     : undefined;
+const postLocales = post
+  ? [
+      ...new Set(
+        posts.filter((entry) => entry.data.permalink === post.data.permalink).map((entry) => entry.data.locale)
+      ),
+    ]
+  : [];
 ---
 
 {section === '' && <HomePage locale={locale} posts={posts} />}
@@ -33,7 +40,7 @@ const post =
 {directApp && <AppDetailPage locale={locale} app={directApp} />}
 {section === 'updates' && <UpdatesPage locale={locale} />}
 {section === 'blog' && !slug && <BlogIndexPage locale={locale} posts={posts} />}
-{section === 'blog' && post && <BlogPostPage locale={locale} post={post} />}
+{section === 'blog' && post && <BlogPostPage locale={locale} post={post} availableLocales={postLocales} />}
 {section === 'support' && !slug && <SupportIndexPage locale={locale} />}
 {section === 'support' && app && <SupportDetailPage locale={locale} app={app} />}
 {section === 'privacy' && !slug && <PrivacyIndexPage locale={locale} />}

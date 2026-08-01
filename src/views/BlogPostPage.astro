@@ -10,13 +10,14 @@ import { absoluteUrl, formatDate, localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
   post: CollectionEntry<'post'>;
+  availableLocales: readonly Locale[];
 }
-const { locale, post } = Astro.props;
+const { locale, post, availableLocales } = Astro.props;
 const t = getUI(locale);
 const { Content } = await render(post);
 const relatedApp = getApp(post.data.relatedApp);
 const pagePath = `blog/${post.data.permalink}`;
-const publishDate = post.data.publishDate?.toISOString() ?? '';
+const publishDate = post.data.publishDate.toISOString();
 const jsonLd = [
   {
     '@context': 'https://schema.org',
@@ -54,6 +55,7 @@ const jsonLd = [
 <SiteLayout
   locale={locale}
   pagePath={pagePath}
+  availableLocales={availableLocales}
   title={`${post.data.title} — Gorani Apps`}
   description={post.data.excerpt ?? post.data.title}
   ogImage={post.data.image}
@@ -63,7 +65,7 @@ const jsonLd = [
   <article class="blog-post">
     <header class="blog-post-header shell narrow">
       <a class="back-link" href={localizedPath(locale, 'blog')}>← {t.backToBlog}</a><p class="eyebrow">
-        {post.data.publishDate && formatDate(post.data.publishDate.toISOString().slice(0, 10), locale)}
+        {formatDate(post.data.publishDate.toISOString().slice(0, 10), locale)}
       </p><h1>{post.data.title}</h1><p>{post.data.excerpt}</p>
     </header>
     {

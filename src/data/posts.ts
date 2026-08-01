@@ -7,7 +7,7 @@ export const getPublishedPosts = async (locale?: Locale): Promise<CollectionEntr
     ({ data }) => data.draft !== true && (locale === undefined || data.locale === locale)
   );
 
-  return posts.sort((a, b) => (b.data.publishDate?.valueOf() ?? 0) - (a.data.publishDate?.valueOf() ?? 0));
+  return posts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 };
 
 export const getBlogRouteDefinitions = async (locale: Locale): Promise<string[]> => {
