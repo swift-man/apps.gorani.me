@@ -82,8 +82,11 @@ export const ui = {
     previous: '이전',
     next: '다음',
     platformMac: 'macOS',
+    platformMacDescription: '키보드와 포인터 중심의 생산적인 작업 흐름에 맞춘 데스크톱 도구입니다.',
     platformMobile: 'iPhone & iPad',
+    platformMobileDescription: '손안의 iPhone과 넓은 iPad 화면에 자연스럽게 맞는 터치 중심 경험입니다.',
     platformTV: 'Apple TV',
+    platformTVDescription: '거리와 집중, 거실 환경을 고려해 차분하고 읽기 쉽게 설계합니다.',
   },
   en: {
     nav: { apps: 'Apps', updates: 'Updates', blog: 'Blog', support: 'Support' },
@@ -163,8 +166,11 @@ export const ui = {
     previous: 'Previous',
     next: 'Next',
     platformMac: 'macOS',
+    platformMacDescription: 'Focused desktop utilities made for keyboard, pointer, and productive workflows.',
     platformMobile: 'iPhone & iPad',
+    platformMobileDescription: 'Touch-first experiences that feel at home in your hand and on the larger iPad canvas.',
     platformTV: 'Apple TV',
+    platformTVDescription: 'Calm, legible interfaces designed for distance, focus, and the living room.',
   },
   ja: {
     nav: { apps: 'Apps', updates: 'Updates', blog: 'Blog', support: 'Support' },
@@ -244,8 +250,11 @@ export const ui = {
     previous: '前へ',
     next: '次へ',
     platformMac: 'macOS',
+    platformMacDescription: 'キーボードとポインタを使う生産的な作業に合わせたデスクトップツールです。',
     platformMobile: 'iPhone & iPad',
+    platformMobileDescription: 'iPhoneと広いiPad画面に自然に馴染む、タッチ中心の体験です。',
     platformTV: 'Apple TV',
+    platformTVDescription: '視聴距離と集中、リビング空間を考慮した落ち着いて読みやすい設計です。',
   },
 } as const;
 

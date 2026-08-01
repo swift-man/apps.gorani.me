@@ -1,7 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
 import type { Locale } from '~/config/site';
 import { getApp } from '~/data/apps';
+import { getPublishedPosts } from '~/data/posts';
 import AppDetailPage from './AppDetailPage.astro';
 import AppsPage from './AppsPage.astro';
 import BlogIndexPage from './BlogIndexPage.astro';
@@ -18,7 +18,7 @@ interface Props {
 }
 const { locale, pagePath } = Astro.props;
 const [section = '', slug] = pagePath.split('/');
-const posts = await getCollection('post');
+const posts = await getPublishedPosts();
 const app = slug ? getApp(slug) : undefined;
 const directApp = !slug ? getApp(section) : undefined;
 const post =

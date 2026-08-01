@@ -4,6 +4,7 @@ import type { Locale } from '~/config/site';
 import { apps } from '~/data/apps';
 import { getUI } from '~/data/i18n';
 import SiteLayout from '~/layouts/SiteLayout.astro';
+import { localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
 }
@@ -30,7 +31,7 @@ const t = getUI(locale);
                 <AppCard app={app} locale={locale} />
                 <a
                   class="support-overlay-link"
-                  href={`/${locale}/support/${app.slug}`}
+                  href={localizedPath(locale, `support/${app.slug}`)}
                   aria-label={`${app.name} ${t.supportFor}`}
                 />
               </>

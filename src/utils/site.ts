@@ -19,9 +19,6 @@ export const routeDefinitions = [
     `support/${slug}`,
     `privacy/${slug}`,
   ]),
-  ...['macos-app-icon-sizes', 'designing-apple-tv-wallpaper-apps', 'designing-multilingual-typing-game-difficulty'].map(
-    (slug) => `blog/${slug}`
-  ),
 ] as const;
 export const formatDate = (date: string, locale: Locale) =>
   new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : locale === 'ja' ? 'ja-JP' : 'en-US', {

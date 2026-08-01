@@ -1,15 +1,20 @@
 ---
 import { SUPPORTED_LOCALES, type Locale } from '~/config/site';
+import { getBlogRouteDefinitions } from '~/data/posts';
 import { routeDefinitions } from '~/utils/site';
 import PageRouter from '~/views/PageRouter.astro';
 
-export function getStaticPaths() {
-  return SUPPORTED_LOCALES.flatMap((locale) =>
-    routeDefinitions.map((pagePath) => ({
-      params: { locale, path: pagePath || undefined },
-      props: { locale, pagePath },
-    }))
+export async function getStaticPaths() {
+  const routesByLocale = await Promise.all(
+    SUPPORTED_LOCALES.map(async (locale) => {
+      const pagePaths = [...routeDefinitions, ...(await getBlogRouteDefinitions(locale))];
+      return pagePaths.map((pagePath) => ({
+        params: { locale, path: pagePath || undefined },
+        props: { locale, pagePath },
+      }));
+    })
   );
+  return routesByLocale.flat();
 }
 
 const { locale, pagePath } = Astro.props as { locale: Locale; pagePath: string };

@@ -137,6 +137,8 @@ status: 'released',
 - 업데이트: `src/data/updates.ts`
 - 블로그: `src/data/post/<locale>-<permalink>.md`
 
+블로그 경로는 공개 게시물의 `locale`과 `permalink`에서 자동 생성됩니다. `draft: true`인 글은 홈, 목록, 상세 페이지와 RSS에서 제외됩니다.
+
 언어를 새로 추가하려면 `src/config/site.ts`의 `SUPPORTED_LOCALES`, UI 문자열, 앱 콘텐츠, Markdown 글, 정적 라우팅 타입을 함께 확장해야 합니다.
 
 ## 개인정보처리방침 수정
@@ -151,7 +153,7 @@ status: 'released',
 
 `src/config/site.ts`의 `supportEmail`을 실제 주소로 변경합니다. 앱별 지원 페이지의 mailto 제목에는 앱 이름이 자동으로 들어갑니다.
 
-현재 값은 `support@example.com` placeholder입니다.
+현재 값은 저장소 소유자의 공개 GitHub 연락처인 `jiniopening@gmail.com`입니다.
 
 ## 사이트 URL 변경
 
@@ -196,7 +198,6 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 
 ## 배포 전 체크리스트
 
-- `support@example.com`을 실제 이메일로 변경
 - `apps.gorani.me` DNS와 GitHub Pages 커스텀 도메인 연결 확인
 - placeholder 앱 이미지 교체
 - 실제 출시 빌드와 개인정보처리방침 대조

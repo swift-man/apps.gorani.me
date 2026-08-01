@@ -7,7 +7,7 @@ export const siteConfig = {
   siteDescription: 'Independent apps for Apple platforms.',
   siteUrl: import.meta.env.PUBLIC_SITE_URL || 'https://apps.gorani.me',
   developerName: 'Gorani Apps',
-  supportEmail: 'support@example.com',
+  supportEmail: 'jiniopening@gmail.com',
   githubUrl: 'https://github.com/swift-man/apps.gorani.me',
   defaultLocale: 'ko' as Locale,
   supportedLocales: SUPPORTED_LOCALES,

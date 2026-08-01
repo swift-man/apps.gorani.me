@@ -1,10 +1,10 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
 import { siteConfig } from '~/config/site';
+import { getPublishedPosts } from '~/data/posts';
 import { localizedPath } from '~/utils/site';
 
 export const GET = async () => {
-  const posts = (await getCollection('post')).filter((post) => post.data.locale === siteConfig.defaultLocale);
+  const posts = await getPublishedPosts(siteConfig.defaultLocale);
   return rss({
     title: `${siteConfig.siteName} Blog`,
     description: siteConfig.siteDescription,
