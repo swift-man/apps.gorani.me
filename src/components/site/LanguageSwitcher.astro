@@ -1,0 +1,33 @@
+---
+import { SUPPORTED_LOCALES, type Locale } from '~/config/site';
+import { localeLabels } from '~/data/i18n';
+import { localizedPath } from '~/utils/site';
+
+interface Props {
+  locale: Locale;
+  pagePath: string;
+  label: string;
+}
+const { locale, pagePath, label } = Astro.props;
+---
+
+<div class="language-switcher">
+  <label class="sr-only" for="language-select">{label}</label>
+  <select id="language-select" aria-label={label} data-language-select>
+    {
+      SUPPORTED_LOCALES.map((item) => (
+        <option value={localizedPath(item, pagePath)} selected={item === locale}>
+          {localeLabels[item]}
+        </option>
+      ))
+    }
+  </select>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLSelectElement>('[data-language-select]').forEach((select) => {
+    select.addEventListener('change', () => {
+      window.location.href = select.value;
+    });
+  });
+</script>

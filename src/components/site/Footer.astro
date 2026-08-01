@@ -1,0 +1,35 @@
+---
+import type { Locale } from '~/config/site';
+import { siteConfig } from '~/config/site';
+import { getUI } from '~/data/i18n';
+import { localizedPath } from '~/utils/site';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getUI(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href={localizedPath(locale)}
+        ><span class="brand-mark" aria-hidden="true">G</span><span>Gorani Apps</span></a
+      >
+      <p>{t.footerTagline}</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer">
+      <a href={localizedPath(locale, 'apps')}>{t.nav.apps}</a>
+      <a href={localizedPath(locale, 'support')}>{t.nav.support}</a>
+      <a href={localizedPath(locale, 'privacy/assetscaler')}>{t.privacy}</a>
+      <a href={localizedPath(locale, 'blog')}>{t.nav.blog}</a>
+      <a href={siteConfig.githubUrl} rel="me">GitHub</a>
+      <a href={`mailto:${siteConfig.supportEmail}`}>{t.contact}</a>
+    </nav>
+  </div>
+  <div class="shell footer-bottom">
+    <span>© {year} {siteConfig.developerName}. {t.copyright}</span><span>{siteConfig.siteName}</span>
+  </div>
+</footer>

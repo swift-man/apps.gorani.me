@@ -1,0 +1,12 @@
+---
+import PageRouter from '~/views/PageRouter.astro';
+import { routeDefinitions } from '~/utils/site';
+
+export function getStaticPaths() {
+  return routeDefinitions.map((pagePath) => ({ params: { path: pagePath || undefined }, props: { pagePath } }));
+}
+
+const { pagePath } = Astro.props;
+---
+
+<PageRouter locale="ko" pagePath={pagePath} />

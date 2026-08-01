@@ -1,0 +1,43 @@
+---
+import AppCard from '~/components/apps/AppCard.astro';
+import type { Locale } from '~/config/site';
+import { apps } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getUI(locale);
+---
+
+<SiteLayout
+  locale={locale}
+  pagePath="support"
+  title={`${t.nav.support} — Gorani Apps`}
+  description={t.supportDescription}
+>
+  <section class="page-hero compact">
+    <div class="shell"><p class="eyebrow">Support</p><h1>{t.supportTitle}</h1><p>{t.supportDescription}</p></div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <div class="app-grid directory-grid">
+        {
+          apps.map((app) => (
+            <div class="support-card-wrap">
+              <>
+                <AppCard app={app} locale={locale} />
+                <a
+                  class="support-overlay-link"
+                  href={`/${locale}/support/${app.slug}`}
+                  aria-label={`${app.name} ${t.supportFor}`}
+                />
+              </>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</SiteLayout>

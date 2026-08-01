@@ -1,0 +1,18 @@
+---
+import SiteLayout from '~/layouts/SiteLayout.astro';
+---
+
+<SiteLayout
+  locale="ko"
+  pagePath="404"
+  title="페이지를 찾을 수 없습니다 — Gorani Apps"
+  description="요청한 페이지를 찾을 수 없습니다."
+>
+  <section class="page-hero compact error-page">
+    <div class="shell narrow">
+      <p class="eyebrow">404</p><h1>페이지를 찾을 수 없습니다.</h1><p>
+        주소가 바뀌었거나 더 이상 존재하지 않는 페이지입니다.
+      </p><a class="primary-button" href="/ko">홈으로 돌아가기 <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</SiteLayout>

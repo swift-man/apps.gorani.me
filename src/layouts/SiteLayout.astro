@@ -1,0 +1,75 @@
+---
+import '~/assets/styles/site.css';
+import type { Locale } from '~/config/site';
+import Header from '~/components/site/Header.astro';
+import Footer from '~/components/site/Footer.astro';
+import JsonLd from '~/components/site/JsonLd.astro';
+import SeoMetadata from '~/components/site/SeoMetadata.astro';
+
+interface Props {
+  locale: Locale;
+  pagePath: string;
+  title: string;
+  description: string;
+  ogImage?: string;
+  type?: 'website' | 'article';
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  bodyClass?: string;
+}
+
+const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd, bodyClass = '' } = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="Gorani Apps Blog" href="/rss.xml" />
+    <SeoMetadata
+      locale={locale}
+      pagePath={pagePath}
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      type={type}
+    />
+    {jsonLd && <JsonLd data={jsonLd} />}
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('gorani-apps-theme');
+        const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+  </head>
+  <body class={bodyClass}>
+    <Header locale={locale} pagePath={pagePath} />
+    <main id="main-content"><slot /></main>
+    <Footer locale={locale} />
+    <script is:inline>
+      document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          document.documentElement.classList.toggle('dark', next === 'dark');
+          localStorage.setItem('gorani-apps-theme', next);
+        });
+      });
+      document.querySelectorAll('[data-menu-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const open = button.getAttribute('aria-expanded') !== 'true';
+          button.setAttribute('aria-expanded', String(open));
+          document.querySelector('[data-site-nav]')?.classList.toggle('is-open', open);
+        });
+      });
+    </script>
+  </body>
+</html>

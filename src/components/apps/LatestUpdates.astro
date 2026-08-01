@@ -1,0 +1,50 @@
+---
+import type { Locale } from '~/config/site';
+import { apps } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import { updates } from '~/data/updates';
+import { appPath, formatDate, localizedPath } from '~/utils/site';
+interface Props {
+  locale: Locale;
+  limit?: number;
+  appSlug?: string;
+}
+const { locale, limit, appSlug } = Astro.props;
+const t = getUI(locale);
+const selected = updates.filter((item) => !appSlug || item.appSlug === appSlug).slice(0, limit ?? updates.length);
+---
+
+<div class="updates-list">
+  {
+    selected.map((item) => {
+      const app = apps.find((candidate) => candidate.slug === item.appSlug)!;
+      return (
+        <article class="update-row">
+          <div class="update-app">
+            <>
+              <img src={app.icon} width="56" height="56" alt="" loading="lazy" />
+              <div>
+                <>
+                  <a href={localizedPath(locale, appPath(app.slug))}>{app.name}</a>
+                  <span>
+                    {t.version} {item.version}
+                  </span>
+                </>
+              </div>
+            </>
+          </div>
+          <div class="update-notes">
+            <>
+              <time datetime={item.date}>{formatDate(item.date, locale)}</time>
+              <ul>
+                {item.changes[locale].map((change) => (
+                  <li>{change}</li>
+                ))}
+              </ul>
+            </>
+          </div>
+        </article>
+      );
+    })
+  }
+</div>

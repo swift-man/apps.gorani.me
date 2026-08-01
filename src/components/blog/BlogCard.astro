@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '~/config/site';
+import { formatDate, localizedPath } from '~/utils/site';
+interface Props {
+  post: CollectionEntry<'post'>;
+  locale: Locale;
+}
+const { post, locale } = Astro.props;
+---
+
+<article class="blog-card">
+  {
+    post.data.image && (
+      <a class="blog-card-image" href={localizedPath(locale, `blog/${post.data.permalink}`)}>
+        <img src={post.data.image} alt="" width="1200" height="750" loading="lazy" />
+      </a>
+    )
+  }
+  <div class="blog-card-copy">
+    <time datetime={post.data.publishDate?.toISOString()}
+      >{post.data.publishDate && formatDate(post.data.publishDate.toISOString().slice(0, 10), locale)}</time
+    ><h3><a href={localizedPath(locale, `blog/${post.data.permalink}`)}>{post.data.title}</a></h3><p>
+      {post.data.excerpt}
+    </p><a class="text-link" href={localizedPath(locale, `blog/${post.data.permalink}`)}
+      >Read <span aria-hidden="true">→</span></a
+    >
+  </div>
+</article>

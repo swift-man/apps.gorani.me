@@ -1,0 +1,110 @@
+---
+import type { Locale } from '~/config/site';
+import { siteConfig } from '~/config/site';
+import type { AppInfo } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import { appPath, formatDate, localizedPath } from '~/utils/site';
+interface Props {
+  locale: Locale;
+  app: AppInfo;
+}
+const { locale, app } = Astro.props;
+const t = getUI(locale);
+const serviceNames = app.appleServices.join(', ');
+const copy =
+  locale === 'ko'
+    ? {
+        info: '현재 공개된 구성에는 계정 생성이나 별도의 웹 서버 저장이 문서화되어 있지 않습니다. 실제 출시 빌드의 진단·분석 설정이 확정되면 이 섹션을 그 내용에 맞게 업데이트합니다.',
+        permissions: app.appleServices.length
+          ? `${serviceNames} 기능을 선택해 사용할 때 해당 Apple 서비스 접근 권한이나 계정 상태가 필요할 수 있습니다. 권한 요청 화면에서 목적을 확인한 뒤 선택할 수 있습니다.`
+          : '기능에 필요한 시스템 권한이 있다면 요청 시점의 시스템 안내에서 목적을 확인할 수 있습니다. 현재 확인되지 않은 권한은 이 문서에서 단정하지 않습니다.',
+        payments:
+          '유료 다운로드, 앱 내 구입 또는 구독이 제공되는 경우 결제 처리는 Apple의 App Store 시스템이 담당합니다. 개발자는 전체 결제 카드 정보를 직접 받지 않습니다.',
+        third: app.appleServices.length
+          ? `앱은 선택 기능을 위해 ${serviceNames} 같은 Apple 서비스를 사용할 수 있습니다. 각 서비스에는 Apple의 약관과 개인정보 보호 기준이 적용됩니다. 확인되지 않은 외부 분석 SDK 사용은 이 문서에서 가정하지 않습니다.`
+          : '현재 확인된 외부 분석 SDK는 이 초안에 명시하지 않았습니다. 제3자 서비스가 추가되면 서비스 이름과 목적을 이곳에 공개합니다.',
+        children:
+          '앱은 일반 사용자를 대상으로 설계되었으며, 아동이 사용하는 경우 보호자가 기기와 App Store의 개인정보 및 구입 설정을 함께 확인해 주세요.',
+        changes:
+          '기능, 권한 또는 연결 서비스가 바뀌면 이 문서와 최종 업데이트 날짜를 함께 수정합니다. 중요한 변경 사항은 적절한 방법으로 안내할 수 있습니다.',
+        contact: `이 문서나 앱의 개인정보 처리에 관한 질문은 ${siteConfig.supportEmail}로 보내 주세요.`,
+      }
+    : locale === 'ja'
+      ? {
+          info: '現在公開されている構成では、アカウント作成や独自Webサーバーへの保存は文書化されていません。公開ビルドの診断・分析設定が確定したら、その内容に合わせて更新します。',
+          permissions: app.appleServices.length
+            ? `${serviceNames}の機能を選択して使う場合、Appleサービスへのアクセス権限やアカウント状態が必要になることがあります。システムの権限画面で目的を確認できます。`
+            : 'システム権限が必要な機能では、要求時の案内で目的を確認できます。未確認の権限については断定しません。',
+          payments:
+            '有料ダウンロード、アプリ内購入、購読が提供される場合、支払いはAppleのApp Storeシステムで処理されます。開発者が完全なカード情報を直接受け取ることはありません。',
+          third: app.appleServices.length
+            ? `選択機能のために${serviceNames}などのAppleサービスを利用する場合があります。各サービスにはAppleの規約とプライバシー基準が適用されます。未確認の分析SDKは想定しません。`
+            : '現在確認されていない外部分析SDKについては記載していません。第三者サービスを追加する場合は、名称と目的を公開します。',
+          children:
+            '一般の利用者向けに設計されています。子どもが使う場合は、保護者が端末とApp Storeのプライバシー・購入設定を確認してください。',
+          changes:
+            '機能、権限、接続サービスが変わる場合、この文書と最終更新日を更新します。重要な変更は適切な方法で案内することがあります。',
+          contact: `この文書またはプライバシーについての質問は、${siteConfig.supportEmail}までお送りください。`,
+        }
+      : {
+          info: 'The currently documented configuration does not include account creation or storage on a separate web server. This section should be updated when diagnostics and analytics choices for the released build are confirmed.',
+          permissions: app.appleServices.length
+            ? `Choosing features connected to ${serviceNames} may require access to an Apple service or an eligible account. You can review the purpose in the system permission prompt before deciding.`
+            : 'If a feature needs a system permission, its purpose should be shown when access is requested. This notice does not assume permissions that have not been confirmed.',
+          payments:
+            'If paid downloads, in-app purchases, or subscriptions are offered, Apple processes those transactions through the App Store. The developer does not directly receive full payment-card details.',
+          third: app.appleServices.length
+            ? `The app may use Apple services such as ${serviceNames} for optional features. Apple terms and privacy practices apply to those services. This notice does not assume the use of an unconfirmed analytics SDK.`
+            : 'No unconfirmed external analytics SDK is named in this draft. If a third-party service is added, its name and purpose should be disclosed here.',
+          children:
+            'The app is designed for a general audience. When a child uses it, a parent or guardian should review device privacy and App Store purchase settings.',
+          changes:
+            'When features, permissions, or connected services change, this notice and its last-updated date should be revised together. Material changes may also be communicated through an appropriate channel.',
+          contact: `Send questions about this notice or the app's handling of information to ${siteConfig.supportEmail}.`,
+        };
+const sections = [
+  [t.collectedInfo, copy.info],
+  [t.permissions, copy.permissions],
+  [t.payments, copy.payments],
+  [t.thirdParties, copy.third],
+  [t.children, copy.children],
+  [t.changes, copy.changes],
+  [t.contact, copy.contact],
+];
+---
+
+<SiteLayout
+  locale={locale}
+  pagePath={`privacy/${app.slug}`}
+  title={`${app.name} ${t.privacyPolicy} — Gorani Apps`}
+  description={`${app.name} ${t.privacyPolicy}`}
+  ogImage={app.ogImage}
+>
+  <section class="page-hero policy-hero">
+    <div class="shell narrow">
+      <a class="back-link" href={localizedPath(locale, appPath(app.slug))}>← {app.name}</a><p class="eyebrow">
+        {t.privacyPolicy}
+      </p><h1>{app.name}</h1><p>{t.privacyIntro}</p><time datetime={siteConfig.privacyLastUpdated}
+        >{t.lastUpdated}: {formatDate(siteConfig.privacyLastUpdated, locale)}</time
+      >
+    </div>
+  </section>
+  <article class="policy-content shell narrow">
+    {
+      sections.map(([title, text], index) => (
+        <section>
+          <>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <>
+                <h2>{title}</h2>
+                <p>{text}</p>
+              </>
+            </div>
+          </>
+        </section>
+      ))
+    }
+  </article>
+</SiteLayout>

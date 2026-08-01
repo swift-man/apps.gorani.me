@@ -1,0 +1,34 @@
+---
+import type { Locale } from '~/config/site';
+import type { AppInfo } from '~/data/apps';
+interface Props {
+  app: AppInfo;
+  locale: Locale;
+}
+const { app, locale } = Astro.props;
+---
+
+<div
+  class:list={['screenshot-gallery', `screenshot-gallery--${app.platformGroup}`]}
+  role="region"
+  aria-label={`${app.name} screenshots`}
+  tabindex="0"
+>
+  {
+    app.screenshots.map((shot) => (
+      <figure tabindex="0">
+        <>
+          <img
+            src={shot.src}
+            alt={shot.label[locale]}
+            width={shot.width}
+            height={shot.height}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>{shot.label[locale]}</figcaption>
+        </>
+      </figure>
+    ))
+  }
+</div>

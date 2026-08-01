@@ -1,0 +1,43 @@
+---
+import type { Locale } from '~/config/site';
+import type { AppInfo } from '~/data/apps';
+import AppStoreButton from './AppStoreButton.astro';
+import PlatformBadge from './PlatformBadge.astro';
+
+interface Props {
+  app: AppInfo;
+  locale: Locale;
+}
+const { app, locale } = Astro.props;
+const content = app.content[locale];
+---
+
+<section class="app-hero section">
+  <div class="shell app-hero-grid">
+    <div class="app-hero-copy">
+      <img
+        class="app-hero-icon"
+        src={app.icon}
+        width="128"
+        height="128"
+        alt={`${app.name} icon`}
+        fetchpriority="high"
+      />
+      <div class="app-hero-meta"><PlatformBadge platform={app.platform} /><span>{app.category}</span></div>
+      <p class="eyebrow">{app.name}</p>
+      <h1>{content.title}</h1>
+      <p class="app-hero-description">{content.shortDescription}</p>
+      <AppStoreButton url={app.appStoreUrl} platform={app.platform} locale={locale} />
+    </div>
+    <div class="app-hero-visual">
+      <img
+        src={app.heroImage}
+        alt={`${app.name} app preview`}
+        width={app.heroSize.width}
+        height={app.heroSize.height}
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+  </div>
+</section>

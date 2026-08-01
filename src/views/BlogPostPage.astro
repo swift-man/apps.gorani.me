@@ -1,0 +1,94 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import AppCard from '~/components/apps/AppCard.astro';
+import type { Locale } from '~/config/site';
+import { siteConfig } from '~/config/site';
+import { getApp } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import { absoluteUrl, formatDate, localizedPath } from '~/utils/site';
+interface Props {
+  locale: Locale;
+  post: CollectionEntry<'post'>;
+}
+const { locale, post } = Astro.props;
+const t = getUI(locale);
+const { Content } = await render(post);
+const relatedApp = getApp(post.data.relatedApp);
+const pagePath = `blog/${post.data.permalink}`;
+const publishDate = post.data.publishDate?.toISOString() ?? '';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.excerpt,
+    image: post.data.image && absoluteUrl(siteConfig.siteUrl, post.data.image),
+    datePublished: publishDate,
+    author: { '@type': 'Person', name: post.data.author ?? siteConfig.developerName },
+    publisher: { '@type': 'Organization', name: siteConfig.siteName },
+    mainEntityOfPage: absoluteUrl(siteConfig.siteUrl, localizedPath(locale, pagePath)),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl(siteConfig.siteUrl, localizedPath(locale)) },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: absoluteUrl(siteConfig.siteUrl, localizedPath(locale, 'blog')),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.data.title,
+        item: absoluteUrl(siteConfig.siteUrl, localizedPath(locale, pagePath)),
+      },
+    ],
+  },
+];
+---
+
+<SiteLayout
+  locale={locale}
+  pagePath={pagePath}
+  title={`${post.data.title} — Gorani Apps`}
+  description={post.data.excerpt ?? post.data.title}
+  ogImage={post.data.image}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="blog-post">
+    <header class="blog-post-header shell narrow">
+      <a class="back-link" href={localizedPath(locale, 'blog')}>← {t.backToBlog}</a><p class="eyebrow">
+        {post.data.publishDate && formatDate(post.data.publishDate.toISOString().slice(0, 10), locale)}
+      </p><h1>{post.data.title}</h1><p>{post.data.excerpt}</p>
+    </header>
+    {
+      post.data.image && (
+        <figure class="blog-post-cover shell">
+          <img
+            src={post.data.image}
+            alt={post.data.title}
+            width={relatedApp?.heroSize.width ?? 1200}
+            height={relatedApp?.heroSize.height ?? 750}
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
+    <div class="prose shell narrow"><Content /></div>
+    {
+      relatedApp && (
+        <aside class="related-post-app shell narrow">
+          <>
+            <p class="eyebrow">{t.relatedApp}</p>
+            <AppCard app={relatedApp} locale={locale} />
+          </>
+        </aside>
+      )
+    }
+  </article>
+</SiteLayout>

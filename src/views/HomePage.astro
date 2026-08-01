@@ -1,0 +1,192 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import AppCard from '~/components/apps/AppCard.astro';
+import LatestUpdates from '~/components/apps/LatestUpdates.astro';
+import BlogCard from '~/components/blog/BlogCard.astro';
+import type { Locale } from '~/config/site';
+import { siteConfig } from '~/config/site';
+import { apps } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import { absoluteUrl, appPath, localizedPath } from '~/utils/site';
+interface Props {
+  locale: Locale;
+  posts: CollectionEntry<'post'>[];
+}
+const { locale, posts } = Astro.props;
+const t = getUI(locale);
+const localizedPosts = posts
+  .filter((post) => post.data.locale === locale)
+  .sort((a, b) => (b.data.publishDate?.valueOf() ?? 0) - (a.data.publishDate?.valueOf() ?? 0));
+const title =
+  locale === 'ko'
+    ? 'Gorani Apps — Apple 플랫폼을 위한 앱'
+    : locale === 'ja'
+      ? 'Gorani Apps — Appleプラットフォームのためのアプリ'
+      : 'Gorani Apps — Independent apps for Apple platforms';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteConfig.siteName,
+    url: absoluteUrl(siteConfig.siteUrl, localizedPath(locale)),
+    description: t.heroDescription,
+  },
+  { '@context': 'https://schema.org', '@type': 'Organization', name: siteConfig.siteName, url: siteConfig.siteUrl },
+];
+---
+
+<SiteLayout locale={locale} pagePath="" title={title} description={t.heroDescription} jsonLd={jsonLd}>
+  <section class="home-hero section">
+    <div class="shell home-hero-grid">
+      <div class="home-hero-copy">
+        <p class="eyebrow">{t.heroEyebrow}</p><h1>
+          {
+            t.heroTitle.split('\n').map((line, index) => (
+              <Fragment>
+                {index > 0 && <br />}
+                {line}
+              </Fragment>
+            ))
+          }
+        </h1><p>{t.heroDescription}</p><div class="button-row">
+          <a class="primary-button" href={localizedPath(locale, 'apps')}
+            >{t.browseApps}<span aria-hidden="true">→</span></a
+          ><a class="secondary-button" href={localizedPath(locale, 'updates')}>{t.latestUpdates}</a>
+        </div>
+      </div>
+      {
+        siteConfig.homeVideo.enabled ? (
+          <div class="home-video-shell">
+            <video
+              data-home-video
+              controls={siteConfig.homeVideo.controls}
+              autoplay={siteConfig.homeVideo.autoplay}
+              muted={siteConfig.homeVideo.muted}
+              loop={siteConfig.homeVideo.loop}
+              playsinline
+              preload="metadata"
+              poster={siteConfig.homeVideo.poster}
+              aria-label="Gorani Apps highlight video"
+            >
+              <source src={siteConfig.homeVideo.src} type="video/mp4" />
+              Your browser does not support HTML video.
+            </video>
+          </div>
+        ) : (
+          <div class="icon-constellation" aria-label="Gorani Apps collection">
+            {apps.map((app, index) => (
+              <a
+                href={localizedPath(locale, appPath(app.slug))}
+                class={`floating-icon floating-icon-${index + 1}`}
+                aria-label={app.name}
+              >
+                <img src={app.icon} width="168" height="168" alt="" fetchpriority={index === 0 ? 'high' : 'auto'} />
+              </a>
+            ))}
+            <span class="constellation-note">
+              <strong>4</strong> apps · 3 platforms
+            </span>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section section-bordered">
+    <div class="shell">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">{t.featuredApps}</p><h2>{t.featuredAppsTitle}</h2></div><p>
+          {t.featuredAppsDescription}
+        </p>
+      </div><div class="app-grid featured-app-grid">
+        {apps.map((app) => <AppCard app={app} locale={locale} featured />)}
+      </div><div class="section-action">
+        <a class="text-link" href={localizedPath(locale, 'apps')}>{t.allApps}<span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section platform-section">
+    <div class="shell">
+      <div class="section-heading"><p class="eyebrow">{t.platforms}</p><h2>{t.platformsDescription}</h2></div><div
+        class="platform-grid"
+      >
+        <article>
+          <span class="platform-glyph" aria-hidden="true">⌘</span><h3>{t.platformMac}</h3><p>
+            Focused desktop utilities made for keyboard, pointer, and productive workflows.
+          </p>
+        </article>
+        <article>
+          <span class="platform-glyph" aria-hidden="true">▯</span><h3>{t.platformMobile}</h3><p>
+            Touch-first experiences that feel at home in your hand and on the larger iPad canvas.
+          </p>
+        </article>
+        <article>
+          <span class="platform-glyph" aria-hidden="true">▰</span><h3>{t.platformTV}</h3><p>
+            Calm, legible interfaces designed for distance, focus, and the living room.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section principles-section">
+    <div class="shell">
+      <div class="section-heading"><p class="eyebrow">{t.principles}</p><h2>{t.principlesTitle}</h2></div><div
+        class="principles-grid"
+      >
+        {
+          t.principlesItems.map(([name, description], index: number) => (
+            <article>
+              <>
+                <span>0{index + 1}</span>
+                <h3>{name}</h3>
+                <p>{description}</p>
+              </>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-bordered">
+    <div class="shell">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">Updates</p><h2>{t.updatesTitle}</h2></div><p>{t.updatesDescription}</p>
+      </div><LatestUpdates locale={locale} limit={3} /><div class="section-action">
+        <a class="text-link" href={localizedPath(locale, 'updates')}>{t.allUpdates}<span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="section-heading split-heading">
+        <div><p class="eyebrow">Journal</p><h2>{t.blogTitle}</h2></div><p>{t.blogDescription}</p>
+      </div><div class="blog-grid">
+        {localizedPosts.slice(0, 3).map((post) => <BlogCard post={post} locale={locale} />)}
+      </div><div class="section-action">
+        <a class="text-link" href={localizedPath(locale, 'blog')}>{t.allPosts}<span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section final-cta">
+    <div class="shell">
+      <div><p class="eyebrow">Gorani Apps</p><h2>{t.finalTitle}</h2><p>{t.finalDescription}</p></div><a
+        class="primary-button light"
+        href={localizedPath(locale, 'apps')}>{t.allApps}<span aria-hidden="true">→</span></a
+      >
+    </div>
+  </section>
+  <script>
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll<HTMLVideoElement>('[data-home-video]').forEach((video) => {
+        video.autoplay = false;
+        video.pause();
+      });
+    }
+  </script>
+</SiteLayout>

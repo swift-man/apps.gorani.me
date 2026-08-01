@@ -1,0 +1,25 @@
+---
+import LatestUpdates from '~/components/apps/LatestUpdates.astro';
+import type { Locale } from '~/config/site';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getUI(locale);
+---
+
+<SiteLayout
+  locale={locale}
+  pagePath="updates"
+  title={`${t.updatesPageTitle} — Gorani Apps`}
+  description={t.updatesPageDescription}
+>
+  <section class="page-hero compact">
+    <div class="shell">
+      <p class="eyebrow">Changelog</p><h1>{t.updatesPageTitle}</h1><p>{t.updatesPageDescription}</p>
+    </div>
+  </section>
+  <section class="section"><div class="shell"><LatestUpdates locale={locale} /></div></section>
+</SiteLayout>
