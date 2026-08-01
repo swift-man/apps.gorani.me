@@ -17,13 +17,29 @@ import { UI } from 'astrowind:config';
     }
   }
 
+  const configuredTheme = defaultTheme || 'system';
+
+  function readStoredTheme() {
+    try {
+      return localStorage.getItem('theme');
+    } catch {
+      return null;
+    }
+  }
+
+  function writeStoredTheme(theme) {
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {
+      // Theme changes still apply for the current page when storage is unavailable.
+    }
+  }
+
   const initTheme = function () {
-    if ((defaultTheme && defaultTheme.endsWith(':only')) || (!localStorage.theme && defaultTheme !== 'system')) {
-      applyTheme(defaultTheme.replace(':only', ''));
-    } else if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
+    const storedTheme = readStoredTheme();
+    if (configuredTheme.endsWith(':only') || (!storedTheme && configuredTheme !== 'system')) {
+      applyTheme(configuredTheme.replace(':only', ''));
+    } else if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       applyTheme('dark');
     } else {
       applyTheme('light');
@@ -65,14 +81,14 @@ import { UI } from 'astrowind:config';
     });
 
     attachEvent('[data-aw-toggle-color-scheme]', 'click', function () {
-      if (defaultTheme.endsWith(':only')) {
+      if (configuredTheme.endsWith(':only')) {
         return;
       }
 
       Observer.removeAnimationDelay();
 
       document.documentElement.classList.toggle('dark');
-      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      writeStoredTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     });
 
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {

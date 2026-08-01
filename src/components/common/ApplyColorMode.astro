@@ -20,12 +20,20 @@ import { UI } from 'astrowind:config';
     }
   }
 
-  if ((defaultTheme && defaultTheme.endsWith(':only')) || (!localStorage.theme && defaultTheme !== 'system')) {
-    applyTheme(defaultTheme.replace(':only', ''));
-  } else if (
-    localStorage.theme === 'dark' ||
-    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  ) {
+  function readStoredTheme() {
+    try {
+      return localStorage.getItem('theme');
+    } catch {
+      return null;
+    }
+  }
+
+  const configuredTheme = defaultTheme || 'system';
+  const storedTheme = readStoredTheme();
+
+  if (configuredTheme.endsWith(':only') || (!storedTheme && configuredTheme !== 'system')) {
+    applyTheme(configuredTheme.replace(':only', ''));
+  } else if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     applyTheme('dark');
   } else {
     applyTheme('light');

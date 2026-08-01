@@ -44,7 +44,12 @@ const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd,
     {jsonLd && <JsonLd data={jsonLd} />}
     <script is:inline>
       (() => {
-        const saved = localStorage.getItem('gorani-apps-theme');
+        let saved = null;
+        try {
+          saved = localStorage.getItem('gorani-apps-theme');
+        } catch {
+          // Use the system preference when storage is unavailable.
+        }
         const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
         document.documentElement.classList.toggle('dark', dark);
@@ -61,7 +66,11 @@ const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd,
           const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
           document.documentElement.dataset.theme = next;
           document.documentElement.classList.toggle('dark', next === 'dark');
-          localStorage.setItem('gorani-apps-theme', next);
+          try {
+            localStorage.setItem('gorani-apps-theme', next);
+          } catch {
+            // Keep the selected theme for this page when storage is unavailable.
+          }
         });
       });
       document.querySelectorAll('[data-menu-toggle]').forEach((button) => {
