@@ -65,11 +65,11 @@ https://apps.gorani.me/answer-by-chance
 ## 새 앱 추가
 
 1. `src/data/apps.ts`의 `apps` 배열에 앱을 추가합니다.
-2. `src/utils/site.ts`의 `routeDefinitions`에 앱 상세, 지원, 개인정보 경로를 추가합니다.
-3. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
-4. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
+2. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
+3. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
+4. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
 
-앱 데이터에는 slug, 이름, 플랫폼, 카테고리, 이미지, App Store URL, 출시 상태, 테마, 현지화 콘텐츠, SEO 문구가 포함됩니다.
+앱 상세·지원 경로는 앱 데이터에서 자동 생성됩니다. 개인정보 경로는 `privacyStatus: 'published'`인 앱에만 생성됩니다.
 
 ## 앱 이미지 교체
 
@@ -126,6 +126,7 @@ Coming Soon 앱을 출시 상태로 전환하려면:
 ```ts
 appStoreUrl: 'https://apps.apple.com/app/id...',
 status: 'released',
+privacyStatus: 'published',
 ```
 
 `appStoreUrl`이 `null`이면 다운로드 링크 대신 Coming Soon 배지가 보이고 SoftwareApplication JSON-LD에도 설치 URL이 포함되지 않습니다.
@@ -144,10 +145,11 @@ status: 'released',
 ## 개인정보처리방침 수정
 
 - 공통 최종 업데이트 날짜: `src/config/site.ts`의 `privacyLastUpdated`
-- 앱별 Apple 서비스 연결: `src/data/apps.ts`의 `appleServices`
-- 문서 기본 문구와 섹션: `src/views/PrivacyPage.astro`
+- 앱별 공개 상태: `src/data/apps.ts`의 `privacyStatus`
+- 검증 출처와 언어별 문구: `src/data/privacy.ts`
+- 문서 섹션 렌더링: `src/views/PrivacyPage.astro`
 
-현재 문서는 확인되지 않은 분석 SDK나 데이터 미수집을 사실처럼 단정하지 않는 편집 가능한 초안입니다. 실제 배포 전 각 앱의 출시 빌드와 App Store 개인정보 응답을 대조하세요.
+개인정보 페이지는 출시 빌드, 게시된 개발자 방침, App Store 개인정보 응답을 대조한 앱만 공개합니다. 미확정 앱은 `privacyStatus: 'pending'`으로 유지하고 정책 경로와 링크를 생성하지 않습니다.
 
 ## 지원 이메일 변경
 
@@ -191,7 +193,7 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 
 - 다국어 canonical·hreflang·Open Graph·Twitter Card
 - SoftwareApplication, FAQPage, BreadcrumbList, BlogPosting JSON-LD
-- sitemap과 RSS
+- sitemap과 언어별 RSS (`/rss.xml`, `/en/rss.xml`, `/ja/rss.xml`)
 - 정적 robots.txt, favicon, web manifest
 
 공통 소셜 카드는 `public/og-gorani.webp`, 앱별 카드는 각 앱 폴더의 `og.webp`입니다.

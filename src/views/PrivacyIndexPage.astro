@@ -11,6 +11,7 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = getUI(locale);
+const publishedApps = apps.filter((app) => app.privacyStatus === 'published');
 ---
 
 <SiteLayout
@@ -30,7 +31,7 @@ const t = getUI(locale);
     <div class="shell">
       <div class="privacy-directory">
         {
-          apps.map((app) => (
+          publishedApps.map((app) => (
             <article>
               <img src={app.icon} width="72" height="72" alt="" loading="lazy" />
               <div>

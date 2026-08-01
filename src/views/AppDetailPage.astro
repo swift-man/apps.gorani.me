@@ -10,6 +10,7 @@ import type { Locale } from '~/config/site';
 import { siteConfig } from '~/config/site';
 import type { AppInfo } from '~/data/apps';
 import { getUI } from '~/data/i18n';
+import { updates } from '~/data/updates';
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import { absoluteUrl, appPath, localizedPath } from '~/utils/site';
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
 const { locale, app } = Astro.props;
 const t = getUI(locale);
 const content = app.content[locale];
+const hasUpdates = updates.some((update) => update.appSlug === app.slug);
 const appUrl = absoluteUrl(siteConfig.siteUrl, localizedPath(locale, appPath(app.slug)));
 const softwareLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
@@ -106,28 +108,38 @@ const jsonLd = [
       </ol>
     </div>
   </section>
-  <section class="section app-section privacy-callout">
-    <div class="shell narrow">
-      <p class="eyebrow">{t.privacy}</p><h2>{t.privacySummary}</h2><a
-        class="text-link"
-        href={localizedPath(locale, `privacy/${app.slug}`)}>{t.readPrivacy}<span aria-hidden="true">→</span></a
-      >
-    </div>
-  </section>
+  {
+    app.privacyStatus === 'published' && (
+      <section class="section app-section privacy-callout">
+        <div class="shell narrow">
+          <p class="eyebrow">{t.privacy}</p>
+          <h2>{t.privacySummary}</h2>
+          <a class="text-link" href={localizedPath(locale, `privacy/${app.slug}`)}>
+            {t.readPrivacy}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+    )
+  }
   <section class="section app-section">
     <div class="shell">
       <div class="section-heading"><p class="eyebrow">04</p><h2>{t.faq}</h2></div><AppFAQ items={content.faq} />
     </div>
   </section>
-  <section class="section app-section">
-    <div class="shell">
-      <div class="section-heading"><p class="eyebrow">Changelog</p><h2>{t.updatesTitle}</h2></div><LatestUpdates
-        locale={locale}
-        appSlug={app.slug}
-        limit={1}
-      />
-    </div>
-  </section>
+  {
+    hasUpdates && (
+      <section class="section app-section">
+        <div class="shell">
+          <div class="section-heading">
+            <p class="eyebrow">Changelog</p>
+            <h2>{t.updatesTitle}</h2>
+          </div>
+          <LatestUpdates locale={locale} appSlug={app.slug} limit={1} />
+        </div>
+      </section>
+    )
+  }
   <section class="section app-final">
     <div class="shell narrow">
       <img src={app.icon} width="96" height="96" alt="" loading="lazy" /><h2>{app.name}</h2><p>

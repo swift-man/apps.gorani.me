@@ -30,6 +30,7 @@ export interface AppInfo {
   status: AppStatus;
   theme: AppTheme;
   appleServices: ('MusicKit' | 'Game Center')[];
+  privacyStatus: 'published' | 'pending';
   content: Record<Locale, LocalizedAppContent>;
 }
 
@@ -61,6 +62,7 @@ export const apps: AppInfo[] = [
     status: 'released',
     theme: 'assetscaler',
     appleServices: [],
+    privacyStatus: 'published',
     content: {
       ko: {
         title: '한 번 드래그하고, 모든 크기를 만드세요.',
@@ -192,6 +194,7 @@ export const apps: AppInfo[] = [
     status: 'released',
     theme: 'andromeda',
     appleServices: ['MusicKit'],
+    privacyStatus: 'published',
     content: {
       ko: {
         title: '거실에서 만나는 가장 가까운 은하.',
@@ -304,6 +307,7 @@ export const apps: AppInfo[] = [
     status: 'released',
     theme: 'wordrush',
     appleServices: ['Game Center'],
+    privacyStatus: 'published',
     content: {
       ko: {
         title: '생각보다 손가락이 먼저 움직이는 게임.',
@@ -406,6 +410,7 @@ export const apps: AppInfo[] = [
     status: 'coming-soon',
     theme: 'answerbychance',
     appleServices: [],
+    privacyStatus: 'pending',
     content: {
       ko: {
         title: '질문을 품고, 한 페이지를 넘겨보세요.',

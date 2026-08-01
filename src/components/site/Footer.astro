@@ -14,7 +14,7 @@ const t = getUI(locale);
 const year = new Date().getFullYear();
 const [section = '', slug] = pagePath.split('/');
 const currentApp = getApp(slug ?? section) ?? getApp(section);
-const privacyPath = currentApp ? `privacy/${currentApp.slug}` : 'privacy';
+const privacyPath = currentApp?.privacyStatus === 'published' ? `privacy/${currentApp.slug}` : 'privacy';
 ---
 
 <footer class="site-footer">

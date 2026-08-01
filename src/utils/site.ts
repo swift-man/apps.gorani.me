@@ -1,4 +1,5 @@
 import { SUPPORTED_LOCALES, type Locale } from '~/config/site';
+import { apps } from '~/data/apps';
 
 export const isLocale = (value: string | undefined): value is Locale =>
   Boolean(value && SUPPORTED_LOCALES.includes(value as Locale));
@@ -15,10 +16,10 @@ export const routeDefinitions = [
   'blog',
   'support',
   'privacy',
-  ...['assetscaler', 'andromeda-17k', 'word-rush', 'answer-by-chance'].flatMap((slug) => [
-    slug,
-    `support/${slug}`,
-    `privacy/${slug}`,
+  ...apps.flatMap((app) => [
+    app.slug,
+    `support/${app.slug}`,
+    ...(app.privacyStatus === 'published' ? [`privacy/${app.slug}`] : []),
   ]),
 ] as const;
 export const formatDate = (date: string, locale: Locale) =>
