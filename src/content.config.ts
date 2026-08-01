@@ -2,6 +2,13 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
+const blogPermalink = z
+  .string()
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    'Blog permalink must be a lowercase, hyphen-separated URL slug without path separators'
+  );
+
 const metadataDefinition = () =>
   z
     .object({
@@ -62,7 +69,7 @@ const postCollection = defineCollection({
     tags: z.array(z.string()).optional(),
     author: z.string().optional(),
     locale: z.enum(['ko', 'en', 'ja']),
-    permalink: z.string(),
+    permalink: blogPermalink,
     relatedApp: z.string(),
 
     metadata: metadataDefinition(),

@@ -39,7 +39,7 @@ author: 'Author Name'
 | `tags`        | No       | Array of tag strings                           |
 | `author`      | No       | Author name                                    |
 | `locale`      | Yes      | `ko`, `en`, or `ja`                            |
-| `permalink`   | Yes      | URL-safe slug unique within the locale         |
+| `permalink`   | Yes      | Lowercase hyphenated slug, unique per locale   |
 | `relatedApp`  | Yes      | Related app slug from `src/data/apps.ts`       |
 | `metadata`    | No       | Override SEO metadata                          |
 
@@ -56,3 +56,4 @@ Posts use the required `permalink` value rather than the filename:
 - Reading time is calculated automatically via remark plugin
 - Images referenced with `~/` are optimized at build time
 - Use `.mdx` extension to embed Astro components in posts
+- Keep `permalink` to one path segment (`my-post`, not `guides/my-post`)
