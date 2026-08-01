@@ -30,7 +30,7 @@ author: 'Author Name'
 | Field         | Required | Description                                    |
 | ------------- | -------- | ---------------------------------------------- |
 | `title`       | Yes      | Post title                                     |
-| `publishDate` | No       | ISO 8601 date                                  |
+| `publishDate` | Yes      | ISO 8601 date                                  |
 | `updateDate`  | No       | ISO 8601 date                                  |
 | `draft`       | No       | Set `true` to hide from listing                |
 | `excerpt`     | No       | Summary for listing pages                      |

@@ -20,16 +20,23 @@ import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin } from './src/uti
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const hasExternalScripts = false;
+const siteBase = process.env.PUBLIC_BASE_PATH || '/';
+const normalizedBase = siteBase === '/' ? '' : `/${siteBase.replace(/^\/+|\/+$/g, '')}`;
+const defaultLocalePrefix = `${normalizedBase}/ko`;
+const includeInSitemap = (page: string) => {
+  const pathname = new URL(page).pathname.replace(/\/+$/, '') || '/';
+  return pathname !== defaultLocalePrefix && !pathname.startsWith(`${defaultLocalePrefix}/`);
+};
 const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroIntegration)[] = []) =>
   hasExternalScripts ? (Array.isArray(items) ? items.map((item) => item()) : [items()]) : [];
 
 export default defineConfig({
   site: process.env.PUBLIC_SITE_URL || 'https://apps.gorani.me',
-  base: process.env.PUBLIC_BASE_PATH || '/',
+  base: siteBase,
   output: 'static',
 
   integrations: [
-    sitemap(),
+    sitemap({ filter: includeInSitemap }),
     mdx(),
     icon({
       include: {

@@ -77,6 +77,8 @@ const { locale, pagePath, title, description, ogImage, type = 'website', jsonLd,
         button.addEventListener('click', () => {
           const open = button.getAttribute('aria-expanded') !== 'true';
           button.setAttribute('aria-expanded', String(open));
+          const label = button.getAttribute(open ? 'data-menu-close-label' : 'data-menu-open-label');
+          if (label) button.setAttribute('aria-label', label);
           document.querySelector('[data-site-nav]')?.classList.toggle('is-open', open);
         });
       });
