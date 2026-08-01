@@ -150,11 +150,17 @@ const expandWidths = (raw?: number[]): number[] | undefined => {
 const heightFromWidth = (variantWidth: number): number | undefined =>
   aspectRatio ? Math.round(variantWidth / aspectRatio) : undefined;
 
-const cdnSrc = isCdnUrl ? buildCdnUrl(w, h) : undefined;
+const cdnSrc = isCdnUrl ? (buildCdnUrl(w, h) ?? (resolved as string)) : undefined;
 const cdnWidths = isCdnUrl ? expandWidths(widths) : undefined;
 const cdnSrcSet =
   isCdnUrl && cdnWidths?.length
-    ? cdnWidths.map((bw) => `${buildCdnUrl(bw, heightFromWidth(bw))} ${bw}w`).join(', ')
+    ? cdnWidths
+        .map((bw) => {
+          const variantUrl = buildCdnUrl(bw, heightFromWidth(bw));
+          return variantUrl ? `${variantUrl} ${bw}w` : undefined;
+        })
+        .filter((candidate): candidate is string => Boolean(candidate))
+        .join(', ') || undefined
     : undefined;
 ---
 

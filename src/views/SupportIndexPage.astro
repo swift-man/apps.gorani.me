@@ -26,16 +26,12 @@ const t = getUI(locale);
       <div class="app-grid directory-grid">
         {
           apps.map((app) => (
-            <div class="support-card-wrap">
-              <>
-                <AppCard app={app} locale={locale} />
-                <a
-                  class="support-overlay-link"
-                  href={localizedPath(locale, `support/${app.slug}`)}
-                  aria-label={`${app.name} ${t.supportFor}`}
-                />
-              </>
-            </div>
+            <AppCard
+              app={app}
+              locale={locale}
+              href={localizedPath(locale, `support/${app.slug}`)}
+              actionLabel={`${app.name} ${t.supportFor}`}
+            />
           ))
         }
       </div>

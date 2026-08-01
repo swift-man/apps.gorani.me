@@ -26,5 +26,6 @@ export const formatDate = (date: string, locale: Locale) =>
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    timeZone: 'UTC',
   }).format(new Date(`${date}T00:00:00Z`));
 export const absoluteUrl = (siteUrl: string, path: string) => new URL(path, siteUrl).toString();

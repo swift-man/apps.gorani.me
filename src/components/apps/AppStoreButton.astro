@@ -17,7 +17,7 @@ const label = platform === 'macOS' ? t.macAppStore : platform === 'Apple TV' ? t
   url ? (
     <a class:list={['store-button', { compact }]} href={url} target="_blank" rel="noopener noreferrer">
       <>
-        <span class="store-button-overline">Download on the</span>
+        <span class="store-button-overline">{t.downloadOn}</span>
         <strong>{label}</strong>
         <span aria-hidden="true">↗</span>
       </>

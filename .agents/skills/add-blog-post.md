@@ -9,6 +9,9 @@
 ---
 publishDate: 2026-01-15T00:00:00Z
 title: 'Your Post Title'
+locale: en
+permalink: your-post-title
+relatedApp: assetscaler
 excerpt: 'Brief description of the post'
 image: '~/assets/images/your-image.png'
 category: 'tutorials'
@@ -20,7 +23,7 @@ author: 'Author Name'
 ```
 
 3. Write content in Markdown (or MDX for component embedding)
-4. Run `npm run build` to verify the post renders correctly
+4. Run `pnpm build` to verify the post renders correctly
 
 ## Frontmatter Fields
 
@@ -35,11 +38,18 @@ author: 'Author Name'
 | `category`    | No       | Single category string                         |
 | `tags`        | No       | Array of tag strings                           |
 | `author`      | No       | Author name                                    |
+| `locale`      | Yes      | `ko`, `en`, or `ja`                            |
+| `permalink`   | Yes      | URL-safe slug unique within the locale         |
+| `relatedApp`  | Yes      | Related app slug from `src/data/apps.ts`       |
 | `metadata`    | No       | Override SEO metadata                          |
 
 ## URL Pattern
 
-Posts are available at `/blog/{slug}` where slug is derived from the filename.
+Posts use the required `permalink` value rather than the filename:
+
+- Korean: `/blog/{permalink}`
+- English: `/en/blog/{permalink}`
+- Japanese: `/ja/blog/{permalink}`
 
 ## Notes
 

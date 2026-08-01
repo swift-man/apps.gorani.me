@@ -1,8 +1,8 @@
 ---
 import type { Locale } from '~/config/site';
-import { apps } from '~/data/apps';
+import { apps, type AppInfo } from '~/data/apps';
 import { getUI } from '~/data/i18n';
-import { updates } from '~/data/updates';
+import { updates, type AppUpdate } from '~/data/updates';
 import { appPath, formatDate, localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
@@ -11,13 +11,20 @@ interface Props {
 }
 const { locale, limit, appSlug } = Astro.props;
 const t = getUI(locale);
-const selected = updates.filter((item) => !appSlug || item.appSlug === appSlug).slice(0, limit ?? updates.length);
+const isResolvedUpdate = (entry: {
+  item: AppUpdate;
+  app: AppInfo | undefined;
+}): entry is { item: AppUpdate; app: AppInfo } => entry.app !== undefined;
+const selected = updates
+  .filter((item) => !appSlug || item.appSlug === appSlug)
+  .map((item) => ({ item, app: apps.find((candidate) => candidate.slug === item.appSlug) }))
+  .filter(isResolvedUpdate)
+  .slice(0, limit ?? updates.length);
 ---
 
 <div class="updates-list">
   {
-    selected.map((item) => {
-      const app = apps.find((candidate) => candidate.slug === item.appSlug)!;
+    selected.map(({ item, app }) => {
       return (
         <article class="update-row">
           <div class="update-app">

@@ -2,7 +2,7 @@
   "name": "Gorani Apps",
   "short_name": "Gorani Apps",
   "description": "Independent apps for Apple platforms.",
-  "start_url": "/ko",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#f6f6f4",
   "theme_color": "#111214",
