@@ -14,7 +14,11 @@ const t = getUI(locale);
 <article class="blog-card">
   {
     post.data.image && (
-      <a class="blog-card-image" href={localizedPath(locale, `blog/${post.data.permalink}`)}>
+      <a
+        class="blog-card-image"
+        href={localizedPath(locale, `blog/${post.data.permalink}`)}
+        aria-label={`${t.readMore}: ${post.data.title}`}
+      >
         <img src={post.data.image} alt="" width="1200" height="750" loading="lazy" />
       </a>
     )

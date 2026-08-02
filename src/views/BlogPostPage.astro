@@ -18,6 +18,9 @@ const { Content } = await render(post);
 const relatedApp = getApp(post.data.relatedApp);
 const pagePath = `blog/${post.data.permalink}`;
 const publishDate = post.data.publishDate.toISOString();
+const updateDate = post.data.updateDate?.toISOString();
+const ogImageWidth = relatedApp?.heroSize.width ?? 1200;
+const ogImageHeight = relatedApp?.heroSize.height ?? 750;
 const jsonLd = [
   {
     '@context': 'https://schema.org',
@@ -26,6 +29,7 @@ const jsonLd = [
     description: post.data.excerpt,
     image: post.data.image && absoluteUrl(siteConfig.siteUrl, post.data.image),
     datePublished: publishDate,
+    ...(updateDate ? { dateModified: updateDate } : {}),
     author: { '@type': 'Person', name: post.data.author ?? siteConfig.developerName },
     publisher: { '@type': 'Organization', name: siteConfig.siteName },
     mainEntityOfPage: absoluteUrl(siteConfig.siteUrl, localizedPath(locale, pagePath)),
@@ -59,13 +63,22 @@ const jsonLd = [
   title={`${post.data.title} — Gorani Apps`}
   description={post.data.excerpt ?? post.data.title}
   ogImage={post.data.image}
+  ogImageWidth={ogImageWidth}
+  ogImageHeight={ogImageHeight}
   type="article"
   jsonLd={jsonLd}
 >
   <article class="blog-post">
     <header class="blog-post-header shell narrow">
       <a class="back-link" href={localizedPath(locale, 'blog')}>← {t.backToBlog}</a><p class="eyebrow">
-        {formatDate(post.data.publishDate.toISOString().slice(0, 10), locale)}
+        <time datetime={publishDate}>{formatDate(publishDate.slice(0, 10), locale)}</time>{
+          updateDate && (
+            <span>
+              {' '}
+              · {t.lastUpdated}: <time datetime={updateDate}>{formatDate(updateDate.slice(0, 10), locale)}</time>
+            </span>
+          )
+        }
       </p><h1>{post.data.title}</h1><p>{post.data.excerpt}</p>
     </header>
     {
