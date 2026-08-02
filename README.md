@@ -27,9 +27,18 @@ pnpm astro dev stop
 ```bash
 pnpm check:astro
 pnpm build
+pnpm check:static
 ```
 
-정적 결과물은 `dist/`에 생성됩니다.
+정적 결과물은 `dist/`에 생성됩니다. `pnpm build`는 빌드 직후 정적 출력 검증을 자동 실행하며, `pnpm check:static`으로 기존 `dist/`만 다시 검사할 수 있습니다.
+
+정적 출력 검증은 다음 회귀를 빌드 오류로 처리합니다.
+
+- canonical URL과 실제 생성 경로 불일치
+- 존재하지 않거나 상호 연결되지 않은 hreflang 대상
+- sitemap의 누락·중복·비정규 URL
+- 한국어·영어·일본어 RSS의 언어, 링크, 게시물 누락
+- 잘못된 robots.txt sitemap 주소와 CNAME
 
 ## 프로젝트 구조
 

@@ -3,7 +3,7 @@ import type { Locale } from '~/config/site';
 import { siteConfig } from '~/config/site';
 import { getUI, localeLabels } from '~/data/i18n';
 import { getPublishedPosts } from '~/data/posts';
-import { localizedPath } from '~/utils/site';
+import { absoluteUrl, localizedPath } from '~/utils/site';
 
 const rssLanguage: Record<Locale, string> = {
   ko: 'ko-KR',
@@ -18,7 +18,7 @@ export const createLocaleRss = async (locale: Locale) => {
   return rss({
     title: `${siteConfig.siteName} Blog — ${localeLabels[locale]}`,
     description: t.blogPageDescription,
-    site: siteConfig.siteUrl,
+    site: absoluteUrl(siteConfig.siteUrl, localizedPath(locale)),
     customData: `<language>${rssLanguage[locale]}</language>`,
     items: posts.map((post) => ({
       link: localizedPath(locale, `blog/${post.data.permalink}`),
