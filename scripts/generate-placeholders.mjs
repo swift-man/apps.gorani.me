@@ -70,7 +70,7 @@ function artwork(theme, width, height, label, compact = false) {
     <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${theme.from}"/><stop offset="1" stop-color="${theme.to}"/></linearGradient><filter id="noise"><feTurbulence baseFrequency=".75" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .045"/></feComponentTransfer></filter></defs>
     <rect width="100%" height="100%" rx="${compact ? Math.round(width * 0.22) : 0}" fill="url(#g)"/>
     <rect width="100%" height="100%" filter="url(#noise)" opacity=".5"/>
-    ${compact ? `<text x="50%" y="58%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Arial" font-weight="800" font-size="${titleSize}" fill="${theme.ink}">${theme.mark}</text>` : visual}
+    ${compact ? `<text x="50%" y="58%" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Arial" font-weight="800" font-size="${titleSize}" fill="${theme.ink}">${escape(theme.mark)}</text>` : visual}
     ${compact ? '' : `<text x="${pad}" y="${height - pad * 0.82}" font-family="-apple-system,BlinkMacSystemFont,Arial" font-size="${Math.min(42, width * 0.03)}" font-weight="700" fill="${theme.ink}">${escape(theme.name)}</text><text x="${width - pad}" y="${height - pad * 0.82}" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Arial" font-size="${Math.min(30, width * 0.022)}" fill="${theme.ink}" opacity=".72">${escape(label)}</text>`}
   </svg>`;
 }

@@ -28,27 +28,21 @@ const selected = updates
       return (
         <article class="update-row">
           <div class="update-app">
-            <>
-              <img src={app.icon} width="56" height="56" alt="" loading="lazy" />
-              <div>
-                <>
-                  <a href={localizedPath(locale, appPath(app.slug))}>{app.name}</a>
-                  <span>
-                    {t.version} {item.version}
-                  </span>
-                </>
-              </div>
-            </>
+            <img src={app.icon} width="56" height="56" alt="" loading="lazy" />
+            <div>
+              <a href={localizedPath(locale, appPath(app.slug))}>{app.name}</a>
+              <span>
+                {t.version} {item.version}
+              </span>
+            </div>
           </div>
           <div class="update-notes">
-            <>
-              <time datetime={item.date}>{formatDate(item.date, locale)}</time>
-              <ul>
-                {item.changes[locale].map((change) => (
-                  <li>{change}</li>
-                ))}
-              </ul>
-            </>
+            <time datetime={item.date}>{formatDate(item.date, locale)}</time>
+            <ul>
+              {item.changes[locale].map((change) => (
+                <li>{change}</li>
+              ))}
+            </ul>
           </div>
         </article>
       );
