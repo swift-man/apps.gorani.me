@@ -4,6 +4,8 @@ import path from 'node:path';
 const outputDirectory = path.resolve(process.argv[2] ?? 'dist');
 const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me');
 const basePath = normalizePathname(process.env.PUBLIC_BASE_PATH ?? '/');
+const defaultLanguage = 'ko';
+const expectedHreflangLanguages = new Set(['ko', 'en', 'ja']);
 const expectedFeeds = [
   { file: 'rss.xml', language: 'ko-KR', routePrefix: '' },
   { file: 'en/rss.xml', language: 'en-US', routePrefix: '/en' },
@@ -28,6 +30,7 @@ for (const file of htmlFiles) {
   const alternates = linkTags.filter(
     (attributes) => relIncludes(attributes.rel, 'alternate') && typeof attributes.hreflang === 'string'
   );
+  const htmlLanguage = parseAttributes(extractTags(html, 'html')[0] ?? '').lang?.toLowerCase();
   const route = routeForHtml(file);
 
   assert(canonicalLinks.length === 1, `${file}: expected exactly one canonical link, found ${canonicalLinks.length}`);
@@ -60,21 +63,35 @@ for (const file of htmlFiles) {
     assert(resolveHtml(href) !== undefined, `${file}: hreflang ${language} target does not exist in dist: ${href}`);
   }
 
-  if (alternateMap.size > 0) {
-    assert(alternateMap.has('x-default'), `${file}: localized page is missing x-default hreflang`);
-    const localizedTargets = [...alternateMap.entries()]
-      .filter(([language]) => language !== 'x-default')
-      .map(([, href]) => href);
-    assert(
-      localizedTargets.includes(alternateMap.get('x-default')),
-      `${file}: x-default must match one of the localized hreflang targets`
-    );
-  }
-
-  pages.set(file, { alternateMap, canonical, noindex, route });
+  pages.set(file, { alternateMap, canonical, htmlLanguage, noindex, route });
 }
 
 for (const [file, page] of pages) {
+  if (!page.noindex) {
+    const actualLanguages = new Set([...page.alternateMap.keys()].filter((language) => language !== 'x-default'));
+    assertSameSet(`${file}: hreflang languages`, actualLanguages, expectedHreflangLanguages);
+    assert(page.alternateMap.has('x-default'), `${file}: localized page is missing x-default hreflang`);
+    assert(
+      expectedHreflangLanguages.has(page.htmlLanguage),
+      `${file}: expected a supported html lang, found ${page.htmlLanguage ?? 'none'}`
+    );
+    assert(
+      page.alternateMap.get(page.htmlLanguage) === page.canonical,
+      `${file}: hreflang ${page.htmlLanguage ?? 'unknown'} must match the page canonical`
+    );
+
+    const defaultTarget = page.alternateMap.get('x-default');
+    const defaultTargetFile = defaultTarget && resolveHtml(defaultTarget);
+    const defaultTargetPage = defaultTargetFile && pages.get(defaultTargetFile);
+    assert(defaultTargetPage !== undefined, `${file}: unable to inspect x-default target ${defaultTarget ?? 'none'}`);
+    if (defaultTargetPage) {
+      assert(
+        defaultTargetPage.htmlLanguage === defaultLanguage,
+        `${file}: x-default target must use html lang ${defaultLanguage}, found ${defaultTargetPage.htmlLanguage ?? 'none'}`
+      );
+    }
+  }
+
   for (const [language, target] of page.alternateMap) {
     if (language === 'x-default') continue;
     const targetFile = resolveHtml(target);
@@ -86,8 +103,12 @@ for (const [file, page] of pages) {
       `${file}: hreflang ${language} points to ${target}, whose canonical is ${targetPage.canonical}`
     );
     assert(
-      [...targetPage.alternateMap.values()].includes(page.canonical),
-      `${file}: hreflang target ${target} does not link back to ${page.canonical}`
+      targetPage.htmlLanguage === language,
+      `${file}: hreflang ${language} target uses html lang ${targetPage.htmlLanguage ?? 'none'}`
+    );
+    assert(
+      targetPage.alternateMap.get(page.htmlLanguage) === page.canonical,
+      `${file}: hreflang target ${target} does not link back as ${page.htmlLanguage ?? 'unknown'} to ${page.canonical}`
     );
   }
 }
@@ -120,9 +141,14 @@ const expectedCanonicalSet = new Set([...pages.values()].filter((page) => !page.
 for (const url of sitemapSet) {
   const file = resolveHtml(url);
   const page = file && pages.get(file);
+  const pathname = normalizePathname(new URL(url).pathname);
+  const defaultLocaleAlias = withBase(`/${defaultLanguage}`);
   assert(page !== undefined, `Sitemap URL does not resolve to an HTML file: ${url}`);
   if (page) assert(page.canonical === url, `Sitemap URL ${url} has a different canonical: ${page.canonical}`);
-  assert(!new URL(url).pathname.startsWith(`${withBase('/ko')}/`), `Sitemap must not include /ko aliases: ${url}`);
+  assert(
+    pathname !== defaultLocaleAlias && !pathname.startsWith(`${defaultLocaleAlias}/`),
+    `Sitemap must not include /${defaultLanguage} aliases: ${url}`
+  );
 }
 
 assertSameSet('sitemap URLs', sitemapSet, expectedCanonicalSet);
@@ -133,7 +159,7 @@ for (const feed of expectedFeeds) {
   if (!outputFiles.has(feed.file)) continue;
 
   const xml = readOutput(feed.file);
-  const channel = xml.match(/<channel>([\s\S]*?)<\/channel>/i)?.[1];
+  const channel = extractOuterXmlElement(xml, 'channel');
   assert(channel !== undefined, `${feed.file}: missing channel element`);
   if (!channel) continue;
 
@@ -173,12 +199,17 @@ for (const feed of expectedFeeds) {
 const robotsFile = 'robots.txt';
 assert(outputFiles.has(robotsFile), `Missing ${robotsFile}`);
 if (outputFiles.has(robotsFile)) {
-  const sitemapDirectives = [...readOutput(robotsFile).matchAll(/^Sitemap:\s*(\S+)\s*$/gim)].map((match) =>
+  const sitemapDirectives = [...readOutput(robotsFile).matchAll(/^[ \t]*Sitemap:\s*(\S+)\s*$/gim)].map((match) =>
     normalizeSiteUrl(match[1], `${robotsFile}: Sitemap`)
   );
+  const expectedSitemap = urlForRoute('/sitemap-index.xml');
   assert(
-    sitemapDirectives.includes(urlForRoute('/sitemap-index.xml')),
-    `${robotsFile}: missing sitemap index directive for ${urlForRoute('/sitemap-index.xml')}`
+    sitemapDirectives.length === 1,
+    `${robotsFile}: expected exactly one sitemap directive, found ${sitemapDirectives.length}`
+  );
+  assert(
+    sitemapDirectives[0] === expectedSitemap,
+    `${robotsFile}: expected sitemap directive ${expectedSitemap}, found ${sitemapDirectives[0] ?? 'none'}`
   );
 }
 
@@ -221,12 +252,27 @@ function extractXmlValues(source, tagName) {
 }
 
 function decodeXml(value) {
-  return value
+  const decodedCdata = value.match(/^<!\[CDATA\[([\s\S]*)\]\]>$/)?.[1] ?? value;
+  return decodedCdata
+    .replace(/&#(?:x([0-9a-f]+)|([0-9]+));/gi, (entity, hex, decimal) => {
+      const codePoint = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
+      return Number.isInteger(codePoint) && codePoint >= 0 && codePoint <= 0x10ffff
+        ? String.fromCodePoint(codePoint)
+        : entity;
+    })
     .replaceAll('&amp;', '&')
     .replaceAll('&lt;', '<')
     .replaceAll('&gt;', '>')
     .replaceAll('&quot;', '"')
     .replaceAll('&apos;', "'");
+}
+
+function extractOuterXmlElement(source, tagName) {
+  const openingTag = new RegExp(`<${tagName}(?:\\s[^>]*)?>`, 'i').exec(source);
+  if (!openingTag) return undefined;
+  const contentStart = openingTag.index + openingTag[0].length;
+  const contentEnd = source.toLowerCase().lastIndexOf(`</${tagName.toLowerCase()}>`);
+  return contentEnd >= contentStart ? source.slice(contentStart, contentEnd) : undefined;
 }
 
 function normalizePathname(value) {

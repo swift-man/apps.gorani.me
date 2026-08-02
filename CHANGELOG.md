@@ -17,6 +17,7 @@ Gorani Apps 웹사이트의 주요 변경 사항을 기록합니다.
 - canonical, hreflang, Open Graph, JSON-LD, sitemap, robots.txt 등 검색 엔진 메타데이터
 - GitHub Pages 배포 및 CI 워크플로
 - 빌드 결과의 canonical, hreflang, sitemap, RSS, robots.txt, CNAME 자동 검증
+- hreflang 누락·언어 교환과 잘못된 robots sitemap을 재현하는 검증기 회귀 테스트
 - 추후 홈 화면 동영상을 교체할 수 있는 설정과 미디어 영역
 
 ### Fixed
