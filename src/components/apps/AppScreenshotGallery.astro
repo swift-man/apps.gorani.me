@@ -19,14 +19,7 @@ const t = getUI(locale);
   {
     app.screenshots.map((shot) => (
       <figure>
-        <img
-          src={shot.src}
-          alt={shot.label[locale]}
-          width={shot.width}
-          height={shot.height}
-          loading="lazy"
-          decoding="async"
-        />
+        <img src={shot.src} alt="" width={shot.width} height={shot.height} loading="lazy" decoding="async" />
         <figcaption>{shot.label[locale]}</figcaption>
       </figure>
     ))

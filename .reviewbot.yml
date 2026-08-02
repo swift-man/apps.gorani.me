@@ -27,13 +27,6 @@ review:
     - 'package.json'
     - 'pnpm-workspace.yaml'
     - 'tsconfig.json'
-    - 'Dockerfile'
-    - '.dockerignore'
-    - 'docker-compose.yml'
-    - 'nginx/**/*.conf'
-    - 'netlify.toml'
-    - 'vercel.json'
-    - 'public/_headers'
     - 'public/CNAME'
     - 'public/robots.txt'
     - 'public/manifest.webmanifest'
@@ -92,6 +85,16 @@ review:
     - 'src/utils/permalinks.ts'
     - 'src/utils/utils.ts'
 
+    # Alternative deployment examples inherited from AstroWind.
+    # Production deployment for this repository is GitHub Pages.
+    - 'Dockerfile'
+    - '.dockerignore'
+    - 'docker-compose.yml'
+    - 'nginx/**'
+    - 'netlify.toml'
+    - 'vercel.json'
+    - 'public/_headers'
+
     # Images, video, audio, fonts, and other binary assets
     - '**/*.avif'
     - '**/*.gif'
@@ -139,5 +142,4 @@ review:
     - 'src/data/apps.ts'
     - '.github/workflows/actions.yaml'
     - '.github/workflows/deploy.yml'
-    - 'public/_headers'
     - 'public/CNAME'
