@@ -138,6 +138,7 @@ review:
     - '.env.example'
     - 'package.json'
     - 'astro.config.ts'
+    - 'src/config/locales.mjs'
     - 'src/config/site.ts'
     - 'src/data/apps.ts'
     - '.github/workflows/actions.yaml'

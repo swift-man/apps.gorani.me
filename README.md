@@ -154,7 +154,7 @@ privacyStatus: 'published',
 
 블로그 경로는 공개 게시물의 `locale`과 `permalink`에서 자동 생성됩니다. `draft: true`인 글은 홈, 목록, 상세 페이지와 RSS에서 제외됩니다.
 
-언어를 새로 추가하려면 `src/config/site.ts`의 `SUPPORTED_LOCALES`, UI 문자열, 앱 콘텐츠, Markdown 글, 정적 라우팅 타입을 함께 확장해야 합니다.
+언어를 새로 추가하려면 `src/config/locales.mjs`에 언어별 날짜·Open Graph·RSS 메타데이터를 추가한 뒤 UI 문자열, 앱 콘텐츠, Markdown 글을 함께 확장해야 합니다. `SUPPORTED_LOCALES`, 정적 라우팅, RSS 및 빌드 검증기는 이 설정에서 지원 언어를 자동으로 가져옵니다.
 
 ## 개인정보처리방침 수정
 
