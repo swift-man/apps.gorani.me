@@ -5,7 +5,7 @@ const outputDirectory = path.resolve(process.argv[2] ?? 'dist');
 const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me');
 const basePath = normalizePathname(process.env.PUBLIC_BASE_PATH ?? '/');
 const defaultLanguage = 'ko';
-const expectedHreflangLanguages = new Set(['ko', 'en', 'ja']);
+const supportedLanguages = new Set(['ko', 'en', 'ja']);
 const expectedFeeds = [
   { file: 'rss.xml', language: 'ko-KR', routePrefix: '' },
   { file: 'en/rss.xml', language: 'en-US', routePrefix: '/en' },
@@ -66,15 +66,28 @@ for (const file of htmlFiles) {
   pages.set(file, { alternateMap, canonical, htmlLanguage, noindex, route });
 }
 
+const expectedLanguagesByRoute = new Map();
+for (const [file, page] of pages) {
+  if (page.noindex) continue;
+  assert(
+    supportedLanguages.has(page.htmlLanguage),
+    `${file}: expected a supported html lang, found ${page.htmlLanguage ?? 'none'}`
+  );
+  const logicalRoute = logicalRouteForPage(page);
+  assert(logicalRoute !== undefined, `${file}: canonical does not match its html lang: ${page.canonical}`);
+  if (!logicalRoute) continue;
+  page.logicalRoute = logicalRoute;
+  const languages = expectedLanguagesByRoute.get(logicalRoute) ?? new Set();
+  languages.add(page.htmlLanguage);
+  expectedLanguagesByRoute.set(logicalRoute, languages);
+}
+
 for (const [file, page] of pages) {
   if (!page.noindex) {
     const actualLanguages = new Set([...page.alternateMap.keys()].filter((language) => language !== 'x-default'));
-    assertSameSet(`${file}: hreflang languages`, actualLanguages, expectedHreflangLanguages);
+    const expectedLanguages = expectedLanguagesByRoute.get(page.logicalRoute) ?? new Set();
+    assertSameSet(`${file}: hreflang languages`, actualLanguages, expectedLanguages);
     assert(page.alternateMap.has('x-default'), `${file}: localized page is missing x-default hreflang`);
-    assert(
-      expectedHreflangLanguages.has(page.htmlLanguage),
-      `${file}: expected a supported html lang, found ${page.htmlLanguage ?? 'none'}`
-    );
     assert(
       page.alternateMap.get(page.htmlLanguage) === page.canonical,
       `${file}: hreflang ${page.htmlLanguage ?? 'unknown'} must match the page canonical`
@@ -86,9 +99,19 @@ for (const [file, page] of pages) {
     assert(defaultTargetPage !== undefined, `${file}: unable to inspect x-default target ${defaultTarget ?? 'none'}`);
     if (defaultTargetPage) {
       assert(
-        defaultTargetPage.htmlLanguage === defaultLanguage,
-        `${file}: x-default target must use html lang ${defaultLanguage}, found ${defaultTargetPage.htmlLanguage ?? 'none'}`
+        expectedLanguages.has(defaultTargetPage.htmlLanguage),
+        `${file}: x-default target uses unavailable language ${defaultTargetPage.htmlLanguage ?? 'none'}`
       );
+      assert(
+        page.alternateMap.get(defaultTargetPage.htmlLanguage) === defaultTarget,
+        `${file}: x-default must match a localized hreflang target`
+      );
+      if (expectedLanguages.has(defaultLanguage)) {
+        assert(
+          defaultTargetPage.htmlLanguage === defaultLanguage,
+          `${file}: x-default target must use html lang ${defaultLanguage}, found ${defaultTargetPage.htmlLanguage ?? 'none'}`
+        );
+      }
     }
   }
 
@@ -254,6 +277,7 @@ function extractXmlValues(source, tagName) {
 
 function decodeXml(value) {
   const decodedCdata = value.match(/^<!\[CDATA\[([\s\S]*)\]\]>$/)?.[1] ?? value;
+  const namedEntities = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
   return decodedCdata
     .replace(/&#(?:x([0-9a-f]+)|([0-9]+));/gi, (entity, hex, decimal) => {
       const codePoint = Number.parseInt(hex ?? decimal, hex ? 16 : 10);
@@ -261,11 +285,7 @@ function decodeXml(value) {
         ? String.fromCodePoint(codePoint)
         : entity;
     })
-    .replaceAll('&amp;', '&')
-    .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>')
-    .replaceAll('&quot;', '"')
-    .replaceAll('&apos;', "'");
+    .replace(/&(amp|lt|gt|quot|apos);/g, (_entity, name) => namedEntities[name]);
 }
 
 function extractOuterXmlElement(source, tagName) {
@@ -300,14 +320,24 @@ function normalizeSiteUrl(value, context) {
   }
   let url;
   try {
-    url = new URL(value, siteUrl);
+    url = new URL(value);
   } catch {
-    errors.push(`${context}: invalid URL ${value}`);
+    errors.push(`${context}: invalid absolute URL ${value}`);
     return undefined;
   }
   assert(url.origin === siteUrl.origin, `${context}: expected origin ${siteUrl.origin}, found ${url.origin}`);
   assert(url.search === '' && url.hash === '', `${context}: URL must not contain a query or fragment: ${url.href}`);
   return normalizeUrl(url);
+}
+
+function logicalRouteForPage(page) {
+  const pathname = normalizePathname(new URL(page.canonical).pathname);
+  const route = stripBase(pathname);
+  if (!route) return undefined;
+  if (page.htmlLanguage === defaultLanguage) return route;
+  const languagePrefix = `/${page.htmlLanguage}`;
+  if (route === languagePrefix) return '/';
+  return route.startsWith(`${languagePrefix}/`) ? normalizePathname(route.slice(languagePrefix.length)) : undefined;
 }
 
 function normalizeUrl(url) {

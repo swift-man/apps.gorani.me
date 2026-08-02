@@ -15,6 +15,31 @@ if (!existsSync(sourceOutput)) {
 
 const cases = [
   {
+    name: 'partial locale page group allowed',
+    mutateOutput: (outputDirectory) => {
+      for (const file of ['index.html', 'ko/index.html']) {
+        const target = path.join(outputDirectory, file);
+        const html = readFileSync(target, 'utf8');
+        const mutated = html.replace(
+          /<link\b(?=[^>]*\brel=(?:"alternate"|'alternate'))(?=[^>]*\bhreflang=(?:"(?:en|ja)"|'(?:en|ja)'))[^>]*>/gi,
+          ''
+        );
+        if (mutated === html) throw new Error(`${file}: partial locale fixture did not remove hreflang links`);
+        writeFileSync(target, mutated);
+      }
+
+      rmSync(path.join(outputDirectory, 'en', 'index.html'));
+      rmSync(path.join(outputDirectory, 'ja', 'index.html'));
+      const sitemap = path.join(outputDirectory, 'sitemap-0.xml');
+      const xml = readFileSync(sitemap, 'utf8');
+      const mutatedXml = xml
+        .replace('<url><loc>https://apps.gorani.me/en</loc></url>', '')
+        .replace('<url><loc>https://apps.gorani.me/ja</loc></url>', '');
+      if (mutatedXml === xml) throw new Error('partial locale fixture did not update the sitemap');
+      writeFileSync(sitemap, mutatedXml);
+    },
+  },
+  {
     name: 'commented metadata ignored',
     file: 'index.html',
     mutate: (html) =>
@@ -45,6 +70,24 @@ const cases = [
     expectedError: 'expected exactly one sitemap directive',
     mutate: (robots) => `${robots.trimEnd()}\nSitemap: https://apps.gorani.me/deprecated-sitemap.xml\n`,
   },
+  {
+    name: 'relative sitemap URL rejected',
+    file: 'sitemap-index.xml',
+    expectedError: 'invalid absolute URL /sitemap-0.xml',
+    mutate: (xml) => xml.replace('https://apps.gorani.me/sitemap-0.xml', '/sitemap-0.xml'),
+  },
+  {
+    name: 'relative RSS URL rejected',
+    file: 'rss.xml',
+    expectedError: 'invalid absolute URL /',
+    mutate: (xml) => xml.replace('<link>https://apps.gorani.me/</link>', '<link>/</link>'),
+  },
+  {
+    name: 'relative robots sitemap rejected',
+    file: 'robots.txt',
+    expectedError: 'invalid absolute URL /sitemap-index.xml',
+    mutate: (robots) => robots.replace('https://apps.gorani.me/sitemap-index.xml', '/sitemap-index.xml'),
+  },
 ];
 
 for (const testCase of cases) {
@@ -53,12 +96,16 @@ for (const testCase of cases) {
 
   try {
     cpSync(sourceOutput, outputDirectory, { recursive: true });
-    const target = path.join(outputDirectory, testCase.file);
-    const original = readFileSync(target, 'utf8');
-    const mutated = testCase.mutate(original);
+    if (testCase.mutateOutput) {
+      testCase.mutateOutput(outputDirectory);
+    } else {
+      const target = path.join(outputDirectory, testCase.file);
+      const original = readFileSync(target, 'utf8');
+      const mutated = testCase.mutate(original);
 
-    if (mutated === original) throw new Error(`${testCase.name}: fixture mutation did not change ${testCase.file}`);
-    writeFileSync(target, mutated);
+      if (mutated === original) throw new Error(`${testCase.name}: fixture mutation did not change ${testCase.file}`);
+      writeFileSync(target, mutated);
+    }
 
     const result = spawnSync(process.execPath, [validator, outputDirectory], {
       cwd: projectRoot,
