@@ -1,4 +1,5 @@
 import type { Locale } from '~/config/site';
+import { assertIsoDate } from '~/utils/iso-date.mjs';
 import type { AppSlug } from './app-slugs';
 
 export interface AppUpdate {
@@ -40,5 +41,9 @@ const rawUpdates: AppUpdate[] = [
     },
   },
 ];
+
+for (const update of rawUpdates) {
+  assertIsoDate(update.date, `Update ${update.appSlug}@${update.version} date`);
+}
 
 export const updates = rawUpdates.sort((a, b) => b.date.localeCompare(a.date));
