@@ -69,14 +69,14 @@ const jsonLd = [
               playsinline
               preload="metadata"
               poster={siteConfig.homeVideo.poster}
-              aria-label="Gorani Apps highlight video"
+              aria-label={t.highlightVideoLabel}
             >
               <source src={siteConfig.homeVideo.src} type="video/mp4" />
               Your browser does not support HTML video.
             </video>
           </div>
         ) : (
-          <div class="icon-constellation" aria-label="Gorani Apps collection">
+          <div class="icon-constellation" aria-label={t.appCollectionLabel}>
             {apps.map((app, index) => (
               <a
                 href={localizedPath(locale, appPath(app.slug))}

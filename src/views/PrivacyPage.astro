@@ -49,18 +49,14 @@ const contactSubject = encodeURIComponent(`[${app.name}] Privacy inquiry`);
     {
       sections.map(({ title, text, showEmail }, index) => (
         <section>
-          <>
-            <span>{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <>
-                <h2>{title}</h2>
-                <p>{text}</p>
-                {showEmail && (
-                  <a href={`mailto:${siteConfig.supportEmail}?subject=${contactSubject}`}>{siteConfig.supportEmail}</a>
-                )}
-              </>
-            </div>
-          </>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <h2>{title}</h2>
+            <p>{text}</p>
+            {showEmail && (
+              <a href={`mailto:${siteConfig.supportEmail}?subject=${contactSubject}`}>{siteConfig.supportEmail}</a>
+            )}
+          </div>
         </section>
       ))
     }

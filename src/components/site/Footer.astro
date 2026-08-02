@@ -25,7 +25,7 @@ const privacyPath = currentApp?.privacyStatus === 'published' ? `privacy/${curre
       >
       <p>{t.footerTagline}</p>
     </div>
-    <nav class="footer-links" aria-label="Footer">
+    <nav class="footer-links" aria-label={t.footerNavigation}>
       <a href={localizedPath(locale, 'apps')}>{t.nav.apps}</a>
       <a href={localizedPath(locale, 'support')}>{t.nav.support}</a>
       <a href={localizedPath(locale, privacyPath)}>{t.privacy}</a>

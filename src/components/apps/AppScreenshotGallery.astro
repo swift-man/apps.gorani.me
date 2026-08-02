@@ -1,17 +1,19 @@
 ---
 import type { Locale } from '~/config/site';
 import type { AppInfo } from '~/data/apps';
+import { getUI } from '~/data/i18n';
 interface Props {
   app: AppInfo;
   locale: Locale;
 }
 const { app, locale } = Astro.props;
+const t = getUI(locale);
 ---
 
 <div
   class:list={['screenshot-gallery', `screenshot-gallery--${app.platformGroup}`]}
   role="region"
-  aria-label={`${app.name} screenshots`}
+  aria-label={`${app.name}: ${t.screenshots}`}
   tabindex="0"
 >
   {

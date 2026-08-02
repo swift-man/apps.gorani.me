@@ -19,13 +19,13 @@ interface Props {
 }
 const { locale, pagePath } = Astro.props;
 const [section = '', slug] = pagePath.split('/');
-const posts = await getPublishedPosts();
+const needsAllPostLocales = section === 'blog' && Boolean(slug);
+const posts =
+  section === '' || section === 'blog' ? await getPublishedPosts(needsAllPostLocales ? undefined : locale) : [];
+const localePosts = needsAllPostLocales ? posts.filter((entry) => entry.data.locale === locale) : posts;
 const app = slug ? getApp(slug) : undefined;
 const directApp = !slug ? getApp(section) : undefined;
-const post =
-  section === 'blog' && slug
-    ? posts.find((entry) => entry.data.locale === locale && entry.data.permalink === slug)
-    : undefined;
+const post = section === 'blog' && slug ? localePosts.find((entry) => entry.data.permalink === slug) : undefined;
 const postLocales = post
   ? [
       ...new Set(
@@ -35,11 +35,11 @@ const postLocales = post
   : [];
 ---
 
-{section === '' && <HomePage locale={locale} posts={posts} />}
+{section === '' && <HomePage locale={locale} posts={localePosts} />}
 {section === 'apps' && !slug && <AppsPage locale={locale} />}
 {directApp && <AppDetailPage locale={locale} app={directApp} />}
 {section === 'updates' && <UpdatesPage locale={locale} />}
-{section === 'blog' && !slug && <BlogIndexPage locale={locale} posts={posts} />}
+{section === 'blog' && !slug && <BlogIndexPage locale={locale} posts={localePosts} />}
 {section === 'blog' && post && <BlogPostPage locale={locale} post={post} availableLocales={postLocales} />}
 {section === 'support' && !slug && <SupportIndexPage locale={locale} />}
 {section === 'support' && app && <SupportDetailPage locale={locale} app={app} />}
