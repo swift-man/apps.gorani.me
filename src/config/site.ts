@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, LOCALE_METADATA } from './locales.mjs';
+import { assertIsoDate } from '../utils/iso-date.mjs';
 
 export { DEFAULT_LOCALE, LOCALE_METADATA } from './locales.mjs';
 
@@ -20,7 +21,7 @@ export const siteConfig = {
   defaultLocale: DEFAULT_LOCALE,
   supportedLocales: SUPPORTED_LOCALES,
   socialLinks: { github: 'https://github.com/swift-man/apps.gorani.me' },
-  privacyLastUpdated: '2026-08-02',
+  privacyLastUpdated: assertIsoDate('2026-08-02', 'siteConfig.privacyLastUpdated'),
   analyticsProvider: null,
   homeVideo: {
     enabled: false,
