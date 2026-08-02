@@ -1,0 +1,14 @@
+---
+import PageRouter from '~/views/PageRouter.astro';
+import { routeDefinitions } from '~/utils/site';
+import { getBlogRouteDefinitions } from '~/data/posts';
+
+export async function getStaticPaths() {
+  const pagePaths = [...routeDefinitions, ...(await getBlogRouteDefinitions('ko'))];
+  return pagePaths.map((pagePath) => ({ params: { path: pagePath || undefined }, props: { pagePath } }));
+}
+
+const { pagePath } = Astro.props;
+---
+
+<PageRouter locale="ko" pagePath={pagePath} />

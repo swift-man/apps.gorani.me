@@ -1,0 +1,67 @@
+---
+import { OPEN_GRAPH_LOCALES, SUPPORTED_LOCALES, siteConfig, type Locale } from '~/config/site';
+import { absoluteUrl, localizedPath } from '~/utils/site';
+
+interface Props {
+  locale: Locale;
+  pagePath: string;
+  availableLocales?: readonly Locale[];
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  locale,
+  pagePath,
+  availableLocales = SUPPORTED_LOCALES,
+  title,
+  description,
+  ogImage = '/og-gorani.webp',
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+const canonical = absoluteUrl(siteConfig.siteUrl, localizedPath(locale, pagePath));
+const imageUrl = absoluteUrl(siteConfig.siteUrl, ogImage);
+const alternateLocales = [...new Set(availableLocales)];
+const xDefaultLocale = alternateLocales.includes(siteConfig.defaultLocale) ? siteConfig.defaultLocale : locale;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+<link rel="canonical" href={canonical} />
+{
+  alternateLocales.map((item) => (
+    <link rel="alternate" hreflang={item} href={absoluteUrl(siteConfig.siteUrl, localizedPath(item, pagePath))} />
+  ))
+}
+{
+  alternateLocales.length > 0 && (
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={absoluteUrl(siteConfig.siteUrl, localizedPath(xDefaultLocale, pagePath))}
+    />
+  )
+}
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={siteConfig.siteName} />
+<meta property="og:locale" content={OPEN_GRAPH_LOCALES[locale]} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content={String(ogImageWidth)} />
+<meta property="og:image:height" content={String(ogImageHeight)} />
+<meta property="og:image:alt" content={title} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />

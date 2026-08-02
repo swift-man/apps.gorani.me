@@ -1,0 +1,64 @@
+---
+import type { Locale } from '~/config/site';
+import { siteConfig } from '~/config/site';
+import type { AppInfo } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import { getPrivacyPolicy } from '~/data/privacy';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+import { appPath, formatDate, localizedPath } from '~/utils/site';
+interface Props {
+  locale: Locale;
+  app: AppInfo;
+}
+const { locale, app } = Astro.props;
+const t = getUI(locale);
+const policy = getPrivacyPolicy(app.slug);
+if (!policy) throw new Error(`No published privacy policy found for ${app.slug}`);
+const copy = policy.content[locale];
+const sections = [
+  { title: t.collectedInfo, text: copy.collectedInfo },
+  { title: t.permissions, text: copy.permissions },
+  { title: t.payments, text: copy.payments },
+  { title: t.thirdParties, text: copy.thirdParties },
+  { title: t.children, text: copy.children },
+  { title: t.changes, text: copy.changes },
+  { title: t.contact, text: copy.contact, showEmail: true },
+];
+const contactSubject = encodeURIComponent(`[${app.name}] Privacy inquiry`);
+---
+
+<SiteLayout
+  locale={locale}
+  pagePath={`privacy/${app.slug}`}
+  title={`${app.name} ${t.privacyPolicy} — Gorani Apps`}
+  description={`${app.name} ${t.privacyPolicy}`}
+  ogImage={app.ogImage}
+>
+  <section class="page-hero policy-hero">
+    <div class="shell narrow">
+      <a class="back-link" href={localizedPath(locale, appPath(app.slug))}>← {app.name}</a><p class="eyebrow">
+        {t.privacyPolicy}
+      </p><h1>{app.name}</h1><p>{copy.intro}</p><time datetime={siteConfig.privacyLastUpdated}
+        >{t.lastUpdated}: {formatDate(siteConfig.privacyLastUpdated, locale)}</time
+      ><a href={policy.disclosureUrl} target="_blank" rel="noopener noreferrer"
+        >{t.privacyDisclosureSource}<span aria-hidden="true">↗</span></a
+      >
+    </div>
+  </section>
+  <article class="policy-content shell narrow">
+    {
+      sections.map(({ title, text, showEmail }, index) => (
+        <section>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div>
+            <h2>{title}</h2>
+            <p>{text}</p>
+            {showEmail && (
+              <a href={`mailto:${siteConfig.supportEmail}?subject=${contactSubject}`}>{siteConfig.supportEmail}</a>
+            )}
+          </div>
+        </section>
+      ))
+    }
+  </article>
+</SiteLayout>

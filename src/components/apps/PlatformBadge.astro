@@ -1,0 +1,8 @@
+---
+interface Props {
+  platform: string;
+}
+const { platform } = Astro.props;
+---
+
+<span class="platform-badge"><span aria-hidden="true">●</span>{platform}</span>

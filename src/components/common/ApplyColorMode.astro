@@ -1,0 +1,41 @@
+---
+import { UI } from 'astrowind:config';
+
+// Theme initialization for legacy AstroWind layouts. Gorani Apps pages use SiteLayout.astro instead.
+---
+
+<script is:inline define:vars={{ defaultTheme: UI.theme || 'system' }}>
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    const matches = document.querySelectorAll('[data-aw-toggle-color-scheme] > input');
+
+    if (matches && matches.length) {
+      matches.forEach((elem) => {
+        elem.checked = theme !== 'dark';
+      });
+    }
+  }
+
+  function readStoredTheme() {
+    try {
+      return localStorage.getItem('theme');
+    } catch {
+      return null;
+    }
+  }
+
+  const configuredTheme = defaultTheme || 'system';
+  const storedTheme = readStoredTheme();
+
+  if (configuredTheme.endsWith(':only') || (!storedTheme && configuredTheme !== 'system')) {
+    applyTheme(configuredTheme.replace(':only', ''));
+  } else if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    applyTheme('dark');
+  } else {
+    applyTheme('light');
+  }
+</script>

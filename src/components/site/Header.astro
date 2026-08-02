@@ -1,0 +1,67 @@
+---
+import type { Locale } from '~/config/site';
+import { getUI } from '~/data/i18n';
+import { localizedPath } from '~/utils/site';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  locale: Locale;
+  pagePath: string;
+  availableLocales?: readonly Locale[];
+}
+const { locale, pagePath, availableLocales } = Astro.props;
+const t = getUI(locale);
+const currentSection = pagePath.split('/')[0];
+const links = [
+  { key: 'apps', label: t.nav.apps },
+  { key: 'updates', label: t.nav.updates },
+  { key: 'blog', label: t.nav.blog },
+  { key: 'support', label: t.nav.support },
+];
+---
+
+<a class="skip-link" href="#main-content">{t.skipToContent}</a>
+<header class="site-header" data-site-header>
+  <div class="header-inner shell">
+    <a class="brand" href={localizedPath(locale)} aria-label={t.homeLinkLabel}>
+      <span class="brand-mark" aria-hidden="true">G</span>
+      <span>Gorani Apps</span>
+    </a>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label={t.menuOpen}
+      data-menu-open-label={t.menuOpen}
+      data-menu-close-label={t.menuClose}
+      data-menu-toggle
+    >
+      <span></span><span></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label={t.mainNavigation} data-site-nav>
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={localizedPath(locale, link.key)} aria-current={currentSection === link.key ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="header-tools">
+      <LanguageSwitcher
+        locale={locale}
+        pagePath={pagePath}
+        availableLocales={availableLocales}
+        label={t.languageSwitcher}
+      />
+      <button class="theme-toggle" type="button" aria-label={t.themeToggle} title={t.themeToggle} data-theme-toggle
+        ><span aria-hidden="true">◐</span></button
+      >
+    </div>
+  </div>
+</header>

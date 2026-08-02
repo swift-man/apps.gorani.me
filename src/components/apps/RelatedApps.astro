@@ -1,0 +1,19 @@
+---
+import type { Locale } from '~/config/site';
+import { apps } from '~/data/apps';
+import AppCard from './AppCard.astro';
+interface Props {
+  locale: Locale;
+  currentSlug: string;
+}
+const { locale, currentSlug } = Astro.props;
+---
+
+<div class="app-grid related-grid">
+  {
+    apps
+      .filter((app) => app.slug !== currentSlug)
+      .slice(0, 3)
+      .map((app) => <AppCard app={app} locale={locale} />)
+  }
+</div>

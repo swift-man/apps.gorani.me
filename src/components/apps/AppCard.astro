@@ -1,0 +1,43 @@
+---
+import type { Locale } from '~/config/site';
+import type { AppInfo } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import { appPath, localizedPath } from '~/utils/site';
+import AppStoreButton from './AppStoreButton.astro';
+import PlatformBadge from './PlatformBadge.astro';
+
+interface Props {
+  app: AppInfo;
+  locale: Locale;
+  featured?: boolean;
+  href?: string;
+  actionLabel?: string;
+}
+const { app, locale, featured = false, href, actionLabel } = Astro.props;
+const t = getUI(locale);
+const content = app.content[locale];
+const detailHref = href ?? localizedPath(locale, appPath(app.slug));
+const detailLabel = actionLabel ?? t.learnMore;
+---
+
+<article
+  class:list={['app-card', `app-card--${app.theme}`, { featured }]}
+  data-app-card
+  data-platform={app.platformGroup}
+>
+  <div class="app-card-top">
+    <img src={app.icon} width="112" height="112" alt="" loading="lazy" />
+    <div>
+      <PlatformBadge platform={app.platform} />{
+        app.status === 'coming-soon' && <span class="status-inline">{t.comingSoon}</span>
+      }
+    </div>
+  </div>
+  <div class="app-card-copy">
+    <p class="app-card-category">{app.category}</p><h3>{app.name}</h3><p>{content.shortDescription}</p>
+  </div>
+  <div class="app-card-actions">
+    <a class="text-link" href={detailHref}>{detailLabel}<span aria-hidden="true">→</span></a>
+    {featured && <AppStoreButton url={app.appStoreUrl} platform={app.platform} locale={locale} compact />}
+  </div>
+</article>

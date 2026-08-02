@@ -1,0 +1,47 @@
+---
+import type { Locale } from '~/config/site';
+import { getApp } from '~/data/apps';
+import { getPublishedPosts } from '~/data/posts';
+import AppDetailPage from './AppDetailPage.astro';
+import AppsPage from './AppsPage.astro';
+import BlogIndexPage from './BlogIndexPage.astro';
+import BlogPostPage from './BlogPostPage.astro';
+import HomePage from './HomePage.astro';
+import PrivacyIndexPage from './PrivacyIndexPage.astro';
+import PrivacyPage from './PrivacyPage.astro';
+import SupportDetailPage from './SupportDetailPage.astro';
+import SupportIndexPage from './SupportIndexPage.astro';
+import UpdatesPage from './UpdatesPage.astro';
+
+interface Props {
+  locale: Locale;
+  pagePath: string;
+}
+const { locale, pagePath } = Astro.props;
+const [section = '', slug] = pagePath.split('/');
+const needsAllPostLocales = section === 'blog' && Boolean(slug);
+const posts =
+  section === '' || section === 'blog' ? await getPublishedPosts(needsAllPostLocales ? undefined : locale) : [];
+const localePosts = needsAllPostLocales ? posts.filter((entry) => entry.data.locale === locale) : posts;
+const app = slug ? getApp(slug) : undefined;
+const directApp = !slug ? getApp(section) : undefined;
+const post = section === 'blog' && slug ? localePosts.find((entry) => entry.data.permalink === slug) : undefined;
+const postLocales = post
+  ? [
+      ...new Set(
+        posts.filter((entry) => entry.data.permalink === post.data.permalink).map((entry) => entry.data.locale)
+      ),
+    ]
+  : [];
+---
+
+{section === '' && <HomePage locale={locale} posts={localePosts} />}
+{section === 'apps' && !slug && <AppsPage locale={locale} />}
+{directApp && <AppDetailPage locale={locale} app={directApp} />}
+{section === 'updates' && <UpdatesPage locale={locale} />}
+{section === 'blog' && !slug && <BlogIndexPage locale={locale} posts={localePosts} />}
+{section === 'blog' && post && <BlogPostPage locale={locale} post={post} availableLocales={postLocales} />}
+{section === 'support' && !slug && <SupportIndexPage locale={locale} />}
+{section === 'support' && app && <SupportDetailPage locale={locale} app={app} />}
+{section === 'privacy' && !slug && <PrivacyIndexPage locale={locale} />}
+{section === 'privacy' && app && <PrivacyPage locale={locale} app={app} />}

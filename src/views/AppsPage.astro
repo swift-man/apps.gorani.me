@@ -1,0 +1,53 @@
+---
+import AppCard from '~/components/apps/AppCard.astro';
+import type { Locale } from '~/config/site';
+import { apps } from '~/data/apps';
+import { getUI } from '~/data/i18n';
+import SiteLayout from '~/layouts/SiteLayout.astro';
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getUI(locale);
+---
+
+<SiteLayout locale={locale} pagePath="apps" title={`${t.appsTitle} — Gorani Apps`} description={t.appsDescription}>
+  <section class="page-hero compact">
+    <div class="shell"><p class="eyebrow">Gorani Apps</p><h1>{t.appsTitle}</h1><p>{t.appsDescription}</p></div>
+  </section>
+  <section class="section apps-directory">
+    <div class="shell">
+      <div class="filter-bar" role="group" aria-label={t.filter} data-app-filters>
+        <button class="is-active" type="button" data-filter="all" aria-pressed="true">{t.filterAll}</button>
+        <button type="button" data-filter="macos" aria-pressed="false">macOS</button>
+        <button type="button" data-filter="mobile" aria-pressed="false">iPhone & iPad</button>
+        <button type="button" data-filter="tv" aria-pressed="false">Apple TV</button>
+      </div>
+      <div class="app-grid directory-grid" data-app-grid>
+        {apps.map((app) => <AppCard app={app} locale={locale} />)}
+      </div>
+      <p class="empty-state" hidden data-empty-state>{t.noApps}</p>
+    </div>
+  </section>
+  <script>
+    const filters = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const cards = document.querySelectorAll<HTMLElement>('[data-app-card]');
+    const empty = document.querySelector<HTMLElement>('[data-empty-state]');
+    filters.forEach((button) =>
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+        let visible = 0;
+        filters.forEach((item) => {
+          item.classList.toggle('is-active', item === button);
+          item.setAttribute('aria-pressed', String(item === button));
+        });
+        cards.forEach((card) => {
+          const show = filter === 'all' || card.dataset.platform === filter;
+          card.hidden = !show;
+          if (show) visible += 1;
+        });
+        if (empty) empty.hidden = visible > 0;
+      })
+    );
+  </script>
+</SiteLayout>

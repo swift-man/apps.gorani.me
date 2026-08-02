@@ -1,0 +1,17 @@
+---
+interface Props {
+  features: string[];
+}
+const { features } = Astro.props;
+---
+
+<div class="feature-grid">
+  {
+    features.map((feature, index) => (
+      <article>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <h3>{feature}</h3>
+      </article>
+    ))
+  }
+</div>

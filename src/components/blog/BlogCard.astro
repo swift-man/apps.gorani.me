@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '~/config/site';
+import { getUI } from '~/data/i18n';
+import { formatDate, localizedPath } from '~/utils/site';
+interface Props {
+  post: CollectionEntry<'post'>;
+  locale: Locale;
+}
+const { post, locale } = Astro.props;
+const t = getUI(locale);
+---
+
+<article class="blog-card">
+  {
+    post.data.image && (
+      <a
+        class="blog-card-image"
+        href={localizedPath(locale, `blog/${post.data.permalink}`)}
+        aria-label={`${t.readMore}: ${post.data.title}`}
+      >
+        <img src={post.data.image} alt="" width="1200" height="750" loading="lazy" />
+      </a>
+    )
+  }
+  <div class="blog-card-copy">
+    <time datetime={post.data.publishDate.toISOString()}
+      >{formatDate(post.data.publishDate.toISOString().slice(0, 10), locale)}</time
+    ><h3><a href={localizedPath(locale, `blog/${post.data.permalink}`)}>{post.data.title}</a></h3><p>
+      {post.data.excerpt}
+    </p><a class="text-link" href={localizedPath(locale, `blog/${post.data.permalink}`)}
+      >{t.readMore} <span aria-hidden="true">→</span></a
+    >
+  </div>
+</article>
