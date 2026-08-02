@@ -15,6 +15,15 @@ if (!existsSync(sourceOutput)) {
 
 const cases = [
   {
+    name: 'commented metadata ignored',
+    file: 'index.html',
+    mutate: (html) =>
+      html.replace(
+        '</head>',
+        '<!-- <link rel="canonical" href="https://apps.gorani.me/commented-canonical"> --></head>'
+      ),
+  },
+  {
     name: 'missing hreflang links',
     file: 'index.html',
     expectedError: 'hreflang languages: missing',
@@ -62,9 +71,13 @@ for (const testCase of cases) {
     });
     const output = `${result.stdout}${result.stderr}`;
 
-    if (result.status === 0) throw new Error(`${testCase.name}: validator unexpectedly passed`);
-    if (!output.includes(testCase.expectedError)) {
-      throw new Error(`${testCase.name}: expected error containing "${testCase.expectedError}"\n${output}`);
+    if (testCase.expectedError) {
+      if (result.status === 0) throw new Error(`${testCase.name}: validator unexpectedly passed`);
+      if (!output.includes(testCase.expectedError)) {
+        throw new Error(`${testCase.name}: expected error containing "${testCase.expectedError}"\n${output}`);
+      }
+    } else if (result.status !== 0) {
+      throw new Error(`${testCase.name}: validator unexpectedly failed\n${output}`);
     }
 
     console.log(`Static validator regression passed: ${testCase.name}`);

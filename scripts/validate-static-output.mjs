@@ -231,7 +231,8 @@ function assertSameSet(label, actual, expected) {
 }
 
 function extractTags(source, tagName) {
-  return source.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) ?? [];
+  const withoutComments = source.replace(/<!--[\s\S]*?-->/g, '');
+  return withoutComments.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) ?? [];
 }
 
 function parseAttributes(tag) {
@@ -271,8 +272,9 @@ function extractOuterXmlElement(source, tagName) {
   const openingTag = new RegExp(`<${tagName}(?:\\s[^>]*)?>`, 'i').exec(source);
   if (!openingTag) return undefined;
   const contentStart = openingTag.index + openingTag[0].length;
-  const contentEnd = source.toLowerCase().lastIndexOf(`</${tagName.toLowerCase()}>`);
-  return contentEnd >= contentStart ? source.slice(contentStart, contentEnd) : undefined;
+  const closingTags = [...source.matchAll(new RegExp(`</${tagName}\\s*>`, 'gi'))];
+  const closingTag = closingTags.at(-1);
+  return closingTag?.index >= contentStart ? source.slice(contentStart, closingTag.index) : undefined;
 }
 
 function normalizePathname(value) {
