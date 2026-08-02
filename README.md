@@ -152,6 +152,8 @@ privacyStatus: 'published',
 - 업데이트: `src/data/updates.ts`
 - 블로그: `src/data/post/<locale>-<permalink>.md`
 
+앱 업데이트 날짜는 실제 달력에 존재하는 `YYYY-MM-DD` 형식으로 작성해야 하며, 잘못된 날짜는 빌드 단계에서 해당 앱과 버전을 포함한 오류로 보고됩니다.
+
 블로그 경로는 공개 게시물의 `locale`과 `permalink`에서 자동 생성됩니다. `draft: true`인 글은 홈, 목록, 상세 페이지와 RSS에서 제외됩니다.
 
 언어를 새로 추가하려면 `src/config/locales.mjs`에 언어별 날짜·Open Graph·RSS 메타데이터를 추가한 뒤 UI 문자열, 앱 콘텐츠, Markdown 글을 함께 확장해야 합니다. `SUPPORTED_LOCALES`, 정적 라우팅, RSS 및 빌드 검증기는 이 설정에서 지원 언어를 자동으로 가져옵니다.
