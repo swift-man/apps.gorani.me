@@ -1,7 +1,7 @@
 import rss from '@astrojs/rss';
 import type { Locale } from '~/config/site';
 import { siteConfig } from '~/config/site';
-import { localeLabels } from '~/data/i18n';
+import { getUI, localeLabels } from '~/data/i18n';
 import { getPublishedPosts } from '~/data/posts';
 import { localizedPath } from '~/utils/site';
 
@@ -13,10 +13,11 @@ const rssLanguage: Record<Locale, string> = {
 
 export const createLocaleRss = async (locale: Locale) => {
   const posts = await getPublishedPosts(locale);
+  const t = getUI(locale);
 
   return rss({
     title: `${siteConfig.siteName} Blog — ${localeLabels[locale]}`,
-    description: siteConfig.siteDescription,
+    description: t.blogPageDescription,
     site: siteConfig.siteUrl,
     customData: `<language>${rssLanguage[locale]}</language>`,
     items: posts.map((post) => ({

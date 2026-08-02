@@ -2,6 +2,12 @@ export const SUPPORTED_LOCALES = ['ko', 'en', 'ja'] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
+export const OPEN_GRAPH_LOCALES: Record<Locale, string> = {
+  ko: 'ko_KR',
+  en: 'en_US',
+  ja: 'ja_JP',
+};
+
 export const siteConfig = {
   siteName: 'Gorani Apps',
   siteDescription: 'Independent apps for Apple platforms.',

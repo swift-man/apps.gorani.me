@@ -1,5 +1,5 @@
 ---
-import { SUPPORTED_LOCALES, siteConfig, type Locale } from '~/config/site';
+import { OPEN_GRAPH_LOCALES, SUPPORTED_LOCALES, siteConfig, type Locale } from '~/config/site';
 import { absoluteUrl, localizedPath } from '~/utils/site';
 
 interface Props {
@@ -53,7 +53,7 @@ const xDefaultLocale = alternateLocales.includes(siteConfig.defaultLocale) ? sit
 }
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteConfig.siteName} />
-<meta property="og:locale" content={locale === 'ko' ? 'ko_KR' : locale === 'ja' ? 'ja_JP' : 'en_US'} />
+<meta property="og:locale" content={OPEN_GRAPH_LOCALES[locale]} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
