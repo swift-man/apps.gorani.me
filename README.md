@@ -36,6 +36,7 @@ pnpm build
 ```text
 src/
 ├─ config/site.ts              # 사이트 URL, 이메일, 언어, 개인정보 날짜
+├─ data/app-slugs.ts           # 앱 식별자 단일 목록과 타입
 ├─ data/apps.ts                # 앱 정보와 세 언어 콘텐츠
 ├─ data/updates.ts             # 앱별 업데이트
 ├─ data/post/                  # 세 언어 Markdown 블로그 글
@@ -64,12 +65,13 @@ https://apps.gorani.me/answer-by-chance
 
 ## 새 앱 추가
 
-1. `src/data/apps.ts`의 `apps` 배열에 앱을 추가합니다.
-2. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
-3. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
-4. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
+1. `src/data/app-slugs.ts`의 `APP_SLUGS`에 새 slug를 등록합니다.
+2. `src/data/apps.ts`의 `apps` 배열에 같은 slug로 앱을 추가합니다.
+3. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
+4. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
+5. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
 
-앱 상세·지원 경로는 앱 데이터에서 자동 생성됩니다. 개인정보 경로는 `privacyStatus: 'published'`인 앱에만 생성됩니다.
+앱 상세·지원 경로는 앱 데이터에서 자동 생성됩니다. 업데이트와 블로그의 앱 참조도 `APP_SLUGS`를 기준으로 검사되며, 등록되지 않았거나 앱 데이터가 누락된 slug는 빌드 오류가 됩니다. 개인정보 경로는 `privacyStatus: 'published'`인 앱에만 생성됩니다.
 
 ## 앱 이미지 교체
 
