@@ -15,6 +15,7 @@ import type { AstroIntegration } from 'astro';
 
 import astrowind from './vendor/integration';
 
+import { DEFAULT_LOCALE } from './src/config/locales.mjs';
 import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin } from './src/utils/frontmatter';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -22,7 +23,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const hasExternalScripts = false;
 const siteBase = process.env.PUBLIC_BASE_PATH || '/';
 const normalizedBase = siteBase === '/' ? '' : `/${siteBase.replace(/^\/+|\/+$/g, '')}`;
-const defaultLocalePrefix = `${normalizedBase}/ko`;
+const defaultLocalePrefix = `${normalizedBase}/${DEFAULT_LOCALE}`;
 const includeInSitemap = (page: string) => {
   const pathname = new URL(page).pathname.replace(/\/+$/, '') || '/';
   return pathname !== defaultLocalePrefix && !pathname.startsWith(`${defaultLocalePrefix}/`);

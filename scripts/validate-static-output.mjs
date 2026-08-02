@@ -1,16 +1,21 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 
+import { DEFAULT_LOCALE, LOCALE_METADATA } from '../src/config/locales.mjs';
+
 const outputDirectory = path.resolve(process.argv[2] ?? 'dist');
 const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me');
 const basePath = normalizePathname(process.env.PUBLIC_BASE_PATH ?? '/');
-const defaultLanguage = 'ko';
-const supportedLanguages = new Set(['ko', 'en', 'ja']);
-const expectedFeeds = [
-  { file: 'rss.xml', language: 'ko-KR', routePrefix: '' },
-  { file: 'en/rss.xml', language: 'en-US', routePrefix: '/en' },
-  { file: 'ja/rss.xml', language: 'ja-JP', routePrefix: '/ja' },
-];
+const defaultLanguage = DEFAULT_LOCALE;
+const supportedLanguages = new Set(Object.keys(LOCALE_METADATA));
+const expectedFeeds = Object.entries(LOCALE_METADATA).map(([locale, metadata]) => {
+  const isDefault = locale === defaultLanguage;
+  return {
+    file: isDefault ? 'rss.xml' : `${locale}/rss.xml`,
+    language: metadata.rssLanguage,
+    routePrefix: isDefault ? '' : `/${locale}`,
+  };
+});
 const errors = [];
 
 assert(siteUrl.protocol === 'https:', `PUBLIC_SITE_URL must use HTTPS, received ${siteUrl.href}`);

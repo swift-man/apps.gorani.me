@@ -4,12 +4,15 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { DEFAULT_LOCALE, LOCALE_METADATA } from '../src/config/locales.mjs';
+
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceOutput = path.join(projectRoot, 'dist');
 const validator = path.join(projectRoot, 'scripts', 'validate-static-output.mjs');
 const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me');
 const absoluteUrl = (route) => new URL(route, siteUrl.origin).toString();
 const partiallyTranslatedPost = 'macos-app-icon-sizes';
+const configuredLocales = Object.keys(LOCALE_METADATA);
 
 if (!existsSync(sourceOutput)) {
   console.error(`Build output directory does not exist: ${sourceOutput}`);
@@ -20,37 +23,56 @@ const cases = [
   {
     name: 'partial locale page group allowed',
     mutateOutput: (outputDirectory) => {
-      const englishRoute = `/en/blog/${partiallyTranslatedPost}`;
-      const englishFile = path.join(outputDirectory, englishRoute, 'index.html');
-      const html = readFileSync(englishFile, 'utf8');
+      const postPath = `blog/${partiallyTranslatedPost}`;
+      const availableLocales = configuredLocales.filter((locale) =>
+        existsSync(path.join(outputDirectory, outputFileForRoute(localizedRoute(locale, postPath))))
+      );
+      const retainedLocale = availableLocales.find((locale) => locale !== DEFAULT_LOCALE);
+      if (!retainedLocale) throw new Error('partial locale fixture requires a translated non-default post');
+
+      const removedLocales = availableLocales.filter((locale) => locale !== retainedLocale);
+      if (removedLocales.length === 0) throw new Error('partial locale fixture requires at least two translations');
+      const retainedRoute = localizedRoute(retainedLocale, postPath);
+      const retainedFile = path.join(outputDirectory, outputFileForRoute(retainedRoute));
+      const html = readFileSync(retainedFile, 'utf8');
+      const removedLanguagePattern = removedLocales.map(escapeRegex).join('|');
       const withoutUnavailableLanguages = html.replace(
-        /<link\b(?=[^>]*\brel=(?:"alternate"|'alternate'))(?=[^>]*\bhreflang=(?:"(?:ko|ja)"|'(?:ko|ja)'))[^>]*>/gi,
+        new RegExp(
+          `<link\\b(?=[^>]*\\brel=(?:"alternate"|'alternate'))(?=[^>]*\\bhreflang=(?:"(?:${removedLanguagePattern})"|'(?:${removedLanguagePattern})'))[^>]*>`,
+          'gi'
+        ),
         ''
       );
+      const originalDefaultLocale = availableLocales.includes(DEFAULT_LOCALE) ? DEFAULT_LOCALE : retainedLocale;
       const mutatedHtml = withoutUnavailableLanguages.replace(
-        `<link href="${absoluteUrl(`/blog/${partiallyTranslatedPost}`)}" rel="alternate" hreflang="x-default">`,
-        `<link href="${absoluteUrl(englishRoute)}" rel="alternate" hreflang="x-default">`
+        `<link href="${absoluteUrl(localizedRoute(originalDefaultLocale, postPath))}" rel="alternate" hreflang="x-default">`,
+        `<link href="${absoluteUrl(retainedRoute)}" rel="alternate" hreflang="x-default">`
       );
       if (mutatedHtml === html) throw new Error('partial locale fixture did not update hreflang links');
-      if (mutatedHtml.includes('hreflang="ko"') || mutatedHtml.includes('hreflang="ja"')) {
+      if (removedLocales.some((locale) => mutatedHtml.includes(`hreflang="${locale}"`))) {
         throw new Error('partial locale fixture left unavailable hreflang links');
       }
-      writeFileSync(englishFile, mutatedHtml);
+      writeFileSync(retainedFile, mutatedHtml);
 
-      rmSync(path.join(outputDirectory, 'blog', partiallyTranslatedPost), { recursive: true });
-      rmSync(path.join(outputDirectory, 'ko', 'blog', partiallyTranslatedPost), { recursive: true });
-      rmSync(path.join(outputDirectory, 'ja', 'blog', partiallyTranslatedPost), { recursive: true });
+      for (const locale of removedLocales) {
+        for (const file of outputFilesForLocale(locale, postPath)) {
+          rmSync(path.dirname(path.join(outputDirectory, file)), { recursive: true });
+        }
+      }
 
       const sitemap = path.join(outputDirectory, 'sitemap-0.xml');
       const xml = readFileSync(sitemap, 'utf8');
-      const mutatedXml = xml
-        .replace(`<url><loc>${absoluteUrl(`/blog/${partiallyTranslatedPost}`)}</loc></url>`, '')
-        .replace(`<url><loc>${absoluteUrl(`/ja/blog/${partiallyTranslatedPost}`)}</loc></url>`, '');
+      const mutatedXml = removedLocales.reduce(
+        (contents, locale) =>
+          contents.replace(`<url><loc>${absoluteUrl(localizedRoute(locale, postPath))}</loc></url>`, ''),
+        xml
+      );
       if (mutatedXml === xml) throw new Error('partial locale fixture did not update the sitemap');
       writeFileSync(sitemap, mutatedXml);
 
-      removeRssItem(outputDirectory, 'rss.xml', absoluteUrl(`/blog/${partiallyTranslatedPost}/`));
-      removeRssItem(outputDirectory, 'ja/rss.xml', absoluteUrl(`/ja/blog/${partiallyTranslatedPost}/`));
+      for (const locale of removedLocales) {
+        removeRssItem(outputDirectory, rssFile(locale), absoluteUrl(`${localizedRoute(locale, postPath)}/`));
+      }
     },
   },
   {
@@ -178,4 +200,29 @@ function removeRssItem(outputDirectory, file, link) {
   const item = [...xml.matchAll(/<item>[\s\S]*?<\/item>/gi)].find((match) => match[0].includes(`<link>${link}</link>`));
   if (!item) throw new Error(`${file}: partial locale fixture did not find RSS item ${link}`);
   writeFileSync(target, xml.replace(item[0], ''));
+}
+
+function localizedRoute(locale, pagePath = '') {
+  const normalized = pagePath.replace(/^\/+|\/+$/g, '');
+  if (locale === DEFAULT_LOCALE) return normalized ? `/${normalized}` : '/';
+  return `/${locale}${normalized ? `/${normalized}` : ''}`;
+}
+
+function outputFileForRoute(route) {
+  const normalized = route.replace(/^\/+|\/+$/g, '');
+  return normalized ? `${normalized}/index.html` : 'index.html';
+}
+
+function outputFilesForLocale(locale, pagePath) {
+  const canonical = outputFileForRoute(localizedRoute(locale, pagePath));
+  if (locale !== DEFAULT_LOCALE) return [canonical];
+  return [canonical, outputFileForRoute(`/${locale}/${pagePath}`)];
+}
+
+function rssFile(locale) {
+  return locale === DEFAULT_LOCALE ? 'rss.xml' : `${locale}/rss.xml`;
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

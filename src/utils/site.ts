@@ -1,11 +1,11 @@
-import { SUPPORTED_LOCALES, type Locale } from '~/config/site';
+import { DEFAULT_LOCALE, LOCALE_METADATA, SUPPORTED_LOCALES, type Locale } from '~/config/site';
 import { apps } from '~/data/apps';
 
 export const isLocale = (value: string | undefined): value is Locale =>
   Boolean(value && SUPPORTED_LOCALES.includes(value as Locale));
 export const localizedPath = (locale: Locale, path = '') => {
   const normalized = path.replace(/^\/+|\/+$/g, '');
-  if (locale === 'ko') return normalized ? `/${normalized}` : '/';
+  if (locale === DEFAULT_LOCALE) return normalized ? `/${normalized}` : '/';
   return `/${locale}${normalized ? `/${normalized}` : ''}`;
 };
 export const appPath = (slug: string) => slug;
@@ -23,7 +23,7 @@ export const routeDefinitions = [
   ]),
 ] as const;
 export const formatDate = (date: string, locale: Locale) =>
-  new Intl.DateTimeFormat(locale === 'ko' ? 'ko-KR' : locale === 'ja' ? 'ja-JP' : 'en-US', {
+  new Intl.DateTimeFormat(LOCALE_METADATA[locale].dateLocale, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

@@ -1,10 +1,11 @@
 ---
 import SiteLayout from '~/layouts/SiteLayout.astro';
+import { DEFAULT_LOCALE } from '~/config/site';
 import { localizedPath } from '~/utils/site';
 ---
 
 <SiteLayout
-  locale="ko"
+  locale={DEFAULT_LOCALE}
   pagePath="404"
   availableLocales={[]}
   noindex
@@ -15,7 +16,9 @@ import { localizedPath } from '~/utils/site';
     <div class="shell narrow">
       <p class="eyebrow">404</p><h1>페이지를 찾을 수 없습니다.</h1><p>
         주소가 바뀌었거나 더 이상 존재하지 않는 페이지입니다.
-      </p><a class="primary-button" href={localizedPath('ko')}>홈으로 돌아가기 <span aria-hidden="true">→</span></a>
+      </p><a class="primary-button" href={localizedPath(DEFAULT_LOCALE)}
+        >홈으로 돌아가기 <span aria-hidden="true">→</span></a
+      >
     </div>
   </section>
 </SiteLayout>

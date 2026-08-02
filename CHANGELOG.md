@@ -6,6 +6,10 @@ Gorani Apps 웹사이트의 주요 변경 사항을 기록합니다.
 
 ## [Unreleased]
 
+### Changed
+
+- 지원 언어, 기본 언어, 날짜·Open Graph·RSS 로케일 메타데이터를 하나의 설정으로 통합
+
 ## [1.0.0] - 2026-08-02
 
 ### Added
