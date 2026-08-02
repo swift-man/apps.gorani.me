@@ -9,10 +9,8 @@ const { features } = Astro.props;
   {
     features.map((feature, index) => (
       <article>
-        <>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <h3>{feature}</h3>
-        </>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <h3>{feature}</h3>
       </article>
     ))
   }
