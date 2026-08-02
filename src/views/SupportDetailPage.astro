@@ -44,7 +44,7 @@ const subject = encodeURIComponent(`[${app.name}] Support request`);
 >
   <section class="support-detail-hero page-hero compact">
     <div class="shell narrow">
-      <img src={app.icon} width="112" height="112" alt={`${app.name} icon`} /><p class="eyebrow">
+      <img src={app.icon} width="112" height="112" alt={`${app.name}: ${t.appIconLabel}`} /><p class="eyebrow">
         {app.platform} · {app.category}
       </p><h1>{app.name} {t.supportFor}</h1><p>{content.shortDescription}</p>
     </div>

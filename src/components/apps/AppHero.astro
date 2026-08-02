@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '~/config/site';
 import type { AppInfo } from '~/data/apps';
+import { getUI } from '~/data/i18n';
 import AppStoreButton from './AppStoreButton.astro';
 import PlatformBadge from './PlatformBadge.astro';
 
@@ -10,6 +11,7 @@ interface Props {
 }
 const { app, locale } = Astro.props;
 const content = app.content[locale];
+const t = getUI(locale);
 ---
 
 <section class="app-hero section">
@@ -20,7 +22,7 @@ const content = app.content[locale];
         src={app.icon}
         width="128"
         height="128"
-        alt={`${app.name} icon`}
+        alt={`${app.name}: ${t.appIconLabel}`}
         fetchpriority="high"
       />
       <div class="app-hero-meta"><PlatformBadge platform={app.platform} /><span>{app.category}</span></div>
@@ -32,7 +34,7 @@ const content = app.content[locale];
     <div class="app-hero-visual">
       <img
         src={app.heroImage}
-        alt={`${app.name} app preview`}
+        alt={`${app.name}: ${t.appPreviewLabel}`}
         width={app.heroSize.width}
         height={app.heroSize.height}
         fetchpriority="high"
