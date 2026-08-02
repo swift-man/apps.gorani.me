@@ -63,5 +63,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build application
+      - name: Build and validate application
         run: pnpm run build
+        env:
+          PUBLIC_SITE_URL: https://apps.gorani.me
+          PUBLIC_BASE_PATH: /
