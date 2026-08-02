@@ -85,10 +85,8 @@ const jsonLd = [
     {
       relatedApp && (
         <aside class="related-post-app shell narrow">
-          <>
-            <p class="eyebrow">{t.relatedApp}</p>
-            <AppCard app={relatedApp} locale={locale} />
-          </>
+          <p class="eyebrow">{t.relatedApp}</p>
+          <AppCard app={relatedApp} locale={locale} />
         </aside>
       )
     }

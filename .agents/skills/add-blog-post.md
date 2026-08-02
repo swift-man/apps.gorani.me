@@ -13,7 +13,7 @@ locale: en
 permalink: your-post-title
 relatedApp: assetscaler
 excerpt: 'Brief description of the post'
-image: '~/assets/images/your-image.png'
+image: '/images/blog/your-image.webp'
 category: 'tutorials'
 tags:
   - astro
@@ -27,21 +27,20 @@ author: 'Author Name'
 
 ## Frontmatter Fields
 
-| Field         | Required | Description                                    |
-| ------------- | -------- | ---------------------------------------------- |
-| `title`       | Yes      | Post title                                     |
-| `publishDate` | Yes      | ISO 8601 date                                  |
-| `updateDate`  | No       | ISO 8601 date                                  |
-| `draft`       | No       | Set `true` to hide from listing                |
-| `excerpt`     | No       | Summary for listing pages                      |
-| `image`       | No       | Path to hero image (use `~/` prefix for local) |
-| `category`    | No       | Single category string                         |
-| `tags`        | No       | Array of tag strings                           |
-| `author`      | No       | Author name                                    |
-| `locale`      | Yes      | `ko`, `en`, or `ja`                            |
-| `permalink`   | Yes      | Lowercase hyphenated slug, unique per locale   |
-| `relatedApp`  | Yes      | Related app slug from `src/data/apps.ts`       |
-| `metadata`    | No       | Override SEO metadata                          |
+| Field         | Required | Description                                  |
+| ------------- | -------- | -------------------------------------------- |
+| `title`       | Yes      | Post title                                   |
+| `publishDate` | Yes      | ISO 8601 date                                |
+| `updateDate`  | No       | ISO 8601 date                                |
+| `draft`       | No       | Set `true` to hide from listing              |
+| `excerpt`     | No       | Summary for listing pages                    |
+| `image`       | No       | Public `/` path or absolute HTTPS image URL  |
+| `category`    | No       | Single category string                       |
+| `tags`        | No       | Array of tag strings                         |
+| `author`      | No       | Author name                                  |
+| `locale`      | Yes      | `ko`, `en`, or `ja`                          |
+| `permalink`   | Yes      | Lowercase hyphenated slug, unique per locale |
+| `relatedApp`  | Yes      | Related app slug from `src/data/apps.ts`     |
 
 ## URL Pattern
 
@@ -54,6 +53,7 @@ Posts use the required `permalink` value rather than the filename:
 ## Notes
 
 - Reading time is calculated automatically via remark plugin
-- Images referenced with `~/` are optimized at build time
+- Put local post images in `public/images/` and reference them with a `/images/...` path
+- `~/assets/...` aliases are not supported in post frontmatter
 - Use `.mdx` extension to embed Astro components in posts
 - Keep `permalink` to one path segment (`my-post`, not `guides/my-post`)
