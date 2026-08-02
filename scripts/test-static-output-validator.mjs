@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceOutput = path.join(projectRoot, 'dist');
 const validator = path.join(projectRoot, 'scripts', 'validate-static-output.mjs');
+const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me');
+const absoluteUrl = (route) => new URL(route, siteUrl.origin).toString();
 
 if (!existsSync(sourceOutput)) {
   console.error(`Build output directory does not exist: ${sourceOutput}`);
@@ -33,8 +35,8 @@ const cases = [
       const sitemap = path.join(outputDirectory, 'sitemap-0.xml');
       const xml = readFileSync(sitemap, 'utf8');
       const mutatedXml = xml
-        .replace('<url><loc>https://apps.gorani.me/en</loc></url>', '')
-        .replace('<url><loc>https://apps.gorani.me/ja</loc></url>', '');
+        .replace(`<url><loc>${absoluteUrl('/en')}</loc></url>`, '')
+        .replace(`<url><loc>${absoluteUrl('/ja')}</loc></url>`, '');
       if (mutatedXml === xml) throw new Error('partial locale fixture did not update the sitemap');
       writeFileSync(sitemap, mutatedXml);
     },
@@ -43,10 +45,7 @@ const cases = [
     name: 'commented metadata ignored',
     file: 'index.html',
     mutate: (html) =>
-      html.replace(
-        '</head>',
-        '<!-- <link rel="canonical" href="https://apps.gorani.me/commented-canonical"> --></head>'
-      ),
+      html.replace('</head>', `<!-- <link rel="canonical" href="${absoluteUrl('/commented-canonical')}"> --></head>`),
   },
   {
     name: 'missing hreflang links',
@@ -68,25 +67,39 @@ const cases = [
     name: 'additional robots sitemap',
     file: 'robots.txt',
     expectedError: 'expected exactly one sitemap directive',
-    mutate: (robots) => `${robots.trimEnd()}\nSitemap: https://apps.gorani.me/deprecated-sitemap.xml\n`,
+    mutate: (robots) => `${robots.trimEnd()}\nSitemap: ${absoluteUrl('/deprecated-sitemap.xml')}\n`,
   },
   {
     name: 'relative sitemap URL rejected',
     file: 'sitemap-index.xml',
     expectedError: 'invalid absolute URL /sitemap-0.xml',
-    mutate: (xml) => xml.replace('https://apps.gorani.me/sitemap-0.xml', '/sitemap-0.xml'),
+    mutate: (xml) => xml.replace(absoluteUrl('/sitemap-0.xml'), '/sitemap-0.xml'),
   },
   {
     name: 'relative RSS URL rejected',
     file: 'rss.xml',
     expectedError: 'invalid absolute URL /',
-    mutate: (xml) => xml.replace('<link>https://apps.gorani.me/</link>', '<link>/</link>'),
+    mutate: (xml) => xml.replace(`<link>${absoluteUrl('/')}</link>`, '<link>/</link>'),
   },
   {
     name: 'relative robots sitemap rejected',
     file: 'robots.txt',
     expectedError: 'invalid absolute URL /sitemap-index.xml',
-    mutate: (robots) => robots.replace('https://apps.gorani.me/sitemap-index.xml', '/sitemap-index.xml'),
+    mutate: (robots) => robots.replace(absoluteUrl('/sitemap-index.xml'), '/sitemap-index.xml'),
+  },
+  {
+    name: 'alternate site domain supported',
+    siteUrl: 'https://preview.example',
+    mutateOutput: (outputDirectory) => {
+      const alternateSiteUrl = new URL('https://preview.example');
+      for (const file of walk(outputDirectory)) {
+        if (!/\.(?:html|txt|xml)$/.test(file) && file !== 'CNAME') continue;
+        const target = path.join(outputDirectory, file);
+        const contents = readFileSync(target, 'utf8');
+        writeFileSync(target, contents.replaceAll(siteUrl.origin, alternateSiteUrl.origin));
+      }
+      writeFileSync(path.join(outputDirectory, 'CNAME'), `${alternateSiteUrl.hostname}\n`);
+    },
   },
 ];
 
@@ -112,7 +125,7 @@ for (const testCase of cases) {
       encoding: 'utf8',
       env: {
         ...process.env,
-        PUBLIC_SITE_URL: process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me',
+        PUBLIC_SITE_URL: testCase.siteUrl ?? siteUrl.origin,
         PUBLIC_BASE_PATH: process.env.PUBLIC_BASE_PATH ?? '/',
       },
     });
@@ -131,4 +144,11 @@ for (const testCase of cases) {
   } finally {
     rmSync(temporaryRoot, { recursive: true, force: true });
   }
+}
+
+function walk(directory, root = directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const absolute = path.join(directory, entry.name);
+    return entry.isDirectory() ? walk(absolute, root) : [path.relative(root, absolute).split(path.sep).join('/')];
+  });
 }
