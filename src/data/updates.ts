@@ -1,13 +1,14 @@
 import type { Locale } from '~/config/site';
+import type { AppSlug } from './app-slugs';
 
 export interface AppUpdate {
-  appSlug: string;
+  appSlug: AppSlug;
   version: string;
   date: string;
   changes: Record<Locale, string[]>;
 }
 
-export const updates: AppUpdate[] = [
+const rawUpdates: AppUpdate[] = [
   {
     appSlug: 'andromeda-17k',
     version: '1.2.1',
@@ -38,4 +39,6 @@ export const updates: AppUpdate[] = [
       ja: ['AssetScalerの初回App Storeバージョンを公開しました。'],
     },
   },
-].sort((a, b) => b.date.localeCompare(a.date));
+];
+
+export const updates = rawUpdates.sort((a, b) => b.date.localeCompare(a.date));

@@ -1,4 +1,5 @@
 import type { Locale } from '~/config/site';
+import { APP_SLUGS, type AppSlug } from './app-slugs';
 
 export type AppStatus = 'released' | 'coming-soon';
 export type AppTheme = 'assetscaler' | 'andromeda' | 'wordrush' | 'answerbychance';
@@ -16,7 +17,7 @@ export interface LocalizedAppContent {
 }
 
 export interface AppInfo {
-  slug: string;
+  slug: AppSlug;
   name: string;
   platform: string;
   platformGroup: AppPlatformGroup;
@@ -521,5 +522,15 @@ export const apps: AppInfo[] = [
     },
   },
 ];
+
+const configuredAppSlugs = new Set(apps.map((app) => app.slug));
+if (configuredAppSlugs.size !== apps.length) {
+  throw new Error('Duplicate app slug found in the app catalog');
+}
+for (const slug of APP_SLUGS) {
+  if (!configuredAppSlugs.has(slug)) {
+    throw new Error(`Missing app configuration for slug "${slug}"`);
+  }
+}
 
 export const getApp = (slug: string) => apps.find((app) => app.slug === slug);

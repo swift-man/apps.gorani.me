@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { SUPPORTED_LOCALES } from './config/site';
+import { APP_SLUGS } from './data/app-slugs';
 
 const blogPermalink = z
   .string()
@@ -30,7 +31,7 @@ const postCollection = defineCollection({
     author: z.string().optional(),
     locale: z.enum(SUPPORTED_LOCALES),
     permalink: blogPermalink,
-    relatedApp: z.string(),
+    relatedApp: z.enum(APP_SLUGS),
   }),
 });
 

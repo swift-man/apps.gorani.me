@@ -1,4 +1,5 @@
 import type { Locale } from '~/config/site';
+import type { AppSlug } from './app-slugs';
 
 export interface PrivacyCopy {
   intro: string;
@@ -12,7 +13,7 @@ export interface PrivacyCopy {
 }
 
 export interface AppPrivacyPolicy {
-  appSlug: string;
+  appSlug: AppSlug;
   disclosureUrl: string;
   content: Record<Locale, PrivacyCopy>;
 }

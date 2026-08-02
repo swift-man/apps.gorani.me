@@ -1,24 +1,26 @@
 ---
 import type { Locale } from '~/config/site';
-import { apps, type AppInfo } from '~/data/apps';
+import type { AppSlug } from '~/data/app-slugs';
+import { getApp } from '~/data/apps';
 import { getUI } from '~/data/i18n';
-import { updates, type AppUpdate } from '~/data/updates';
+import { updates } from '~/data/updates';
 import { appPath, formatDate, localizedPath } from '~/utils/site';
 interface Props {
   locale: Locale;
   limit?: number;
-  appSlug?: string;
+  appSlug?: AppSlug;
 }
 const { locale, limit, appSlug } = Astro.props;
 const t = getUI(locale);
-const isResolvedUpdate = (entry: {
-  item: AppUpdate;
-  app: AppInfo | undefined;
-}): entry is { item: AppUpdate; app: AppInfo } => entry.app !== undefined;
 const selected = updates
   .filter((item) => !appSlug || item.appSlug === appSlug)
-  .map((item) => ({ item, app: apps.find((candidate) => candidate.slug === item.appSlug) }))
-  .filter(isResolvedUpdate)
+  .map((item) => {
+    const app = getApp(item.appSlug);
+    if (!app) {
+      throw new Error(`Update ${item.version} references missing app "${item.appSlug}"`);
+    }
+    return { item, app };
+  })
   .slice(0, limit ?? updates.length);
 ---
 
