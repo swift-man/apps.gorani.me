@@ -9,6 +9,7 @@ const sourceOutput = path.join(projectRoot, 'dist');
 const validator = path.join(projectRoot, 'scripts', 'validate-static-output.mjs');
 const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me');
 const absoluteUrl = (route) => new URL(route, siteUrl.origin).toString();
+const partiallyTranslatedPost = 'macos-app-icon-sizes';
 
 if (!existsSync(sourceOutput)) {
   console.error(`Build output directory does not exist: ${sourceOutput}`);
@@ -19,26 +20,37 @@ const cases = [
   {
     name: 'partial locale page group allowed',
     mutateOutput: (outputDirectory) => {
-      for (const file of ['index.html', 'ko/index.html']) {
-        const target = path.join(outputDirectory, file);
-        const html = readFileSync(target, 'utf8');
-        const mutated = html.replace(
-          /<link\b(?=[^>]*\brel=(?:"alternate"|'alternate'))(?=[^>]*\bhreflang=(?:"(?:en|ja)"|'(?:en|ja)'))[^>]*>/gi,
-          ''
-        );
-        if (mutated === html) throw new Error(`${file}: partial locale fixture did not remove hreflang links`);
-        writeFileSync(target, mutated);
+      const englishRoute = `/en/blog/${partiallyTranslatedPost}`;
+      const englishFile = path.join(outputDirectory, englishRoute, 'index.html');
+      const html = readFileSync(englishFile, 'utf8');
+      const withoutUnavailableLanguages = html.replace(
+        /<link\b(?=[^>]*\brel=(?:"alternate"|'alternate'))(?=[^>]*\bhreflang=(?:"(?:ko|ja)"|'(?:ko|ja)'))[^>]*>/gi,
+        ''
+      );
+      const mutatedHtml = withoutUnavailableLanguages.replace(
+        `<link href="${absoluteUrl(`/blog/${partiallyTranslatedPost}`)}" rel="alternate" hreflang="x-default">`,
+        `<link href="${absoluteUrl(englishRoute)}" rel="alternate" hreflang="x-default">`
+      );
+      if (mutatedHtml === html) throw new Error('partial locale fixture did not update hreflang links');
+      if (mutatedHtml.includes('hreflang="ko"') || mutatedHtml.includes('hreflang="ja"')) {
+        throw new Error('partial locale fixture left unavailable hreflang links');
       }
+      writeFileSync(englishFile, mutatedHtml);
 
-      rmSync(path.join(outputDirectory, 'en', 'index.html'));
-      rmSync(path.join(outputDirectory, 'ja', 'index.html'));
+      rmSync(path.join(outputDirectory, 'blog', partiallyTranslatedPost), { recursive: true });
+      rmSync(path.join(outputDirectory, 'ko', 'blog', partiallyTranslatedPost), { recursive: true });
+      rmSync(path.join(outputDirectory, 'ja', 'blog', partiallyTranslatedPost), { recursive: true });
+
       const sitemap = path.join(outputDirectory, 'sitemap-0.xml');
       const xml = readFileSync(sitemap, 'utf8');
       const mutatedXml = xml
-        .replace(`<url><loc>${absoluteUrl('/en')}</loc></url>`, '')
-        .replace(`<url><loc>${absoluteUrl('/ja')}</loc></url>`, '');
+        .replace(`<url><loc>${absoluteUrl(`/blog/${partiallyTranslatedPost}`)}</loc></url>`, '')
+        .replace(`<url><loc>${absoluteUrl(`/ja/blog/${partiallyTranslatedPost}`)}</loc></url>`, '');
       if (mutatedXml === xml) throw new Error('partial locale fixture did not update the sitemap');
       writeFileSync(sitemap, mutatedXml);
+
+      removeRssItem(outputDirectory, 'rss.xml', absoluteUrl(`/blog/${partiallyTranslatedPost}/`));
+      removeRssItem(outputDirectory, 'ja/rss.xml', absoluteUrl(`/ja/blog/${partiallyTranslatedPost}/`));
     },
   },
   {
@@ -80,6 +92,13 @@ const cases = [
     file: 'rss.xml',
     expectedError: 'invalid absolute URL /',
     mutate: (xml) => xml.replace(`<link>${absoluteUrl('/')}</link>`, '<link>/</link>'),
+  },
+  {
+    name: 'missing RSS channel target',
+    expectedError: 'en/rss.xml: channel link does not resolve to HTML',
+    mutateOutput: (outputDirectory) => {
+      rmSync(path.join(outputDirectory, 'en', 'index.html'));
+    },
   },
   {
     name: 'relative robots sitemap rejected',
@@ -151,4 +170,12 @@ function walk(directory, root = directory) {
     const absolute = path.join(directory, entry.name);
     return entry.isDirectory() ? walk(absolute, root) : [path.relative(root, absolute).split(path.sep).join('/')];
   });
+}
+
+function removeRssItem(outputDirectory, file, link) {
+  const target = path.join(outputDirectory, file);
+  const xml = readFileSync(target, 'utf8');
+  const item = [...xml.matchAll(/<item>[\s\S]*?<\/item>/gi)].find((match) => match[0].includes(`<link>${link}</link>`));
+  if (!item) throw new Error(`${file}: partial locale fixture did not find RSS item ${link}`);
+  writeFileSync(target, xml.replace(item[0], ''));
 }

@@ -179,6 +179,7 @@ privacyStatus: 'published',
 2. `src/config/site.ts`의 기본값
 3. `src/config.yaml`의 `site.site`
 4. `public/robots.txt`의 Sitemap URL
+5. `public/CNAME`의 GitHub Pages 커스텀 도메인
 
 예:
 

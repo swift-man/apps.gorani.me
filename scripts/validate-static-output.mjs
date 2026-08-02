@@ -197,6 +197,12 @@ for (const feed of expectedFeeds) {
     channelLink === expectedChannel,
     `${feed.file}: channel link ${channelLink} does not match ${expectedChannel}`
   );
+  const channelFile = channelLink && resolveHtml(channelLink);
+  const channelPage = channelFile && pages.get(channelFile);
+  assert(channelPage !== undefined, `${feed.file}: channel link does not resolve to HTML: ${channelLink ?? 'none'}`);
+  if (channelPage) {
+    assert(channelPage.canonical === channelLink, `${feed.file}: channel link is not canonical: ${channelLink}`);
+  }
 
   const itemLinks = new Set();
   for (const [index, item] of itemBlocks.entries()) {
