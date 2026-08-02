@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LOCALE_METADATA } from './locales.mjs';
-import { assertIsoDate } from '../utils/iso-date.mjs';
+import { assertIsoDate } from '~/utils/iso-date.mjs';
 
 export { DEFAULT_LOCALE, LOCALE_METADATA } from './locales.mjs';
 
