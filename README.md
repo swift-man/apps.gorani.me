@@ -165,6 +165,8 @@ privacyStatus: 'published',
 - 검증 출처와 언어별 문구: `src/data/privacy.ts`
 - 문서 섹션 렌더링: `src/views/PrivacyPage.astro`
 
+공통 최종 업데이트 날짜도 실제 달력에 존재하는 `YYYY-MM-DD` 형식이어야 하며, 잘못된 값은 설정 이름을 포함한 오류와 함께 검사 및 빌드를 중단합니다.
+
 개인정보 페이지는 출시 빌드, 게시된 개발자 방침, App Store 개인정보 응답을 대조한 앱만 공개합니다. 미확정 앱은 `privacyStatus: 'pending'`으로 유지하고 정책 경로와 링크를 생성하지 않습니다.
 
 ## 지원 이메일 변경
