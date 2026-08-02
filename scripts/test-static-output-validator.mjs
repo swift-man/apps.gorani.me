@@ -13,6 +13,12 @@ const siteUrl = new URL(process.env.PUBLIC_SITE_URL ?? 'https://apps.gorani.me')
 const absoluteUrl = (route) => new URL(route, siteUrl.origin).toString();
 const partiallyTranslatedPost = 'macos-app-icon-sizes';
 const configuredLocales = Object.keys(LOCALE_METADATA);
+const secondaryLocale = configuredLocales.find((locale) => locale !== DEFAULT_LOCALE);
+
+if (!secondaryLocale) {
+  console.error('Static validator regression tests require at least two configured locales.');
+  process.exit(1);
+}
 
 if (!existsSync(sourceOutput)) {
   console.error(`Build output directory does not exist: ${sourceOutput}`);
@@ -91,11 +97,7 @@ const cases = [
     name: 'swapped hreflang targets',
     file: 'index.html',
     expectedError: 'target uses html lang',
-    mutate: (html) =>
-      html
-        .replace('hreflang="en"', 'hreflang="temporary-language"')
-        .replace('hreflang="ja"', 'hreflang="en"')
-        .replace('hreflang="temporary-language"', 'hreflang="ja"'),
+    mutate: (html) => swapHreflangTargets(html, DEFAULT_LOCALE, secondaryLocale),
   },
   {
     name: 'additional robots sitemap',
@@ -117,9 +119,9 @@ const cases = [
   },
   {
     name: 'missing RSS channel target',
-    expectedError: 'en/rss.xml: channel link does not resolve to HTML',
+    expectedError: `${rssFile(secondaryLocale)}: channel link does not resolve to HTML`,
     mutateOutput: (outputDirectory) => {
-      rmSync(path.join(outputDirectory, 'en', 'index.html'));
+      rmSync(path.join(outputDirectory, outputFileForRoute(localizedRoute(secondaryLocale))));
     },
   },
   {
@@ -225,4 +227,12 @@ function rssFile(locale) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function swapHreflangTargets(html, firstLocale, secondLocale) {
+  const temporaryLanguage = 'temporary-language';
+  return html
+    .replace(`hreflang="${firstLocale}"`, `hreflang="${temporaryLanguage}"`)
+    .replace(`hreflang="${secondLocale}"`, `hreflang="${firstLocale}"`)
+    .replace(`hreflang="${temporaryLanguage}"`, `hreflang="${secondLocale}"`);
 }

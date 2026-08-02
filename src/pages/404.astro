@@ -1,7 +1,10 @@
 ---
 import SiteLayout from '~/layouts/SiteLayout.astro';
 import { DEFAULT_LOCALE } from '~/config/site';
+import { getUI } from '~/data/i18n';
 import { localizedPath } from '~/utils/site';
+
+const t = getUI(DEFAULT_LOCALE);
 ---
 
 <SiteLayout
@@ -9,16 +12,18 @@ import { localizedPath } from '~/utils/site';
   pagePath="404"
   availableLocales={[]}
   noindex
-  title="페이지를 찾을 수 없습니다 — Gorani Apps"
-  description="요청한 페이지를 찾을 수 없습니다."
+  title={`${t.notFound.title} — Gorani Apps`}
+  description={t.notFound.description}
 >
   <section class="page-hero compact error-page">
     <div class="shell narrow">
-      <p class="eyebrow">404</p><h1>페이지를 찾을 수 없습니다.</h1><p>
-        주소가 바뀌었거나 더 이상 존재하지 않는 페이지입니다.
-      </p><a class="primary-button" href={localizedPath(DEFAULT_LOCALE)}
-        >홈으로 돌아가기 <span aria-hidden="true">→</span></a
-      >
+      <p class="eyebrow">404</p>
+      <h1>{t.notFound.title}</h1>
+      <p>{t.notFound.message}</p>
+      <a class="primary-button" href={localizedPath(DEFAULT_LOCALE)}>
+        {t.notFound.backHome}
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 </SiteLayout>

@@ -44,7 +44,11 @@ for (const file of htmlFiles) {
   const canonical = normalizeSiteUrl(canonicalLinks[0].href, `${file}: canonical`);
   if (!canonical) continue;
 
-  const expectedRoute = route === '/ko' || route.startsWith('/ko/') ? route.slice(3) || '/' : route;
+  const defaultLocalePrefix = `/${defaultLanguage}`;
+  const expectedRoute =
+    route === defaultLocalePrefix || route.startsWith(`${defaultLocalePrefix}/`)
+      ? normalizePathname(route.slice(defaultLocalePrefix.length))
+      : route;
   const expectedCanonical = urlForRoute(expectedRoute);
   assert(canonical === expectedCanonical, `${file}: canonical ${canonical} does not match route ${expectedCanonical}`);
   assert(resolveHtml(canonical) !== undefined, `${file}: canonical target does not exist in dist: ${canonical}`);
