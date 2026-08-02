@@ -15,6 +15,7 @@ interface Props {
   description: string;
   ogImage?: string;
   type?: 'website' | 'article';
+  noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   bodyClass?: string;
 }
@@ -27,6 +28,7 @@ const {
   description,
   ogImage,
   type = 'website',
+  noindex = false,
   jsonLd,
   bodyClass = '',
 } = Astro.props;
@@ -52,6 +54,7 @@ const {
       description={description}
       ogImage={ogImage}
       type={type}
+      noindex={noindex}
     />
     {jsonLd && <JsonLd data={jsonLd} />}
     <script is:inline>

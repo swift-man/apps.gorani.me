@@ -10,6 +10,7 @@ interface Props {
   description: string;
   ogImage?: string;
   type?: 'website' | 'article';
+  noindex?: boolean;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
   description,
   ogImage = '/og-gorani.webp',
   type = 'website',
+  noindex = false,
 } = Astro.props;
 const canonical = absoluteUrl(siteConfig.siteUrl, localizedPath(locale, pagePath));
 const imageUrl = absoluteUrl(siteConfig.siteUrl, ogImage);
@@ -29,17 +31,22 @@ const xDefaultLocale = alternateLocales.includes(siteConfig.defaultLocale) ? sit
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 <link rel="canonical" href={canonical} />
 {
   alternateLocales.map((item) => (
     <link rel="alternate" hreflang={item} href={absoluteUrl(siteConfig.siteUrl, localizedPath(item, pagePath))} />
   ))
 }
-<link
-  rel="alternate"
-  hreflang="x-default"
-  href={absoluteUrl(siteConfig.siteUrl, localizedPath(xDefaultLocale, pagePath))}
-/>
+{
+  alternateLocales.length > 0 && (
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={absoluteUrl(siteConfig.siteUrl, localizedPath(xDefaultLocale, pagePath))}
+    />
+  )
+}
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={siteConfig.siteName} />
 <meta property="og:locale" content={locale === 'ko' ? 'ko_KR' : locale === 'ja' ? 'ja_JP' : 'en_US'} />
