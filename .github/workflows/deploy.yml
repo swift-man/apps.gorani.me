@@ -9,11 +9,12 @@ permissions: {}
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -24,7 +25,6 @@ jobs:
         uses: withastro/action@e84f40bd8d2caa9e768ec82ad30dd81f0b280853 # v6
         with:
           node-version: 24
-          package-manager: pnpm@11.9.0
           build-cmd: pnpm run build
         env:
           PUBLIC_SITE_URL: https://apps.gorani.me
@@ -33,6 +33,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write

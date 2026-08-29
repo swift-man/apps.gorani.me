@@ -33,6 +33,20 @@ pnpm check:static
 pnpm test:static
 ```
 
+GitHub Actions의 Check와 Build 작업은 공식 `pnpm/setup`으로 Node.js 24, `package.json`에 고정된 pnpm 11.9.0, pnpm 저장소 캐시와 잠금 파일 기반 의존성 설치를 준비합니다. 그 뒤 Check는 `pnpm check`를, Build는 `pnpm build`를 실행합니다.
+
+CI 환경을 로컬에서 재현할 때는 Node.js 24를 사용하고 다음 명령을 실행합니다. Corepack은 `packageManager`에 고정된 pnpm 11.9.0을 사용하며, 잠금 파일과 의존성 선언이 일치하지 않으면 설치가 실패합니다.
+
+```bash
+corepack enable
+pnpm --version # 11.9.0
+pnpm install --frozen-lockfile
+pnpm check
+pnpm build
+```
+
+의존성을 변경할 때는 `pnpm-lock.yaml`도 함께 갱신하세요.
+
 정적 결과물은 `dist/`에 생성됩니다. `pnpm build`는 빌드 직후 정적 출력 검증을 자동 실행하며, `pnpm check:static`으로 기존 `dist/`만 다시 검사할 수 있습니다.
 
 정적 출력 검증은 다음 회귀를 빌드 오류로 처리합니다.
@@ -233,6 +247,7 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 - Build output directory: `dist`
 - Custom domain: `apps.gorani.me`
 - Node.js: 24
+- pnpm: `package.json`의 `packageManager` 버전
 
 최초 배포 전에 저장소의 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 선택합니다. DNS에는 `apps.gorani.me`이 `swift-man.github.io`를 가리키는 CNAME 레코드를 설정하고, Pages 설정의 Custom domain에도 `apps.gorani.me`을 입력한 뒤 HTTPS를 활성화합니다.
 
@@ -254,4 +269,4 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 - 실제 출시 빌드와 개인정보처리방침 대조
 - App Store URL과 출시 상태 확인
 - Pages CMS에서 수정한 앱 JSON의 Check와 Build 통과 확인
-- `pnpm check:astro && pnpm build` 실행
+- `pnpm check && pnpm build` 실행
