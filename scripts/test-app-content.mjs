@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 
+import sharp from 'sharp';
 import { createServer } from 'vite';
 
 const appDirectory = 'src/data/apps';
@@ -12,6 +13,25 @@ const appFixtures = appFiles.map((filename) => ({
   filename,
   value: JSON.parse(readFileSync(path.join(appDirectory, filename), 'utf8')),
 }));
+
+const publicFile = (webPath) => path.join('public', webPath.replace(/^\/+/, ''));
+
+async function validateAppAssets(app) {
+  const referencedImages = [app.icon, app.heroImage, app.ogImage, ...app.screenshots.map(({ src }) => src)];
+  for (const imagePath of referencedImages) {
+    assert.ok(existsSync(publicFile(imagePath)), `Missing app image: ${imagePath}`);
+  }
+
+  const dimensionedImages = [
+    { src: app.heroImage, ...app.heroSize },
+    ...app.screenshots.map(({ src, width, height }) => ({ src, width, height })),
+  ];
+  for (const image of dimensionedImages) {
+    const metadata = await sharp(publicFile(image.src)).metadata();
+    assert.equal(metadata.width, image.width, `${image.src} width must match its JSON value`);
+    assert.equal(metadata.height, image.height, `${image.src} height must match its JSON value`);
+  }
+}
 
 const server = await createServer({
   appType: 'custom',
@@ -24,7 +44,9 @@ try {
   const { parseApp } = await server.ssrLoadModule('/src/data/app-schema.ts');
 
   for (const fixture of appFixtures) {
-    assert.equal(parseApp(fixture.value, fixture.filename).slug, fixture.value.slug);
+    const app = parseApp(fixture.value, fixture.filename);
+    assert.equal(app.slug, fixture.value.slug);
+    await validateAppAssets(app);
   }
 
   const baseApp = appFixtures[0].value;
@@ -40,6 +62,13 @@ try {
       name: 'missing locale',
       mutate(app) {
         delete app.content.ja;
+      },
+    },
+    {
+      name: 'coming-soon app with App Store URL',
+      mutate(app) {
+        app.status = 'coming-soon';
+        app.appStoreUrl = 'https://apps.apple.com/app/id1234567890';
       },
     },
     {
@@ -71,11 +100,19 @@ try {
     );
   }
 
+  const missingAssetApp = parseApp(structuredClone(baseApp), 'missing asset case');
+  missingAssetApp.heroImage = `/images/apps/${missingAssetApp.slug}/missing.webp`;
+  await assert.rejects(() => validateAppAssets(missingAssetApp), /Missing app image/);
+
+  const incorrectDimensionsApp = parseApp(structuredClone(baseApp), 'incorrect dimensions case');
+  incorrectDimensionsApp.heroSize.width += 1;
+  await assert.rejects(() => validateAppAssets(incorrectDimensionsApp), /width must match its JSON value/);
+
   const { apps } = await server.ssrLoadModule('/src/data/apps.ts');
   assert.equal(apps.length, appFiles.length, 'The app catalog must load every configured JSON file');
 
   console.log(
-    `App content validation passed: ${appFiles.length} valid files and ${invalidCases.length} invalid cases.`
+    `App content validation passed: ${appFiles.length} valid files, ${invalidCases.length} schema failures, and 2 asset failures.`
   );
 } finally {
   await server.close();

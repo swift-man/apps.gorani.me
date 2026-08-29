@@ -1,20 +1,13 @@
-import answerByChance from './apps/answer-by-chance.json';
-import andromeda17K from './apps/andromeda-17k.json';
-import assetScaler from './apps/assetscaler.json';
-import wordRush from './apps/word-rush.json';
 import { parseApp, type AppInfo } from './app-schema';
 import { APP_SLUGS } from './app-slugs';
 
 export type { AppInfo, AppPlatformGroup, AppStatus, AppTheme, LocalizedAppContent } from './app-schema';
 
-const appSources = [
-  ['assetscaler.json', assetScaler],
-  ['andromeda-17k.json', andromeda17K],
-  ['word-rush.json', wordRush],
-  ['answer-by-chance.json', answerByChance],
-] as const;
+const appSources = import.meta.glob('./apps/*.json', { eager: true, import: 'default' });
 
-export const apps: AppInfo[] = appSources.map(([filename, app]) => parseApp(app, `src/data/apps/${filename}`));
+export const apps: AppInfo[] = Object.entries(appSources)
+  .sort(([left], [right]) => left.localeCompare(right))
+  .map(([filename, app]) => parseApp(app, `src/data/${filename.replace(/^\.\//, '')}`));
 
 const configuredAppSlugs = new Set(apps.map((app) => app.slug));
 if (configuredAppSlugs.size !== apps.length) {

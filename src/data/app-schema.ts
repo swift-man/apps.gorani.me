@@ -110,6 +110,14 @@ export const appSchema = z
       });
     }
 
+    if (app.status === 'coming-soon' && app.appStoreUrl !== null) {
+      context.addIssue({
+        code: 'custom',
+        path: ['appStoreUrl'],
+        message: 'A coming-soon app must not have an App Store URL',
+      });
+    }
+
     const appImagePrefix = `/images/apps/${app.slug}/`;
     const imagePaths = [
       ['icon', app.icon],

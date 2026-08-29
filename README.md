@@ -83,10 +83,9 @@ https://apps.gorani.me/answer-by-chance
 
 1. `src/data/app-slugs.ts`의 `APP_SLUGS`에 새 slug를 등록합니다.
 2. 기존 JSON 파일을 참고해 `src/data/apps/<slug>.json`을 추가합니다.
-3. `src/data/apps.ts`의 `appSources`에 새 JSON import와 항목을 추가합니다.
-4. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
-5. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
-6. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
+3. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
+4. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
+5. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
 
 앱 상세·지원 경로는 앱 데이터에서 자동 생성됩니다. 업데이트와 블로그의 앱 참조도 `APP_SLUGS`를 기준으로 검사되며, 등록되지 않았거나 앱 데이터가 누락된 slug는 빌드 오류가 됩니다. 개인정보 경로는 `privacyStatus: 'published'`인 앱에만 생성됩니다.
 
@@ -112,7 +111,7 @@ Pages CMS에서는 실수로 URL이 바뀌거나 앱이 삭제되지 않도록 �
 - 한국어·영어·일본어 제목, 설명, 기능, 사용 방법, FAQ, SEO 문구
 - 이미지의 실제 너비와 높이
 
-앱 이미지 경로는 반드시 `/images/apps/<slug>/` 안에 있어야 합니다. JSON 형식, 필수 번역, 허용된 상태값, App Store URL과 이미지 경로는 `pnpm test:apps`와 정적 빌드에서 검증되고, `.pages.yml`과 JSON 필드의 대응은 `pnpm test:cms`에서 검증됩니다.
+앱 이미지 경로는 반드시 `/images/apps/<slug>/` 안에 있어야 합니다. JSON 형식, 필수 번역, 출시 상태와 App Store URL의 조합, 이미지 파일 존재 여부와 실제 크기는 `pnpm test:apps`와 정적 빌드에서 검증되고, `.pages.yml`과 JSON의 중첩 필드 대응은 `pnpm test:cms`에서 검증됩니다.
 
 ## 앱 이미지 교체
 
