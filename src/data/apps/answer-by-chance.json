@@ -1,0 +1,179 @@
+{
+  "slug": "answer-by-chance",
+  "name": "AnswerByChance",
+  "platform": "iPhone & iPad",
+  "platformGroup": "mobile",
+  "category": "Lifestyle",
+  "icon": "/images/apps/answer-by-chance/icon.webp",
+  "heroImage": "/images/apps/answer-by-chance/hero.webp",
+  "heroSize": {
+    "width": 1200,
+    "height": 900
+  },
+  "screenshots": [
+    {
+      "src": "/images/apps/answer-by-chance/screenshot-1.webp",
+      "width": 720,
+      "height": 1280,
+      "label": {
+        "ko": "AnswerByChance 화면 1",
+        "en": "AnswerByChance screen 1",
+        "ja": "AnswerByChanceの画面 1"
+      }
+    },
+    {
+      "src": "/images/apps/answer-by-chance/screenshot-2.webp",
+      "width": 720,
+      "height": 1280,
+      "label": {
+        "ko": "AnswerByChance 화면 2",
+        "en": "AnswerByChance screen 2",
+        "ja": "AnswerByChanceの画面 2"
+      }
+    },
+    {
+      "src": "/images/apps/answer-by-chance/screenshot-3.webp",
+      "width": 720,
+      "height": 1280,
+      "label": {
+        "ko": "AnswerByChance 화면 3",
+        "en": "AnswerByChance screen 3",
+        "ja": "AnswerByChanceの画面 3"
+      }
+    }
+  ],
+  "ogImage": "/images/apps/answer-by-chance/og.webp",
+  "appStoreUrl": null,
+  "status": "coming-soon",
+  "theme": "answerbychance",
+  "appleServices": [],
+  "privacyStatus": "pending",
+  "content": {
+    "ko": {
+      "title": "질문을 품고, 한 페이지를 넘겨보세요.",
+      "shortDescription": "마음속 질문을 떠올리고 책장을 넘기듯 한 줄의 답을 만나는 감성적인 앱입니다.",
+      "longDescription": "정답을 단정하는 대신 잠시 생각할 여백을 건넵니다. 조용히 질문을 떠올리고 페이지를 넘겨, 지금의 마음에 닿는 한 문장을 만나보세요.",
+      "features": [
+        "한 줄의 답",
+        "페이지 컬 인터랙션",
+        "한국어, 영어, 일본어",
+        "차분한 읽기 경험",
+        "마음에 드는 답 저장"
+      ],
+      "steps": [
+        {
+          "title": "질문을 떠올리세요",
+          "description": "지금 마음에 머무는 질문에 잠시 집중합니다."
+        },
+        {
+          "title": "페이지를 넘기세요",
+          "description": "책장을 넘기는 듯한 동작으로 한 줄을 엽니다."
+        },
+        {
+          "title": "마음에 남으면 저장하세요",
+          "description": "다시 읽고 싶은 문장을 모아둘 수 있습니다."
+        }
+      ],
+      "faq": [
+        {
+          "question": "점술 앱인가요?",
+          "answer": "미래나 사실을 단정하는 도구가 아니라, 질문을 다른 각도에서 바라보게 돕는 차분한 읽기 경험을 지향합니다."
+        },
+        {
+          "question": "언제 출시되나요?",
+          "answer": "현재 Coming Soon 상태입니다. 출시 일정과 App Store 링크는 확정되는 대로 업데이트됩니다."
+        },
+        {
+          "question": "답을 저장할 수 있나요?",
+          "answer": "마음에 드는 한 줄을 보관하는 기능을 계획하고 있습니다. 출시 버전에서 달라질 수 있습니다."
+        }
+      ],
+      "seoTitle": "AnswerByChance — Gorani Apps",
+      "seoDescription": "질문을 떠올리고 책장을 넘기듯 한 줄의 답과 만나는 차분한 iPhone·iPad 앱입니다."
+    },
+    "en": {
+      "title": "Hold a question. Turn a page.",
+      "shortDescription": "Think of a question and discover a thoughtful one-line answer through a page-turning experience.",
+      "longDescription": "Rather than promising certainty, the app creates a quiet moment to see your question differently. Turn a page and find a line that meets you where you are.",
+      "features": [
+        "One-line answers",
+        "Page curl interaction",
+        "Korean, English, and Japanese",
+        "Calm reading experience",
+        "Save favorite answers"
+      ],
+      "steps": [
+        {
+          "title": "Hold a question",
+          "description": "Take a moment with whatever is on your mind."
+        },
+        {
+          "title": "Turn the page",
+          "description": "Reveal one line through a book-like gesture."
+        },
+        {
+          "title": "Save what stays with you",
+          "description": "Keep a line you may want to read again."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Is this a fortune-telling app?",
+          "answer": "It is designed as a calm reflection experience, not as a source of factual predictions or certainty."
+        },
+        {
+          "question": "When will it be available?",
+          "answer": "The app is currently Coming Soon. Timing and an App Store link will be added when confirmed."
+        },
+        {
+          "question": "Can I save an answer?",
+          "answer": "Saving favorite lines is planned. The exact feature may change before release."
+        }
+      ],
+      "seoTitle": "AnswerByChance — Gorani Apps",
+      "seoDescription": "A calm iPhone and iPad experience for holding a question, turning a page, and finding a thoughtful one-line answer."
+    },
+    "ja": {
+      "title": "問いを胸に、ページをめくる。",
+      "shortDescription": "心の中で質問を思い浮かべ、本をめくるように一行の答えと出会うアプリです。",
+      "longDescription": "答えを断定するのではなく、問いを別の角度から見るための静かな余白を作ります。ページをめくり、今の気持ちに触れる一行と出会ってください。",
+      "features": [
+        "一行の答え",
+        "ページカール操作",
+        "韓国語・英語・日本語",
+        "静かな読書体験",
+        "お気に入りの答えを保存"
+      ],
+      "steps": [
+        {
+          "title": "問いを思い浮かべる",
+          "description": "心にある問いに少しだけ意識を向けます。"
+        },
+        {
+          "title": "ページをめくる",
+          "description": "本のような操作で一行を開きます。"
+        },
+        {
+          "title": "心に残れば保存",
+          "description": "また読みたい一行を残しておけます。"
+        }
+      ],
+      "faq": [
+        {
+          "question": "占いアプリですか？",
+          "answer": "事実や未来を断定するものではなく、問いを違う角度から見るための静かな読書体験です。"
+        },
+        {
+          "question": "いつ公開されますか？",
+          "answer": "現在はComing Soonです。時期とApp Storeリンクは確定後に更新します。"
+        },
+        {
+          "question": "答えを保存できますか？",
+          "answer": "お気に入りの一行を保存する機能を予定しています。公開までに変更される場合があります。"
+        }
+      ],
+      "seoTitle": "AnswerByChance — Gorani Apps",
+      "seoDescription": "問いを思い浮かべ、本をめくるように一行の答えと出会う静かなiPhone・iPadアプリです。"
+    }
+  }
+}

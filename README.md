@@ -1,6 +1,6 @@
 # Gorani Apps
 
-AstroWind를 기반으로 만든 Apple 플랫폼 앱용 다국어 정적 마케팅 사이트입니다. AssetScaler, Andromeda 17K, Word Rush, AnswerByChance를 한 데이터 원본에서 관리하고 한국어·영어·일본어 페이지를 정적으로 생성합니다.
+AstroWind를 기반으로 만든 Apple 플랫폼 앱용 다국어 정적 마케팅 사이트입니다. AssetScaler, Andromeda 17K, Word Rush, AnswerByChance를 앱별 JSON에서 관리하고 한국어·영어·일본어 페이지를 정적으로 생성합니다. Pages CMS를 연결하면 코드를 직접 수정하지 않고 웹 폼으로 기존 앱 콘텐츠와 이미지를 관리할 수 있습니다.
 
 ## 요구 환경
 
@@ -26,6 +26,8 @@ pnpm astro dev stop
 
 ```bash
 pnpm check:astro
+pnpm test:apps
+pnpm test:cms
 pnpm build
 pnpm check:static
 pnpm test:static
@@ -49,7 +51,9 @@ pnpm test:static
 src/
 ├─ config/site.ts              # 사이트 URL, 이메일, 언어, 개인정보 날짜
 ├─ data/app-slugs.ts           # 앱 식별자 단일 목록과 타입
-├─ data/apps.ts                # 앱 정보와 세 언어 콘텐츠
+├─ data/app-schema.ts          # 앱 JSON 타입과 런타임 검증
+├─ data/apps.ts                # 앱별 JSON 로더
+├─ data/apps/*.json            # 앱 정보와 세 언어 콘텐츠
 ├─ data/updates.ts             # 앱별 업데이트
 ├─ data/post/                  # 세 언어 Markdown 블로그 글
 ├─ components/apps/            # 앱 카드, CTA, 갤러리, FAQ
@@ -78,12 +82,37 @@ https://apps.gorani.me/answer-by-chance
 ## 새 앱 추가
 
 1. `src/data/app-slugs.ts`의 `APP_SLUGS`에 새 slug를 등록합니다.
-2. `src/data/apps.ts`의 `apps` 배열에 같은 slug로 앱을 추가합니다.
-3. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
-4. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
-5. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
+2. 기존 JSON 파일을 참고해 `src/data/apps/<slug>.json`을 추가합니다.
+3. `src/data/apps.ts`의 `appSources`에 새 JSON import와 항목을 추가합니다.
+4. `public/images/apps/<slug>/`에 아래 이미지를 추가합니다.
+5. 필요하면 `src/data/updates.ts`에 첫 업데이트를 추가합니다.
+6. 검증한 개인정보처리방침을 `src/data/privacy.ts`에 추가하고 `privacyStatus`를 `published`로 설정합니다.
 
 앱 상세·지원 경로는 앱 데이터에서 자동 생성됩니다. 업데이트와 블로그의 앱 참조도 `APP_SLUGS`를 기준으로 검사되며, 등록되지 않았거나 앱 데이터가 누락된 slug는 빌드 오류가 됩니다. 개인정보 경로는 `privacyStatus: 'published'`인 앱에만 생성됩니다.
+
+Pages CMS에서는 실수로 URL이 바뀌거나 앱이 삭제되지 않도록 기존 앱의 생성·이름 변경·삭제를 비활성화했습니다. 새 앱 등록은 위 절차로 코드와 이미지를 함께 준비한 뒤 UI 편집 대상으로 자동 표시됩니다.
+
+## Pages CMS로 앱 콘텐츠 수정
+
+저장소 루트의 `.pages.yml`이 앱 편집 화면을 정의합니다. Pages CMS는 별도 콘텐츠 데이터베이스 없이 `src/data/apps/*.json`과 `public/images/apps/`를 GitHub에 저장하며, 저장된 브랜치가 `main`이면 기존 GitHub Actions가 사이트를 자동으로 다시 배포합니다.
+
+1. [Pages CMS](https://app.pagescms.org)에 GitHub 계정으로 로그인합니다.
+2. GitHub App 설치 범위를 `swift-man/apps.gorani.me` 저장소로만 제한합니다.
+3. 저장소와 편집할 브랜치를 선택합니다.
+4. **앱 콘텐츠**에서 앱을 선택해 일반 정보, 출시 상태, 이미지, 한국어·영어·일본어 문구를 수정합니다.
+5. 저장 후 GitHub Actions의 Check와 Build 결과를 확인합니다.
+
+바로 배포하려면 `main`에서 저장합니다. 코드리뷰를 거치려면 먼저 GitHub에서 콘텐츠용 브랜치를 만들고 Pages CMS에서 그 브랜치를 선택해 저장한 뒤 PR을 생성합니다.
+
+편집 화면에서 지원하는 항목:
+
+- 앱 이름, 플랫폼, 카테고리, 출시 및 개인정보처리방침 상태
+- App Store URL, 테마, 사용하는 Apple 서비스
+- 앱 아이콘, Hero, 스크린샷, 공유 이미지 선택과 업로드
+- 한국어·영어·일본어 제목, 설명, 기능, 사용 방법, FAQ, SEO 문구
+- 이미지의 실제 너비와 높이
+
+앱 이미지 경로는 반드시 `/images/apps/<slug>/` 안에 있어야 합니다. JSON 형식, 필수 번역, 허용된 상태값, App Store URL과 이미지 경로는 `pnpm test:apps`와 정적 빌드에서 검증되고, `.pages.yml`과 JSON 필드의 대응은 `pnpm test:cms`에서 검증됩니다.
 
 ## 앱 이미지 교체
 
@@ -133,14 +162,16 @@ homeVideo: {
 
 ## App Store URL과 출시 상태 변경
 
-`src/data/apps.ts`에서 앱의 `appStoreUrl`을 수정합니다.
+`src/data/apps/<slug>.json` 또는 Pages CMS에서 앱의 `appStoreUrl`을 수정합니다.
 
 Coming Soon 앱을 출시 상태로 전환하려면:
 
-```ts
-appStoreUrl: 'https://apps.apple.com/app/id...',
-status: 'released',
-privacyStatus: 'published',
+```json
+{
+  "appStoreUrl": "https://apps.apple.com/app/id...",
+  "status": "released",
+  "privacyStatus": "published"
+}
 ```
 
 `appStoreUrl`이 `null`이면 다운로드 링크 대신 Coming Soon 배지가 보이고 SoftwareApplication JSON-LD에도 설치 URL이 포함되지 않습니다.
@@ -148,7 +179,7 @@ privacyStatus: 'published',
 ## 번역 추가 및 수정
 
 - 공통 UI: `src/data/i18n.ts`
-- 앱 설명, 기능, 사용 방법, FAQ, SEO: `src/data/apps.ts`
+- 앱 설명, 기능, 사용 방법, FAQ, SEO: `src/data/apps/<slug>.json` 또는 Pages CMS
 - 업데이트: `src/data/updates.ts`
 - 블로그: `src/data/post/<locale>-<permalink>.md`
 
@@ -161,7 +192,7 @@ privacyStatus: 'published',
 ## 개인정보처리방침 수정
 
 - 공통 최종 업데이트 날짜: `src/config/site.ts`의 `privacyLastUpdated`
-- 앱별 공개 상태: `src/data/apps.ts`의 `privacyStatus`
+- 앱별 공개 상태: `src/data/apps/<slug>.json`의 `privacyStatus` 또는 Pages CMS
 - 검증 출처와 언어별 문구: `src/data/privacy.ts`
 - 문서 섹션 렌더링: `src/views/PrivacyPage.astro`
 
@@ -223,4 +254,5 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 - placeholder 앱 이미지 교체
 - 실제 출시 빌드와 개인정보처리방침 대조
 - App Store URL과 출시 상태 확인
+- Pages CMS에서 수정한 앱 JSON의 Check와 Build 통과 확인
 - `pnpm check:astro && pnpm build` 실행

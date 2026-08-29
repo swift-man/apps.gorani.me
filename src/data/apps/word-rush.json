@@ -1,0 +1,161 @@
+{
+  "slug": "word-rush",
+  "name": "Word Rush",
+  "platform": "iPhone & iPad",
+  "platformGroup": "mobile",
+  "category": "Games",
+  "icon": "/images/apps/word-rush/icon.webp",
+  "heroImage": "/images/apps/word-rush/hero.webp",
+  "heroSize": {
+    "width": 1200,
+    "height": 900
+  },
+  "screenshots": [
+    {
+      "src": "/images/apps/word-rush/screenshot-1.webp",
+      "width": 720,
+      "height": 1280,
+      "label": {
+        "ko": "Word Rush 게임 화면 1",
+        "en": "Word Rush game screen 1",
+        "ja": "Word Rushのゲーム画面 1"
+      }
+    },
+    {
+      "src": "/images/apps/word-rush/screenshot-2.webp",
+      "width": 720,
+      "height": 1280,
+      "label": {
+        "ko": "Word Rush 게임 화면 2",
+        "en": "Word Rush game screen 2",
+        "ja": "Word Rushのゲーム画面 2"
+      }
+    },
+    {
+      "src": "/images/apps/word-rush/screenshot-3.webp",
+      "width": 720,
+      "height": 1280,
+      "label": {
+        "ko": "Word Rush 게임 화면 3",
+        "en": "Word Rush game screen 3",
+        "ja": "Word Rushのゲーム画面 3"
+      }
+    }
+  ],
+  "ogImage": "/images/apps/word-rush/og.webp",
+  "appStoreUrl": "https://apps.apple.com/app/id6778007028",
+  "status": "released",
+  "theme": "wordrush",
+  "appleServices": ["Game Center"],
+  "privacyStatus": "published",
+  "content": {
+    "ko": {
+      "title": "생각보다 손가락이 먼저 움직이는 게임.",
+      "shortDescription": "한국어, 영어, 일본어 단어를 빠르게 입력하며 반응 속도와 타이핑 실력을 시험하는 스피드 타이핑 게임입니다.",
+      "longDescription": "짧은 단어에서 시작해 점점 빨라지는 50개 레벨과 보스 스테이지를 통과하세요. 언어를 바꾸면 익숙한 타이핑도 새로운 리듬으로 느껴집니다.",
+      "features": ["한국어, 영어, 일본어", "50개 레벨", "보스 스테이지", "점점 빨라지는 속도", "점수 도전"],
+      "steps": [
+        {
+          "title": "언어를 고르세요",
+          "description": "한국어, 영어 또는 일본어 단어로 시작합니다."
+        },
+        {
+          "title": "단어를 빠르게 입력하세요",
+          "description": "화면의 단어를 정확하게 입력해 흐름을 이어갑니다."
+        },
+        {
+          "title": "보스와 기록에 도전하세요",
+          "description": "높아지는 속도를 견디며 최고 점수를 갱신합니다."
+        }
+      ],
+      "faq": [
+        {
+          "question": "몇 개 언어를 지원하나요?",
+          "answer": "게임 콘텐츠는 한국어, 영어, 일본어 단어를 중심으로 구성됩니다."
+        },
+        {
+          "question": "레벨은 몇 개인가요?",
+          "answer": "현재 소개 기준으로 50개 레벨과 보스 스테이지가 있습니다."
+        },
+        {
+          "question": "외부 키보드를 사용할 수 있나요?",
+          "answer": "기기와 현재 앱 버전에 따른 입력 지원 범위는 App Store의 최신 설명을 확인해 주세요."
+        }
+      ],
+      "seoTitle": "Word Rush for iPhone & iPad — Gorani Apps",
+      "seoDescription": "한국어, 영어, 일본어 단어로 반응 속도와 타이핑 실력을 시험하는 50레벨 스피드 타이핑 게임입니다."
+    },
+    "en": {
+      "title": "Type before you have time to think.",
+      "shortDescription": "A fast-paced typing game featuring Korean, English, and Japanese words across increasingly challenging levels.",
+      "longDescription": "Start with short words, then push through 50 levels and boss stages that keep getting faster. Switch languages to give familiar typing a completely different rhythm.",
+      "features": ["Korean, English, and Japanese", "50 levels", "Boss stages", "Increasing speed", "Score challenge"],
+      "steps": [
+        {
+          "title": "Choose a language",
+          "description": "Play with Korean, English, or Japanese words."
+        },
+        {
+          "title": "Type with precision",
+          "description": "Enter each word accurately to keep your run moving."
+        },
+        {
+          "title": "Beat the boss and your score",
+          "description": "Handle the rising pace and set a new personal best."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Which languages are included?",
+          "answer": "The game is built around Korean, English, and Japanese word sets."
+        },
+        {
+          "question": "How many levels are there?",
+          "answer": "The current product description includes 50 levels and boss stages."
+        },
+        {
+          "question": "Can I use an external keyboard?",
+          "answer": "Input support can depend on the device and current app version. Check the latest App Store details."
+        }
+      ],
+      "seoTitle": "Word Rush for iPhone & iPad — Gorani Apps",
+      "seoDescription": "A 50-level speed typing game with Korean, English, and Japanese words, boss stages, and score challenges."
+    },
+    "ja": {
+      "title": "考えるより先に、指が動く。",
+      "shortDescription": "韓国語、英語、日本語の単語を素早く入力して楽しむスピードタイピングゲームです。",
+      "longDescription": "短い単語から始まり、だんだん速くなる50レベルとボスステージに挑戦します。言語を変えると、慣れたタイピングにも新しいリズムが生まれます。",
+      "features": ["韓国語・英語・日本語", "50レベル", "ボスステージ", "上がり続ける速度", "スコアチャレンジ"],
+      "steps": [
+        {
+          "title": "言語を選ぶ",
+          "description": "韓国語、英語、日本語の単語から選びます。"
+        },
+        {
+          "title": "すばやく正確に入力",
+          "description": "表示された単語を正確に入力して流れをつなぎます。"
+        },
+        {
+          "title": "ボスと記録に挑戦",
+          "description": "速くなるテンポを乗り越え、ベストスコアを更新します。"
+        }
+      ],
+      "faq": [
+        {
+          "question": "何言語に対応していますか？",
+          "answer": "韓国語、英語、日本語の単語を中心に構成されています。"
+        },
+        {
+          "question": "レベルはいくつありますか？",
+          "answer": "現在の紹介では50レベルとボスステージがあります。"
+        },
+        {
+          "question": "外付けキーボードは使えますか？",
+          "answer": "入力対応は端末と現在のアプリバージョンにより異なります。最新のApp Store情報をご確認ください。"
+        }
+      ],
+      "seoTitle": "Word Rush for iPhone & iPad — Gorani Apps",
+      "seoDescription": "韓国語、英語、日本語の単語、50レベル、ボスステージを楽しむスピードタイピングゲームです。"
+    }
+  }
+}

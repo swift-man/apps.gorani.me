@@ -1,0 +1,179 @@
+{
+  "slug": "assetscaler",
+  "name": "AssetScaler",
+  "platform": "macOS",
+  "platformGroup": "macos",
+  "category": "Developer Tools",
+  "icon": "/images/apps/assetscaler/icon.webp",
+  "heroImage": "/images/apps/assetscaler/hero.webp",
+  "heroSize": {
+    "width": 1600,
+    "height": 1000
+  },
+  "screenshots": [
+    {
+      "src": "/images/apps/assetscaler/screenshot-1.webp",
+      "width": 1440,
+      "height": 900,
+      "label": {
+        "ko": "AssetScaler 작업 화면 1",
+        "en": "AssetScaler workflow 1",
+        "ja": "AssetScalerの画面 1"
+      }
+    },
+    {
+      "src": "/images/apps/assetscaler/screenshot-2.webp",
+      "width": 1440,
+      "height": 900,
+      "label": {
+        "ko": "AssetScaler 작업 화면 2",
+        "en": "AssetScaler workflow 2",
+        "ja": "AssetScalerの画面 2"
+      }
+    },
+    {
+      "src": "/images/apps/assetscaler/screenshot-3.webp",
+      "width": 1440,
+      "height": 900,
+      "label": {
+        "ko": "AssetScaler 작업 화면 3",
+        "en": "AssetScaler workflow 3",
+        "ja": "AssetScalerの画面 3"
+      }
+    }
+  ],
+  "ogImage": "/images/apps/assetscaler/og.webp",
+  "appStoreUrl": "https://apps.apple.com/app/id6788854131",
+  "status": "released",
+  "theme": "assetscaler",
+  "appleServices": [],
+  "privacyStatus": "published",
+  "content": {
+    "ko": {
+      "title": "한 번 드래그하고, 모든 크기를 만드세요.",
+      "shortDescription": "이미지를 드래그하여 @1x, @2x, @3x 리소스와 macOS 앱 아이콘을 빠르게 생성하는 이미지 도구입니다.",
+      "longDescription": "반복적인 이미지 리사이징과 파일 정리를 하나의 네이티브 macOS 흐름으로 줄입니다. 원본을 놓으면 필요한 배율과 앱 아이콘을 정돈된 결과물로 내보낼 수 있습니다.",
+      "features": [
+        "드래그 앤 드롭 작업 흐름",
+        "@1x, @2x, @3x 자동 생성",
+        "macOS 앱 아이콘 생성",
+        "배율별 폴더 자동 정리",
+        "macOS에 자연스러운 네이티브 경험"
+      ],
+      "steps": [
+        {
+          "title": "원본을 놓으세요",
+          "description": "고해상도 이미지를 작업 영역으로 드래그합니다."
+        },
+        {
+          "title": "필요한 출력을 고르세요",
+          "description": "이미지 배율 또는 macOS 앱 아이콘 세트를 선택합니다."
+        },
+        {
+          "title": "정리된 파일을 받으세요",
+          "description": "결과물을 폴더 구조와 함께 내보냅니다."
+        }
+      ],
+      "faq": [
+        {
+          "question": "어떤 이미지를 사용할 수 있나요?",
+          "answer": "일반적인 이미지 형식을 기준으로 설계되었습니다. 정확한 지원 형식은 App Store의 최신 설명을 확인해 주세요."
+        },
+        {
+          "question": "@1x, @2x, @3x를 한 번에 만들 수 있나요?",
+          "answer": "네. 같은 원본에서 여러 배율의 리소스를 만드는 것이 핵심 흐름입니다."
+        },
+        {
+          "question": "원본 파일도 변경되나요?",
+          "answer": "내보내기 전에 원본과 저장 위치를 확인하고, 중요한 파일은 별도로 보관하는 것을 권장합니다."
+        }
+      ],
+      "seoTitle": "AssetScaler for macOS — Gorani Apps",
+      "seoDescription": "드래그 앤 드롭으로 @1x, @2x, @3x 이미지와 macOS 앱 아이콘을 생성하는 네이티브 macOS 도구입니다."
+    },
+    "en": {
+      "title": "Drag once. Get every scale.",
+      "shortDescription": "A native macOS utility for generating @1x, @2x, @3x image assets and macOS app icons with drag and drop.",
+      "longDescription": "Turn repetitive image resizing and file organization into one focused Mac workflow. Drop in a source image and export the scales or app-icon set you need.",
+      "features": [
+        "Drag and drop workflow",
+        "@1x, @2x, @3x generation",
+        "macOS app icon generation",
+        "Organized export folders",
+        "Native macOS experience"
+      ],
+      "steps": [
+        {
+          "title": "Drop your source",
+          "description": "Drag a high-resolution image into the workspace."
+        },
+        {
+          "title": "Choose the output",
+          "description": "Select image scales or a macOS app-icon set."
+        },
+        {
+          "title": "Export it organized",
+          "description": "Save the generated files in a tidy folder structure."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Which image formats are supported?",
+          "answer": "The app is designed around common image formats. Check the latest App Store listing for current compatibility."
+        },
+        {
+          "question": "Can it create all three scales at once?",
+          "answer": "Yes. Generating multiple scales from one source is the core workflow."
+        },
+        {
+          "question": "Does it change the original file?",
+          "answer": "Review the chosen export location before saving and keep a separate copy of important source files."
+        }
+      ],
+      "seoTitle": "AssetScaler for macOS — Gorani Apps",
+      "seoDescription": "A native macOS utility for generating @1x, @2x, @3x assets and macOS app icons with drag and drop."
+    },
+    "ja": {
+      "title": "一度ドラッグして、すべてのサイズを。",
+      "shortDescription": "画像をドラッグするだけで、@1x、@2x、@3x素材やmacOSアプリアイコンを生成できるツールです。",
+      "longDescription": "繰り返しのリサイズとファイル整理を、ひとつのネイティブなMacワークフローにまとめます。原本を置き、必要な倍率やアイコンセットを整理して書き出せます。",
+      "features": [
+        "ドラッグ＆ドロップ",
+        "@1x・@2x・@3xを生成",
+        "macOSアプリアイコン生成",
+        "書き出しフォルダを整理",
+        "macOSらしい操作感"
+      ],
+      "steps": [
+        {
+          "title": "原本を置く",
+          "description": "高解像度画像をワークスペースへドラッグします。"
+        },
+        {
+          "title": "出力を選ぶ",
+          "description": "画像倍率またはmacOSアイコンセットを選びます。"
+        },
+        {
+          "title": "整理して保存",
+          "description": "生成したファイルを分かりやすいフォルダに書き出します。"
+        }
+      ],
+      "faq": [
+        {
+          "question": "どの画像形式に対応していますか？",
+          "answer": "一般的な画像形式を想定しています。最新の対応状況はApp Storeの説明をご確認ください。"
+        },
+        {
+          "question": "3つの倍率を同時に作れますか？",
+          "answer": "はい。ひとつの原本から複数の倍率を生成することが中心機能です。"
+        },
+        {
+          "question": "原本は変更されますか？",
+          "answer": "保存先を確認し、大切な原本は別途保管することをおすすめします。"
+        }
+      ],
+      "seoTitle": "AssetScaler for macOS — Gorani Apps",
+      "seoDescription": "ドラッグ＆ドロップで@1x、@2x、@3x画像とmacOSアプリアイコンを生成するネイティブMacアプリです。"
+    }
+  }
+}
