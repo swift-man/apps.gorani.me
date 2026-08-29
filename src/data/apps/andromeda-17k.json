@@ -1,0 +1,167 @@
+{
+  "slug": "andromeda-17k",
+  "name": "Andromeda 17K",
+  "platform": "Apple TV",
+  "platformGroup": "tv",
+  "category": "Entertainment",
+  "icon": "/images/apps/andromeda-17k/icon.webp",
+  "heroImage": "/images/apps/andromeda-17k/hero.webp",
+  "heroSize": {
+    "width": 1600,
+    "height": 900
+  },
+  "screenshots": [
+    {
+      "src": "/images/apps/andromeda-17k/screenshot-1.webp",
+      "width": 1600,
+      "height": 900,
+      "label": {
+        "ko": "Andromeda 17K 화면 1",
+        "en": "Andromeda 17K view 1",
+        "ja": "Andromeda 17Kの画面 1"
+      }
+    },
+    {
+      "src": "/images/apps/andromeda-17k/screenshot-2.webp",
+      "width": 1600,
+      "height": 900,
+      "label": {
+        "ko": "Andromeda 17K 화면 2",
+        "en": "Andromeda 17K view 2",
+        "ja": "Andromeda 17Kの画面 2"
+      }
+    },
+    {
+      "src": "/images/apps/andromeda-17k/screenshot-3.webp",
+      "width": 1600,
+      "height": 900,
+      "label": {
+        "ko": "Andromeda 17K 화면 3",
+        "en": "Andromeda 17K view 3",
+        "ja": "Andromeda 17Kの画面 3"
+      }
+    }
+  ],
+  "ogImage": "/images/apps/andromeda-17k/og.webp",
+  "appStoreUrl": "https://apps.apple.com/app/id6786789129",
+  "status": "released",
+  "theme": "andromeda",
+  "appleServices": ["MusicKit"],
+  "privacyStatus": "published",
+  "content": {
+    "ko": {
+      "title": "거실에서 만나는 가장 가까운 은하.",
+      "shortDescription": "초고해상도 안드로메다 은하 이미지, 시계, 별빛 효과와 Apple Music을 함께 즐길 수 있는 Apple TV 앱입니다.",
+      "longDescription": "큰 화면을 조용한 우주의 창으로 바꿉니다. 은하를 감상하고, 시간과 음악을 곁들이며, 거실의 분위기에 맞는 화면을 구성할 수 있습니다.",
+      "features": ["초고해상도 안드로메다 뷰", "시계 표시", "별빛 애니메이션", "월페이퍼 모드", "Apple Music 연동"],
+      "steps": [
+        {
+          "title": "은하를 여세요",
+          "description": "Apple TV에서 Andromeda 17K를 시작합니다."
+        },
+        {
+          "title": "분위기를 고르세요",
+          "description": "시계, 별빛 효과와 화면 구성을 조절합니다."
+        },
+        {
+          "title": "음악과 함께 감상하세요",
+          "description": "원하는 경우 Apple Music 경험을 화면과 함께 즐깁니다."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Apple TV 전용 앱인가요?",
+          "answer": "현재 안내된 주요 플랫폼은 Apple TV입니다."
+        },
+        {
+          "question": "Apple Music이 꼭 필요한가요?",
+          "answer": "음악 연동은 선택적인 경험입니다. 서비스 이용에는 Apple 계정과 해당 지역의 이용 조건이 적용될 수 있습니다."
+        },
+        {
+          "question": "화면이 계속 움직이나요?",
+          "answer": "별빛 같은 시각 효과와 화면 모드는 앱 설정에 따라 다를 수 있습니다."
+        }
+      ],
+      "seoTitle": "Andromeda 17K for Apple TV — Gorani Apps",
+      "seoDescription": "초고해상도 안드로메다 은하와 시계, 별빛 효과, Apple Music을 즐기는 Apple TV 앱입니다."
+    },
+    "en": {
+      "title": "A nearby galaxy for your living room.",
+      "shortDescription": "Explore Andromeda in ultra-high resolution with a clock, starlight effects, wallpaper mode, and Apple Music integration.",
+      "longDescription": "Turn the largest screen in the room into a quiet window on space. Pair the galaxy with time, subtle motion, and music to shape the atmosphere around you.",
+      "features": [
+        "Ultra-high-resolution Andromeda view",
+        "Clock display",
+        "Starlight animation",
+        "Wallpaper mode",
+        "Apple Music integration"
+      ],
+      "steps": [
+        {
+          "title": "Open the galaxy",
+          "description": "Launch Andromeda 17K on Apple TV."
+        },
+        {
+          "title": "Set the atmosphere",
+          "description": "Adjust the clock, starlight effects, and viewing mode."
+        },
+        {
+          "title": "Pair it with music",
+          "description": "Optionally bring an Apple Music experience into the room."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Is it made for Apple TV?",
+          "answer": "Apple TV is the primary platform currently described for the app."
+        },
+        {
+          "question": "Do I need Apple Music?",
+          "answer": "Music integration is optional. Account, subscription, and regional availability requirements may apply."
+        },
+        {
+          "question": "Is the image always animated?",
+          "answer": "Visual effects and viewing modes can vary with the settings available in the current version."
+        }
+      ],
+      "seoTitle": "Andromeda 17K for Apple TV — Gorani Apps",
+      "seoDescription": "Explore Andromeda in ultra-high resolution with a clock, subtle starlight effects, and Apple Music on Apple TV."
+    },
+    "ja": {
+      "title": "リビングで出会う、いちばん近い銀河。",
+      "shortDescription": "超高解像度のアンドロメダ銀河、時計、星明かりの演出、Apple Musicを楽しめるApple TVアプリです。",
+      "longDescription": "部屋で一番大きな画面を、静かな宇宙の窓に変えます。銀河に時刻や穏やかな動き、音楽を重ね、リビングの空気を整えます。",
+      "features": ["超高解像度アンドロメダ", "時計表示", "星明かりアニメーション", "壁紙モード", "Apple Music連携"],
+      "steps": [
+        {
+          "title": "銀河を開く",
+          "description": "Apple TVでAndromeda 17Kを起動します。"
+        },
+        {
+          "title": "雰囲気を選ぶ",
+          "description": "時計、星明かり、表示モードを調整します。"
+        },
+        {
+          "title": "音楽と楽しむ",
+          "description": "必要に応じてApple Musicの体験を組み合わせます。"
+        }
+      ],
+      "faq": [
+        {
+          "question": "Apple TV専用ですか？",
+          "answer": "現在案内している主なプラットフォームはApple TVです。"
+        },
+        {
+          "question": "Apple Musicは必要ですか？",
+          "answer": "音楽連携は任意です。アカウント、購読、地域ごとの利用条件が適用される場合があります。"
+        },
+        {
+          "question": "画面は常に動きますか？",
+          "answer": "視覚効果や表示モードは、現在のバージョンで利用できる設定により異なります。"
+        }
+      ],
+      "seoTitle": "Andromeda 17K for Apple TV — Gorani Apps",
+      "seoDescription": "超高解像度のアンドロメダ銀河、時計、星明かり、Apple Musicを楽しめるApple TVアプリです。"
+    }
+  }
+}

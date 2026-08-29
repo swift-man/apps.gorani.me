@@ -10,16 +10,18 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && pnpm run check:static && pnpm run test:static",
+    "build": "pnpm run test:apps && astro build && pnpm run check:static && pnpm run test:static",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data",
+    "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data && pnpm run test:apps && pnpm run test:cms",
     "check:astro": "astro check",
     "check:eslint": "eslint .",
     "check:prettier": "prettier --check .",
     "check:static": "node scripts/validate-static-output.mjs",
     "test:static": "node scripts/test-static-output-validator.mjs",
     "test:data": "node scripts/test-data-validation.mjs",
+    "test:apps": "node scripts/test-app-content.mjs",
+    "test:cms": "node scripts/test-cms-config.mjs",
     "fix": "pnpm run fix:eslint && pnpm run fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier -w ."
@@ -65,7 +67,8 @@
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.0"
+    "typescript-eslint": "^8.60.0",
+    "vite": "7.3.6"
   },
   "overrides": {
     "yaml": ">=2.8.3",
