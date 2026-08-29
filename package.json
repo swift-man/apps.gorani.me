@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && pnpm run check:static && pnpm run test:static",
+    "build": "pnpm run test:apps && astro build && pnpm run check:static && pnpm run test:static",
     "preview": "astro preview",
     "astro": "astro",
     "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data && pnpm run test:apps && pnpm run test:cms",
