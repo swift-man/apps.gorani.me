@@ -14,6 +14,7 @@ const appFixtures = appFiles.map((filename) => ({
   value: JSON.parse(readFileSync(path.join(appDirectory, filename), 'utf8')),
 }));
 
+const ogImageSize = { width: 1200, height: 630 };
 const publicFile = (webPath) => path.join('public', webPath.replace(/^\/+/, ''));
 
 async function validateAppAssets(app) {
@@ -24,6 +25,7 @@ async function validateAppAssets(app) {
 
   const dimensionedImages = [
     { src: app.heroImage, ...app.heroSize },
+    { src: app.ogImage, ...ogImageSize },
     ...app.screenshots.map(({ src, width, height }) => ({ src, width, height })),
   ];
   for (const image of dimensionedImages) {
@@ -108,11 +110,15 @@ try {
   incorrectDimensionsApp.heroSize.width += 1;
   await assert.rejects(() => validateAppAssets(incorrectDimensionsApp), /width must match its JSON value/);
 
+  const incorrectOgImageApp = parseApp(structuredClone(baseApp), 'incorrect OG image case');
+  incorrectOgImageApp.ogImage = incorrectOgImageApp.heroImage;
+  await assert.rejects(() => validateAppAssets(incorrectOgImageApp), /width must match its JSON value/);
+
   const { apps } = await server.ssrLoadModule('/src/data/apps.ts');
   assert.equal(apps.length, appFiles.length, 'The app catalog must load every configured JSON file');
 
   console.log(
-    `App content validation passed: ${appFiles.length} valid files, ${invalidCases.length} schema failures, and 2 asset failures.`
+    `App content validation passed: ${appFiles.length} valid files, ${invalidCases.length} schema failures, and 3 asset failures.`
   );
 } finally {
   await server.close();
