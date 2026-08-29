@@ -10,7 +10,7 @@ Gorani Apps 웹사이트의 주요 변경 사항을 기록합니다.
 
 #### For contributors
 
-- CI의 Check와 Build 환경을 공식 `pnpm/setup` 단계로 통합해 Node.js 24, `package.json`의 pnpm 버전, 캐시와 잠금 파일 기반 의존성 설치를 동일한 방식으로 재현
+- CI의 Check와 Build 환경을 공식 `pnpm/setup` 단계로 통합해 Node.js 24, `package.json`의 pnpm 버전, 캐시와 잠금 파일 기반 의존성 설치를 동일한 방식으로 재현하고 각 작업에 10분 실행 제한 적용
 
 #### Site behavior
 
