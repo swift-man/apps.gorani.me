@@ -269,4 +269,4 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 - 실제 출시 빌드와 개인정보처리방침 대조
 - App Store URL과 출시 상태 확인
 - Pages CMS에서 수정한 앱 JSON의 Check와 Build 통과 확인
-- `pnpm check:astro && pnpm build` 실행
+- `pnpm check && pnpm build` 실행

@@ -11,7 +11,7 @@ Gorani Apps 웹사이트의 주요 변경 사항을 기록합니다.
 #### For contributors
 
 - CI의 Check와 Build 환경을 공식 `pnpm/setup` 단계로 통합해 Node.js 24, `package.json`의 pnpm 버전, 캐시와 잠금 파일 기반 의존성 설치를 동일한 방식으로 재현하고 각 작업에 10분 실행 제한과 PR별 최신 실행 우선 정책 적용
-- GitHub Pages 배포도 `package.json`의 pnpm 버전을 사용하도록 중복된 워크플로 버전 지정 제거
+- GitHub Pages 배포도 `package.json`의 pnpm 버전을 사용하도록 중복된 워크플로 버전 지정을 제거하고, 진행 중인 프로덕션 배포는 취소하지 않으면서 빌드·배포 작업별 10분 실행 제한 적용
 
 #### Site behavior
 
