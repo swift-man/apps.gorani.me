@@ -33,7 +33,19 @@ pnpm check:static
 pnpm test:static
 ```
 
-GitHub Actions의 Check와 Build 작업은 공식 `pnpm/setup`으로 Node.js 24, `package.json`의 pnpm 버전, pnpm 저장소 캐시와 잠금 파일 기반 의존성 설치를 준비한 뒤 위 검사를 실행합니다. CI와 로컬 결과를 맞추려면 의존성 변경 시 `pnpm-lock.yaml`도 함께 갱신하고 pnpm 11로 검사하세요.
+GitHub Actions의 Check와 Build 작업은 공식 `pnpm/setup`으로 Node.js 24, `package.json`에 고정된 pnpm 11.9.0, pnpm 저장소 캐시와 잠금 파일 기반 의존성 설치를 준비한 뒤 위 검사를 실행합니다.
+
+CI 환경을 로컬에서 재현할 때는 Node.js 24를 사용하고 다음 명령을 실행합니다. Corepack은 `packageManager`에 고정된 pnpm 11.9.0을 사용하며, 잠금 파일과 의존성 선언이 일치하지 않으면 설치가 실패합니다.
+
+```bash
+corepack enable
+pnpm --version # 11.9.0
+pnpm install --frozen-lockfile
+pnpm check
+pnpm build
+```
+
+의존성을 변경할 때는 `pnpm-lock.yaml`도 함께 갱신하세요.
 
 정적 결과물은 `dist/`에 생성됩니다. `pnpm build`는 빌드 직후 정적 출력 검증을 자동 실행하며, `pnpm check:static`으로 기존 `dist/`만 다시 검사할 수 있습니다.
 
