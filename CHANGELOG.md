@@ -8,7 +8,12 @@ Gorani Apps 웹사이트의 주요 변경 사항을 기록합니다.
 
 ### Changed
 
-- CI에서 pnpm·Node.js 설정, pnpm 저장소 캐시와 잠금 파일 기반 의존성 설치를 공식 `pnpm/setup` 단계로 통합
+#### For contributors
+
+- CI의 Check와 Build 환경을 공식 `pnpm/setup` 단계로 통합해 Node.js 24, `package.json`의 pnpm 버전, 캐시와 잠금 파일 기반 의존성 설치를 동일한 방식으로 재현
+
+#### Site behavior
+
 - 지원 언어, 기본 언어, 날짜·Open Graph·RSS 로케일 메타데이터를 하나의 설정으로 통합하고 기본 언어 변경 시 라우팅·검증·404 문구가 함께 변경되도록 개선
 - 앱 업데이트 날짜가 실제 달력에 존재하는 `YYYY-MM-DD` 형식인지 데이터 로딩과 회귀 테스트에서 검증
 - 개인정보처리방침의 최종 업데이트 날짜도 공통 ISO 달력 날짜 검증을 거치도록 개선
