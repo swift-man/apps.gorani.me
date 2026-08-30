@@ -28,6 +28,7 @@ pnpm astro dev stop
 pnpm check:astro
 pnpm test:apps
 pnpm test:cms
+pnpm test:workflows
 pnpm build
 pnpm check:static
 pnpm test:static
@@ -46,6 +47,8 @@ pnpm build
 ```
 
 의존성을 변경할 때는 `pnpm-lock.yaml`도 함께 갱신하세요.
+
+`pnpm test:workflows`는 자동 배포가 Check → Build 검증 → Pages 산출물 업로드 → Deploy 순서를 지키는지 검사합니다. 또한 Pull Request에서는 배포 단계가 실행되지 않는지, 수동 복구 경로가 동일한 빌드 명령과 `pages` 동시성 그룹을 사용하는지, 외부 GitHub Action이 전체 커밋 SHA에 고정되어 있는지를 회귀 테스트합니다.
 
 정적 결과물은 `dist/`에 생성됩니다. `pnpm build`는 빌드 직후 정적 출력 검증을 자동 실행하며, `pnpm check:static`으로 기존 `dist/`만 다시 검사할 수 있습니다.
 
@@ -239,7 +242,9 @@ GitHub Pages의 프로젝트 하위 경로에 배포할 때는 `PUBLIC_BASE_PATH
 
 ## GitHub Pages 배포
 
-`main` 브랜치에 병합되면 `.github/workflows/deploy.yml`이 Astro 사이트를 빌드해 GitHub Pages에 배포합니다.
+`main` 브랜치에 병합되면 `.github/workflows/actions.yaml`이 Check를 통과한 뒤 사이트를 한 번만 빌드하고, 그때 검증한 `dist` 산출물을 그대로 GitHub Pages에 배포합니다. Pull Request에서는 Check와 Build까지만 실행하며 Pages 산출물을 업로드하거나 배포하지 않습니다.
+
+긴급 재배포가 필요하면 Actions 탭에서 `.github/workflows/deploy.yml`의 **Manually deploy to GitHub Pages** 워크플로를 직접 실행할 수 있습니다. 수동 배포도 동일한 빌드 검증을 거치며, 자동 배포와 동시에 실행되지 않도록 `pages` 동시성 그룹을 공유합니다.
 
 - Repository: `swift-man/apps.gorani.me`
 - Production branch: `main`
