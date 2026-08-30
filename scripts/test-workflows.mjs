@@ -48,7 +48,6 @@ assert.equal(productionBuildStep.env.PUBLIC_BASE_PATH, '/');
 const pagesArtifactStep = findStep(ci.jobs.build, 'actions/upload-pages-artifact');
 assert.ok(pagesArtifactStep, 'CI Build must upload a GitHub Pages artifact');
 assertDoesNotBypassFailure(pagesArtifactStep, 'CI Pages artifact upload step', productionCondition);
-assert.equal(pagesArtifactStep.if, productionCondition);
 assert.equal(pagesArtifactStep.with.path, 'dist');
 assert.ok(
   ci.jobs.build.steps.indexOf(pagesArtifactStep) > ci.jobs.build.steps.indexOf(productionBuildStep),
@@ -58,7 +57,6 @@ assert.ok(
 const productionDeploy = ci.jobs.deploy;
 assertDoesNotBypassFailure(productionDeploy, 'CI Deploy job', productionCondition);
 assert.equal(productionDeploy.needs, 'build');
-assert.equal(productionDeploy.if, productionCondition);
 assert.equal(productionDeploy.concurrency.group, 'pages');
 assert.equal(productionDeploy.concurrency['cancel-in-progress'], false);
 assert.equal(productionDeploy.permissions.pages, 'write');
