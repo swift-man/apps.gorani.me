@@ -48,6 +48,8 @@ pnpm build
 
 의존성을 변경할 때는 `pnpm-lock.yaml`도 함께 갱신하세요.
 
+`pnpm test:workflows`는 자동 배포가 Check → Build 검증 → Pages 산출물 업로드 → Deploy 순서를 지키는지 검사합니다. 또한 Pull Request에서는 배포 단계가 실행되지 않는지, 수동 복구 경로가 동일한 빌드 명령과 `pages` 동시성 그룹을 사용하는지, 외부 GitHub Action이 전체 커밋 SHA에 고정되어 있는지를 회귀 테스트합니다.
+
 정적 결과물은 `dist/`에 생성됩니다. `pnpm build`는 빌드 직후 정적 출력 검증을 자동 실행하며, `pnpm check:static`으로 기존 `dist/`만 다시 검사할 수 있습니다.
 
 정적 출력 검증은 다음 회귀를 빌드 오류로 처리합니다.
