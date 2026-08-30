@@ -14,9 +14,13 @@ const assertPinnedActions = (workflow) => {
     }
   }
 };
-const assertDoesNotBypassFailure = (subject, message) => {
+const assertDoesNotBypassFailure = (subject, message, allowedCondition) => {
   assert.equal(subject?.['continue-on-error'] ?? false, false, `${message} must fail closed`);
-  assert.doesNotMatch(String(subject?.if ?? ''), /always\s*\(/i, `${message} must not run after a failed dependency`);
+  assert.equal(
+    subject?.if,
+    allowedCondition,
+    `${message} must not introduce a condition that can bypass failed dependencies`
+  );
 };
 
 const ci = loadWorkflow('.github/workflows/actions.yaml');
@@ -43,7 +47,7 @@ assert.equal(productionBuildStep.env.PUBLIC_SITE_URL, 'https://apps.gorani.me');
 assert.equal(productionBuildStep.env.PUBLIC_BASE_PATH, '/');
 const pagesArtifactStep = findStep(ci.jobs.build, 'actions/upload-pages-artifact');
 assert.ok(pagesArtifactStep, 'CI Build must upload a GitHub Pages artifact');
-assertDoesNotBypassFailure(pagesArtifactStep, 'CI Pages artifact upload step');
+assertDoesNotBypassFailure(pagesArtifactStep, 'CI Pages artifact upload step', productionCondition);
 assert.equal(pagesArtifactStep.if, productionCondition);
 assert.equal(pagesArtifactStep.with.path, 'dist');
 assert.ok(
@@ -52,7 +56,7 @@ assert.ok(
 );
 
 const productionDeploy = ci.jobs.deploy;
-assertDoesNotBypassFailure(productionDeploy, 'CI Deploy job');
+assertDoesNotBypassFailure(productionDeploy, 'CI Deploy job', productionCondition);
 assert.equal(productionDeploy.needs, 'build');
 assert.equal(productionDeploy.if, productionCondition);
 assert.equal(productionDeploy.concurrency.group, 'pages');
