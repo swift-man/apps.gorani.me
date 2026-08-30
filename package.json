@@ -13,7 +13,7 @@
     "build": "pnpm run test:apps && astro build && pnpm run check:static && pnpm run test:static",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data && pnpm run test:apps && pnpm run test:cms",
+    "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data && pnpm run test:apps && pnpm run test:cms && pnpm run test:workflows",
     "check:astro": "astro check",
     "check:eslint": "eslint .",
     "check:prettier": "prettier --check .",
@@ -22,6 +22,7 @@
     "test:data": "node scripts/test-data-validation.mjs",
     "test:apps": "node scripts/test-app-content.mjs",
     "test:cms": "node scripts/test-cms-config.mjs",
+    "test:workflows": "node scripts/test-workflows.mjs",
     "fix": "pnpm run fix:eslint && pnpm run fix:prettier",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier -w ."
