@@ -7,6 +7,19 @@ import { createServer } from 'vite';
 const siteSource = JSON.parse(readFileSync('src/data/site.json', 'utf8'));
 const publicFile = (webPath) => path.join('public', webPath.replace(/^\/+/, ''));
 
+function validateSiteAssets(site) {
+  if (site.homeVideo.poster) {
+    assert.ok(existsSync(publicFile(site.homeVideo.poster)), `Missing home video poster: ${site.homeVideo.poster}`);
+  }
+
+  if (site.homeVideo.enabled && site.homeVideo.sourceMode === 'upload') {
+    assert.ok(
+      existsSync(publicFile(site.homeVideo.uploadedFile)),
+      `Missing uploaded home video: ${site.homeVideo.uploadedFile}`
+    );
+  }
+}
+
 const server = await createServer({
   appType: 'custom',
   logLevel: 'silent',
@@ -19,14 +32,7 @@ try {
   const site = parseSiteContent(siteSource, 'src/data/site.json');
 
   assert.equal(resolveHomeVideoSource(site.homeVideo), site.homeVideo.uploadedFile);
-  assert.ok(existsSync(publicFile(site.homeVideo.poster)), `Missing home video poster: ${site.homeVideo.poster}`);
-
-  if (site.homeVideo.enabled && site.homeVideo.sourceMode === 'upload') {
-    assert.ok(
-      existsSync(publicFile(site.homeVideo.uploadedFile)),
-      `Missing uploaded home video: ${site.homeVideo.uploadedFile}`
-    );
-  }
+  validateSiteAssets(site);
 
   const externalSite = structuredClone(siteSource);
   externalSite.homeVideo.enabled = true;
@@ -92,7 +98,24 @@ try {
     );
   }
 
-  console.log(`Site content validation passed: upload and external sources plus ${invalidCases.length} failure cases.`);
+  const missingUpload = structuredClone(siteSource);
+  missingUpload.homeVideo.enabled = true;
+  missingUpload.homeVideo.uploadedFile = '/videos/missing.mp4';
+  assert.throws(
+    () => validateSiteAssets(parseSiteContent(missingUpload, 'missing upload')),
+    /Missing uploaded home video/
+  );
+
+  const missingPoster = structuredClone(siteSource);
+  missingPoster.homeVideo.poster = '/images/missing-poster.webp';
+  assert.throws(
+    () => validateSiteAssets(parseSiteContent(missingPoster, 'missing poster')),
+    /Missing home video poster/
+  );
+
+  console.log(
+    `Site content validation passed: upload and external sources, ${invalidCases.length} schema failures, and 2 asset failures.`
+  );
 } finally {
   await server.close();
 }
