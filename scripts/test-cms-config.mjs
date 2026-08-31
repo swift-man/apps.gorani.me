@@ -30,6 +30,8 @@ assert.equal(homeVideoMedia?.rename, 'safe');
 assert.equal(siteImageMedia?.input, 'public');
 assert.equal(siteImageMedia?.output, '/');
 assert.equal(siteImageMedia?.rename, 'safe');
+assert.deepEqual(siteImageMedia?.categories, ['image']);
+assert.deepEqual(siteImageMedia?.extensions, ['avif', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp']);
 assert.equal(siteSettings?.type, 'file');
 assert.equal(siteSettings?.path, 'src/data/site.json');
 assert.equal(siteSettings?.format, 'json');
@@ -93,6 +95,7 @@ assert.equal(externalUrlField?.type, 'string');
 assert.equal(externalUrlField?.pattern?.regex, '^(https://.+)?$');
 assert.equal(posterField?.type, 'image');
 assert.equal(posterField?.options?.media, 'site_images');
+assert.deepEqual(posterField?.options?.extensions, ['avif', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp']);
 assert.equal(posterField?.options?.rename, 'safe');
 
 const contentField = appCollection.fields.find((field) => field.name === 'content');

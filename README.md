@@ -28,6 +28,7 @@ pnpm astro dev stop
 pnpm check:astro
 pnpm test:apps
 pnpm test:site
+pnpm test:components
 pnpm test:cms
 pnpm test:workflows
 pnpm build
@@ -202,6 +203,7 @@ YouTube나 Vimeo의 영상 페이지 주소는 HTML5 `<video>`에서 직접 재�
 - 자동 재생이 브라우저 정책으로 거부되면 컨트롤을 자동으로 표시합니다.
 - `prefers-reduced-motion` 사용자는 초기 자동 재생 없이 컨트롤을 표시하며, 실행 중 설정 변경도 즉시 반영됩니다.
 - CMS 업로드 파일명은 URL에서 안전한 형태로 자동 정리되며, 수동 설정도 안전한 `/videos/*.mp4` 이름만 허용합니다.
+- 포스터는 지원되는 이미지 확장자와 실제 이미지 메타데이터를 모두 검증합니다.
 - 첫 화면 용량을 줄이기 위해 H.264 MP4, 짧은 길이, 적절한 비트레이트와 별도 poster 이미지를 권장합니다.
 - 업로드 방식에서 파일이 없거나 외부 방식에서 URL이 비어 있으면 검사가 실패합니다. 동영상 준비 전에는 `enabled: false`를 유지하세요.
 

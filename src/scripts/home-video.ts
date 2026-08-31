@@ -45,6 +45,8 @@ export function setupHomeVideos(
   motionPreference: MotionPreference = window.matchMedia(REDUCED_MOTION_QUERY)
 ): () => void {
   const videos = Array.from(root.querySelectorAll<HTMLVideoElement>('[data-home-video]'));
+  if (videos.length === 0) return () => {};
+
   const applyPreferences = () => {
     videos.forEach((video) => void applyHomeVideoPreference(video, motionPreference));
   };

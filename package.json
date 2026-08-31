@@ -10,10 +10,10 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "pnpm run test:apps && pnpm run test:site && astro build && pnpm run check:static && pnpm run test:static",
+    "build": "pnpm run test:apps && pnpm run test:site && pnpm run test:components && astro build && pnpm run check:static && pnpm run test:static",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data && pnpm run test:apps && pnpm run test:site && pnpm run test:cms && pnpm run test:workflows",
+    "check": "pnpm run check:astro && pnpm run check:eslint && pnpm run check:prettier && pnpm run test:data && pnpm run test:apps && pnpm run test:site && pnpm run test:components && pnpm run test:cms && pnpm run test:workflows",
     "check:astro": "astro check",
     "check:eslint": "eslint .",
     "check:prettier": "prettier --check .",
@@ -22,6 +22,7 @@
     "test:data": "node scripts/test-data-validation.mjs",
     "test:apps": "node scripts/test-app-content.mjs",
     "test:site": "node scripts/test-site-content.mjs",
+    "test:components": "vitest run tests/home-video.test.ts",
     "test:cms": "node scripts/test-cms-config.mjs",
     "test:workflows": "node scripts/test-workflows.mjs",
     "fix": "pnpm run fix:eslint && pnpm run fix:prettier",
@@ -70,7 +71,8 @@
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.0",
-    "vite": "7.3.6"
+    "vite": "7.3.6",
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "yaml": ">=2.8.3",

@@ -189,6 +189,7 @@ content:
             options:
               media: site_images
               categories: [image]
+              extensions: [avif, gif, jpeg, jpg, png, svg, webp]
               rename: safe
           - name: autoplay
             label: 자동 재생
