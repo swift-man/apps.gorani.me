@@ -68,7 +68,7 @@ const jsonLd = [
               loop={siteConfig.homeVideo.loop}
               playsinline
               preload="metadata"
-              poster={siteConfig.homeVideo.poster}
+              poster={siteConfig.homeVideo.poster || undefined}
               aria-label={t.highlightVideoLabel}
             >
               <source src={siteConfig.homeVideo.src} type="video/mp4" />

@@ -1,0 +1,13 @@
+{
+  "homeVideo": {
+    "enabled": false,
+    "sourceMode": "upload",
+    "uploadedFile": "/videos/home-hero.mp4",
+    "externalUrl": "",
+    "poster": "/og-gorani.webp",
+    "autoplay": true,
+    "muted": true,
+    "loop": true,
+    "controls": true
+  }
+}

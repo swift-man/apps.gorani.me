@@ -8,7 +8,10 @@ import { LOCALE_METADATA } from '../src/config/locales.mjs';
 
 const config = yaml.load(readFileSync('.pages.yml', 'utf8'));
 const appCollection = config.content?.find((entry) => entry.name === 'apps');
+const siteSettings = config.content?.find((entry) => entry.name === 'site_settings');
 const appMedia = config.media?.find((entry) => entry.name === 'app_images');
+const homeVideoMedia = config.media?.find((entry) => entry.name === 'home_videos');
+const siteImageMedia = config.media?.find((entry) => entry.name === 'site_images');
 
 assert.equal(appCollection?.type, 'collection');
 assert.equal(appCollection?.path, 'src/data/apps');
@@ -19,6 +22,15 @@ assert.deepEqual(appCollection?.view?.default, { sort: 'name', order: 'asc' });
 assert.equal(config.settings?.content?.merge, true);
 assert.equal(appMedia?.input, 'public/images/apps');
 assert.equal(appMedia?.output, '/images/apps');
+assert.equal(homeVideoMedia?.input, 'public/videos');
+assert.equal(homeVideoMedia?.output, '/videos');
+assert.deepEqual(homeVideoMedia?.categories, ['video']);
+assert.deepEqual(homeVideoMedia?.extensions, ['mp4']);
+assert.equal(siteImageMedia?.input, 'public');
+assert.equal(siteImageMedia?.output, '/');
+assert.equal(siteSettings?.type, 'file');
+assert.equal(siteSettings?.path, 'src/data/site.json');
+assert.equal(siteSettings?.format, 'json');
 
 const appFiles = readdirSync('src/data/apps')
   .filter((filename) => filename.endsWith('.json'))
@@ -58,6 +70,21 @@ function assertEditorCoversValue(fields, value, fieldPath) {
   }
 }
 
+const site = JSON.parse(readFileSync('src/data/site.json', 'utf8'));
+assertEditorCoversValue(siteSettings.fields, site, 'src/data/site.json');
+
+const homeVideoField = siteSettings.fields.find((field) => field.name === 'homeVideo');
+const uploadedFileField = homeVideoField.fields.find((field) => field.name === 'uploadedFile');
+const externalUrlField = homeVideoField.fields.find((field) => field.name === 'externalUrl');
+const posterField = homeVideoField.fields.find((field) => field.name === 'poster');
+assert.equal(uploadedFileField?.type, 'file');
+assert.equal(uploadedFileField?.options?.media, 'home_videos');
+assert.deepEqual(uploadedFileField?.options?.categories, ['video']);
+assert.deepEqual(uploadedFileField?.options?.extensions, ['mp4']);
+assert.equal(externalUrlField?.type, 'string');
+assert.equal(posterField?.type, 'image');
+assert.equal(posterField?.options?.media, 'site_images');
+
 const contentField = appCollection.fields.find((field) => field.name === 'content');
 assert.deepEqual(
   new Set(contentField.fields.map((field) => field.name)),
@@ -76,4 +103,4 @@ for (const filename of appFiles) {
   );
 }
 
-console.log(`Pages CMS configuration validated for ${appFiles.length} app files.`);
+console.log(`Pages CMS configuration validated for site settings and ${appFiles.length} app files.`);
