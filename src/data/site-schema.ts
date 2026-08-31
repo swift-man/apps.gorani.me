@@ -59,8 +59,12 @@ const optionalPublicPath = emptyStringWhenMissing(
       const hasSafeSegments = pathSegments.every(
         (segment) => segment !== '' && segment !== '.' && segment !== '..' && /^[a-z0-9._-]+$/i.test(segment)
       );
-      const extension = pathSegments.at(-1)?.split('.').at(-1)?.toLowerCase();
-      return hasSafeSegments && HOME_VIDEO_POSTER_EXTENSIONS.some((allowed) => allowed === extension);
+      const filename = pathSegments.at(-1) ?? '';
+      const extensionSeparator = filename.lastIndexOf('.');
+      if (!hasSafeSegments || extensionSeparator <= 0 || extensionSeparator === filename.length - 1) return false;
+
+      const extension = filename.slice(extensionSeparator + 1).toLowerCase();
+      return HOME_VIDEO_POSTER_EXTENSIONS.some((allowed) => allowed === extension);
     }, 'Poster must be a URL-safe root-relative image path')
 );
 

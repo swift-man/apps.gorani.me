@@ -16,6 +16,15 @@ const autoplayVideo = {
   src: 'https://media.example.com/home.mp4',
 };
 
+const manualVideo = {
+  ...autoplayVideo,
+  poster: '',
+  autoplay: false,
+  muted: false,
+  loop: false,
+  controls: true,
+};
+
 describe('HomeVideo', () => {
   test('renders safe initial playback controls without an autoplay attribute', async () => {
     const container = await AstroContainer.create();
@@ -41,5 +50,26 @@ describe('HomeVideo', () => {
     expect(sourceTag).toContain('src="https://media.example.com/home.mp4"');
     expect(sourceTag).toContain('type="video/mp4"');
     expect(html).toContain('이 브라우저에서는 동영상을 재생할 수 없습니다.');
+  });
+
+  test('renders controls for manual playback without autoplay-only attributes', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(HomeVideo, {
+      props: {
+        video: manualVideo,
+        label: 'Gorani Apps 소개 동영상',
+        fallbackText: '이 브라우저에서는 동영상을 재생할 수 없습니다.',
+      },
+    });
+    const openingTag = html.match(/<video\b[^>]*>/)?.[0];
+
+    expect(openingTag).toBeDefined();
+    expect(openingTag).toMatch(/\scontrols(?:[=\s>]|$)/);
+    expect(openingTag).toContain('data-autoplay="false"');
+    expect(openingTag).toContain('data-controls="true"');
+    expect(openingTag).not.toMatch(/\sautoplay(?:[=\s>]|$)/);
+    expect(openingTag).not.toMatch(/\smuted(?:[=\s>]|$)/);
+    expect(openingTag).not.toMatch(/\sloop(?:[=\s>]|$)/);
+    expect(openingTag).not.toMatch(/\sposter(?:[=\s>]|$)/);
   });
 });

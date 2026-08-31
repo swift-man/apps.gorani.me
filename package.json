@@ -22,7 +22,7 @@
     "test:data": "node scripts/test-data-validation.mjs",
     "test:apps": "node scripts/test-app-content.mjs",
     "test:site": "node scripts/test-site-content.mjs",
-    "test:components": "vitest run tests/home-video.test.ts",
+    "test:components": "vitest run",
     "test:cms": "node scripts/test-cms-config.mjs",
     "test:workflows": "node scripts/test-workflows.mjs",
     "fix": "pnpm run fix:eslint && pnpm run fix:prettier",

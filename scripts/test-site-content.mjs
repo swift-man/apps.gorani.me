@@ -254,6 +254,12 @@ try {
       },
     },
     {
+      name: 'poster filename without an extension separator',
+      mutate(value) {
+        value.homeVideo.poster = '/images/png';
+      },
+    },
+    {
       name: 'autoplay with sound',
       mutate(value) {
         value.homeVideo.enabled = true;
