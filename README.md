@@ -27,6 +27,7 @@ pnpm astro dev stop
 ```bash
 pnpm check:astro
 pnpm test:apps
+pnpm test:site
 pnpm test:cms
 pnpm test:workflows
 pnpm build
