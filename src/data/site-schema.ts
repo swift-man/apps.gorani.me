@@ -2,6 +2,8 @@ import { z } from 'astro/zod';
 
 export const HOME_VIDEO_SOURCE_MODES = ['upload', 'external'] as const;
 
+const LOCAL_VIDEO_PATH_PATTERN = /^\/videos\/[a-z0-9][a-z0-9._-]*\.mp4$/i;
+
 const emptyStringWhenMissing = <Schema extends z.ZodType<string>>(schema: Schema) =>
   z.preprocess((value) => (value === null || value === undefined ? '' : value), schema);
 
@@ -11,9 +13,8 @@ const optionalLocalVideoPath = emptyStringWhenMissing(
     .trim()
     .refine((value) => {
       if (value === '') return true;
-      if (!value.startsWith('/videos/') || !value.toLowerCase().endsWith('.mp4')) return false;
-      return !value.split('/').includes('..');
-    }, 'Uploaded video must be an MP4 path inside /videos/')
+      return LOCAL_VIDEO_PATH_PATTERN.test(value);
+    }, 'Uploaded video must be a URL-safe MP4 filename inside /videos/')
 );
 
 const optionalHttpsUrl = emptyStringWhenMissing(
@@ -34,9 +35,15 @@ const optionalPublicPath = emptyStringWhenMissing(
   z
     .string()
     .trim()
-    .refine((value) => value === '' || (value.startsWith('/') && !value.split('/').includes('..')), {
-      message: 'Poster must be a root-relative public path',
-    })
+    .refine((value) => {
+      if (value === '') return true;
+      if (!value.startsWith('/') || value.startsWith('//')) return false;
+
+      const pathSegments = value.slice(1).split('/');
+      return pathSegments.every(
+        (segment) => segment !== '' && segment !== '.' && segment !== '..' && /^[a-z0-9._-]+$/i.test(segment)
+      );
+    }, 'Poster must be a URL-safe root-relative public path')
 );
 
 export const siteContentSchema = z

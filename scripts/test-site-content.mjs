@@ -5,8 +5,34 @@ import path from 'node:path';
 import { createServer } from 'vite';
 
 const siteSource = JSON.parse(readFileSync('src/data/site.json', 'utf8'));
-const homePageSource = readFileSync('src/views/HomePage.astro', 'utf8');
 const publicFile = (webPath) => path.join('public', webPath.replace(/^\/+/, ''));
+
+function createVideoDouble({ autoplay = true, controls = false, playResult = Promise.resolve() } = {}) {
+  let pauseCalls = 0;
+  let playCalls = 0;
+  const video = {
+    dataset: { autoplay: String(autoplay), controls: String(controls) },
+    autoplay: false,
+    controls: true,
+    pause() {
+      pauseCalls += 1;
+    },
+    play() {
+      playCalls += 1;
+      return playResult;
+    },
+  };
+
+  return {
+    video,
+    get pauseCalls() {
+      return pauseCalls;
+    },
+    get playCalls() {
+      return playCalls;
+    },
+  };
+}
 
 function validateSiteAssets(site, fileExists = existsSync) {
   if (site.homeVideo.poster) {
@@ -30,6 +56,7 @@ const server = await createServer({
 
 try {
   const { parseSiteContent, resolveHomeVideoSource } = await server.ssrLoadModule('/src/data/site-schema.ts');
+  const { applyHomeVideoPreference, setupHomeVideos } = await server.ssrLoadModule('/src/scripts/home-video.ts');
   const site = parseSiteContent(siteSource, 'src/data/site.json');
 
   assert.equal(resolveHomeVideoSource(site.homeVideo), site.homeVideo.uploadedFile);
@@ -65,11 +92,60 @@ try {
   autoplayWithoutControls.homeVideo.enabled = true;
   autoplayWithoutControls.homeVideo.controls = false;
   assert.doesNotThrow(() => parseSiteContent(autoplayWithoutControls, 'autoplay without controls'));
-  assert.match(
-    homePageSource,
-    /video\.autoplay = false;\s+video\.controls = true;\s+video\.pause\(\);/,
-    'Reduced-motion handling must stop autoplay and expose playback controls'
+
+  const reducedMotionVideo = createVideoDouble({ controls: false });
+  await applyHomeVideoPreference(reducedMotionVideo.video, { matches: true });
+  assert.equal(reducedMotionVideo.video.autoplay, false);
+  assert.equal(reducedMotionVideo.video.controls, true);
+  assert.equal(reducedMotionVideo.playCalls, 0);
+  assert.equal(reducedMotionVideo.pauseCalls, 1);
+
+  const allowedAutoplayVideo = createVideoDouble({ controls: false });
+  await applyHomeVideoPreference(allowedAutoplayVideo.video, { matches: false });
+  assert.equal(allowedAutoplayVideo.video.autoplay, true);
+  assert.equal(allowedAutoplayVideo.video.controls, false);
+  assert.equal(allowedAutoplayVideo.playCalls, 1);
+
+  const blockedAutoplayVideo = createVideoDouble({
+    controls: false,
+    playResult: Promise.reject(new DOMException('Autoplay blocked', 'NotAllowedError')),
+  });
+  await applyHomeVideoPreference(blockedAutoplayVideo.video, { matches: false });
+  assert.equal(blockedAutoplayVideo.video.controls, true);
+  assert.equal(blockedAutoplayVideo.playCalls, 1);
+
+  const manualPlaybackVideo = createVideoDouble({ autoplay: false, controls: true });
+  await applyHomeVideoPreference(manualPlaybackVideo.video, { matches: false });
+  assert.equal(manualPlaybackVideo.video.autoplay, false);
+  assert.equal(manualPlaybackVideo.video.controls, true);
+  assert.equal(manualPlaybackVideo.playCalls, 0);
+
+  const runtimePreferenceVideo = createVideoDouble({ controls: false });
+  let preferenceChangeHandler;
+  let removedPreferenceHandler;
+  const motionPreference = {
+    matches: false,
+    addEventListener(eventName, handler) {
+      assert.equal(eventName, 'change');
+      preferenceChangeHandler = handler;
+    },
+    removeEventListener(eventName, handler) {
+      assert.equal(eventName, 'change');
+      removedPreferenceHandler = handler;
+    },
+  };
+  const disposeHomeVideos = setupHomeVideos(
+    { querySelectorAll: () => [runtimePreferenceVideo.video] },
+    motionPreference
   );
+  await Promise.resolve();
+  motionPreference.matches = true;
+  preferenceChangeHandler();
+  assert.equal(runtimePreferenceVideo.video.autoplay, false);
+  assert.equal(runtimePreferenceVideo.video.controls, true);
+  assert.equal(runtimePreferenceVideo.pauseCalls, 1);
+  disposeHomeVideos();
+  assert.equal(removedPreferenceHandler, preferenceChangeHandler);
 
   const invalidCases = [
     {
@@ -104,6 +180,18 @@ try {
       name: 'upload path traversal',
       mutate(value) {
         value.homeVideo.uploadedFile = '/videos/../private.mp4';
+      },
+    },
+    {
+      name: 'upload filename with URL reserved characters',
+      mutate(value) {
+        value.homeVideo.uploadedFile = '/videos/hero#2.mp4';
+      },
+    },
+    {
+      name: 'protocol-relative poster URL',
+      mutate(value) {
+        value.homeVideo.poster = '//media.example.com/poster.webp';
       },
     },
     {
@@ -149,7 +237,7 @@ try {
   );
 
   console.log(
-    `Site content validation passed: upload and external sources, ${invalidCases.length} schema failures, and 2 asset failures.`
+    `Site content validation passed: upload and external sources, playback preferences, ${invalidCases.length} schema failures, and 2 asset failures.`
   );
 } finally {
   await server.close();

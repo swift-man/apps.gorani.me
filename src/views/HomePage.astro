@@ -60,7 +60,7 @@ const jsonLd = [
       </div>
       {
         siteConfig.homeVideo.enabled ? (
-          <HomeVideo video={siteConfig.homeVideo} label={t.highlightVideoLabel} />
+          <HomeVideo video={siteConfig.homeVideo} label={t.highlightVideoLabel} fallbackText={t.homeVideoFallback} />
         ) : (
           <div class="icon-constellation" aria-label={t.appCollectionLabel}>
             {apps.map((app, index) => (
@@ -170,12 +170,8 @@ const jsonLd = [
     </div>
   </section>
   <script>
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll<HTMLVideoElement>('[data-home-video]').forEach((video) => {
-        video.autoplay = false;
-        video.controls = true;
-        video.pause();
-      });
-    }
+    import { setupHomeVideos } from '~/scripts/home-video';
+
+    setupHomeVideos();
   </script>
 </SiteLayout>

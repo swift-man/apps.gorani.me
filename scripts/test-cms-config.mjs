@@ -26,8 +26,10 @@ assert.equal(homeVideoMedia?.input, 'public/videos');
 assert.equal(homeVideoMedia?.output, '/videos');
 assert.deepEqual(homeVideoMedia?.categories, ['video']);
 assert.deepEqual(homeVideoMedia?.extensions, ['mp4']);
+assert.equal(homeVideoMedia?.rename, 'safe');
 assert.equal(siteImageMedia?.input, 'public');
 assert.equal(siteImageMedia?.output, '/');
+assert.equal(siteImageMedia?.rename, 'safe');
 assert.equal(siteSettings?.type, 'file');
 assert.equal(siteSettings?.path, 'src/data/site.json');
 assert.equal(siteSettings?.format, 'json');
@@ -86,10 +88,12 @@ assert.equal(uploadedFileField?.type, 'file');
 assert.equal(uploadedFileField?.options?.media, 'home_videos');
 assert.deepEqual(uploadedFileField?.options?.categories, ['video']);
 assert.deepEqual(uploadedFileField?.options?.extensions, ['mp4']);
+assert.equal(uploadedFileField?.options?.rename, 'safe');
 assert.equal(externalUrlField?.type, 'string');
 assert.equal(externalUrlField?.pattern?.regex, '^(https://.+)?$');
 assert.equal(posterField?.type, 'image');
 assert.equal(posterField?.options?.media, 'site_images');
+assert.equal(posterField?.options?.rename, 'safe');
 
 const contentField = appCollection.fields.find((field) => field.name === 'content');
 assert.deepEqual(

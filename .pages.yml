@@ -12,7 +12,7 @@ media:
     output: /videos
     categories: [video]
     extensions: [mp4]
-    rename: false
+    rename: safe
     commit:
       templates:
         create: 'chore. 메인 동영상 업로드: {filename}'
@@ -25,7 +25,7 @@ media:
     output: /
     categories: [image]
     extensions: [avif, gif, jpeg, jpg, png, svg, webp]
-    rename: false
+    rename: safe
 
 settings:
   content:
@@ -174,7 +174,7 @@ content:
               media: home_videos
               categories: [video]
               extensions: [mp4]
-              rename: false
+              rename: safe
           - name: externalUrl
             label: 외부 MP4 URL
             type: string
@@ -189,6 +189,7 @@ content:
             options:
               media: site_images
               categories: [image]
+              rename: safe
           - name: autoplay
             label: 자동 재생
             type: boolean

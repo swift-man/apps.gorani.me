@@ -4,16 +4,18 @@ import type { HomeVideo as HomeVideoSettings } from '~/data/site-schema';
 interface Props {
   video: HomeVideoSettings & { src: string };
   label: string;
+  fallbackText: string;
 }
 
-const { video, label } = Astro.props;
+const { video, label, fallbackText } = Astro.props;
 ---
 
 <div class="home-video-shell">
   <video
     data-home-video
-    controls={video.controls}
-    autoplay={video.autoplay}
+    data-autoplay={video.autoplay ? 'true' : 'false'}
+    data-controls={video.controls ? 'true' : 'false'}
+    controls={video.controls || video.autoplay}
     muted={video.muted}
     loop={video.loop}
     playsinline
@@ -22,6 +24,6 @@ const { video, label } = Astro.props;
     aria-label={label}
   >
     <source src={video.src} type="video/mp4" />
-    Your browser does not support HTML video.
+    {fallbackText}
   </video>
 </div>
