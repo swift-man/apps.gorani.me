@@ -74,6 +74,14 @@ export const siteContentSchema = z
         message: 'Autoplay home video must be muted for browser compatibility',
       });
     }
+
+    if (homeVideo.enabled && !homeVideo.autoplay && !homeVideo.controls) {
+      context.addIssue({
+        code: 'custom',
+        path: ['homeVideo', 'controls'],
+        message: 'Enabled home video requires autoplay or playback controls',
+      });
+    }
   });
 
 export type SiteContent = z.infer<typeof siteContentSchema>;

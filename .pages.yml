@@ -206,6 +206,7 @@ content:
             label: 재생 컨트롤 표시
             type: boolean
             required: true
+            description: 자동 재생을 끄면 반드시 켜야 합니다. 동작 줄이기 사용자는 자동으로 컨트롤이 표시됩니다.
 
   - name: apps
     label: 앱 콘텐츠

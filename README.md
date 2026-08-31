@@ -197,8 +197,8 @@ YouTube나 Vimeo의 영상 페이지 주소는 HTML5 `<video>`에서 직접 재�
 
 - 자동 재생은 브라우저 정책상 `muted: true`가 필요합니다.
 - iPhone 인라인 재생을 위해 `playsinline`이 이미 적용되어 있습니다.
-- `controls: true`로 사용자가 일시정지할 수 있습니다.
-- `prefers-reduced-motion` 사용자는 자동 재생을 중지합니다.
+- 활성 동영상은 자동 재생 또는 컨트롤 중 하나를 제공해야 합니다.
+- `prefers-reduced-motion` 사용자는 자동 재생을 중지하고 컨트롤을 표시합니다.
 - 첫 화면 용량을 줄이기 위해 H.264 MP4, 짧은 길이, 적절한 비트레이트와 별도 poster 이미지를 권장합니다.
 - 업로드 방식에서 파일이 없거나 외부 방식에서 URL이 비어 있으면 검사가 실패합니다. 동영상 준비 전에는 `enabled: false`를 유지하세요.
 

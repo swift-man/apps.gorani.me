@@ -74,14 +74,20 @@ const site = JSON.parse(readFileSync('src/data/site.json', 'utf8'));
 assertEditorCoversValue(siteSettings.fields, site, 'src/data/site.json');
 
 const homeVideoField = siteSettings.fields.find((field) => field.name === 'homeVideo');
+const sourceModeField = homeVideoField.fields.find((field) => field.name === 'sourceMode');
 const uploadedFileField = homeVideoField.fields.find((field) => field.name === 'uploadedFile');
 const externalUrlField = homeVideoField.fields.find((field) => field.name === 'externalUrl');
 const posterField = homeVideoField.fields.find((field) => field.name === 'poster');
+assert.deepEqual(
+  sourceModeField?.options?.values.map((option) => option.name),
+  ['upload', 'external']
+);
 assert.equal(uploadedFileField?.type, 'file');
 assert.equal(uploadedFileField?.options?.media, 'home_videos');
 assert.deepEqual(uploadedFileField?.options?.categories, ['video']);
 assert.deepEqual(uploadedFileField?.options?.extensions, ['mp4']);
 assert.equal(externalUrlField?.type, 'string');
+assert.equal(externalUrlField?.pattern?.regex, '^(https://.+)?$');
 assert.equal(posterField?.type, 'image');
 assert.equal(posterField?.options?.media, 'site_images');
 

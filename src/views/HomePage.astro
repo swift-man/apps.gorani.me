@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import AppCard from '~/components/apps/AppCard.astro';
 import LatestUpdates from '~/components/apps/LatestUpdates.astro';
 import BlogCard from '~/components/blog/BlogCard.astro';
+import HomeVideo from '~/components/site/HomeVideo.astro';
 import type { Locale } from '~/config/site';
 import { siteConfig } from '~/config/site';
 import { apps } from '~/data/apps';
@@ -59,22 +60,7 @@ const jsonLd = [
       </div>
       {
         siteConfig.homeVideo.enabled ? (
-          <div class="home-video-shell">
-            <video
-              data-home-video
-              controls={siteConfig.homeVideo.controls}
-              autoplay={siteConfig.homeVideo.autoplay}
-              muted={siteConfig.homeVideo.muted}
-              loop={siteConfig.homeVideo.loop}
-              playsinline
-              preload="metadata"
-              poster={siteConfig.homeVideo.poster || undefined}
-              aria-label={t.highlightVideoLabel}
-            >
-              <source src={siteConfig.homeVideo.src} type="video/mp4" />
-              Your browser does not support HTML video.
-            </video>
-          </div>
+          <HomeVideo video={siteConfig.homeVideo} label={t.highlightVideoLabel} />
         ) : (
           <div class="icon-constellation" aria-label={t.appCollectionLabel}>
             {apps.map((app, index) => (
@@ -187,6 +173,7 @@ const jsonLd = [
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.querySelectorAll<HTMLVideoElement>('[data-home-video]').forEach((video) => {
         video.autoplay = false;
+        video.controls = true;
         video.pause();
       });
     }

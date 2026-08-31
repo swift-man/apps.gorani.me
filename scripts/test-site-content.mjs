@@ -5,16 +5,17 @@ import path from 'node:path';
 import { createServer } from 'vite';
 
 const siteSource = JSON.parse(readFileSync('src/data/site.json', 'utf8'));
+const homePageSource = readFileSync('src/views/HomePage.astro', 'utf8');
 const publicFile = (webPath) => path.join('public', webPath.replace(/^\/+/, ''));
 
-function validateSiteAssets(site) {
+function validateSiteAssets(site, fileExists = existsSync) {
   if (site.homeVideo.poster) {
-    assert.ok(existsSync(publicFile(site.homeVideo.poster)), `Missing home video poster: ${site.homeVideo.poster}`);
+    assert.ok(fileExists(publicFile(site.homeVideo.poster)), `Missing home video poster: ${site.homeVideo.poster}`);
   }
 
   if (site.homeVideo.enabled && site.homeVideo.sourceMode === 'upload') {
     assert.ok(
-      existsSync(publicFile(site.homeVideo.uploadedFile)),
+      fileExists(publicFile(site.homeVideo.uploadedFile)),
       `Missing uploaded home video: ${site.homeVideo.uploadedFile}`
     );
   }
@@ -49,6 +50,26 @@ try {
   assert.equal(parsedClearedFields.homeVideo.uploadedFile, '');
   assert.equal(parsedClearedFields.homeVideo.externalUrl, '');
   assert.equal(parsedClearedFields.homeVideo.poster, '');
+  validateSiteAssets(parsedClearedFields);
+
+  const enabledUpload = structuredClone(siteSource);
+  enabledUpload.homeVideo.enabled = true;
+  const parsedEnabledUpload = parseSiteContent(enabledUpload, 'enabled upload case');
+  assert.doesNotThrow(() =>
+    validateSiteAssets(parsedEnabledUpload, (filePath) =>
+      filePath.endsWith('home-hero.mp4') ? true : existsSync(filePath)
+    )
+  );
+
+  const autoplayWithoutControls = structuredClone(siteSource);
+  autoplayWithoutControls.homeVideo.enabled = true;
+  autoplayWithoutControls.homeVideo.controls = false;
+  assert.doesNotThrow(() => parseSiteContent(autoplayWithoutControls, 'autoplay without controls'));
+  assert.match(
+    homePageSource,
+    /video\.autoplay = false;\s+video\.controls = true;\s+video\.pause\(\);/,
+    'Reduced-motion handling must stop autoplay and expose playback controls'
+  );
 
   const invalidCases = [
     {
@@ -80,11 +101,25 @@ try {
       },
     },
     {
+      name: 'upload path traversal',
+      mutate(value) {
+        value.homeVideo.uploadedFile = '/videos/../private.mp4';
+      },
+    },
+    {
       name: 'autoplay with sound',
       mutate(value) {
         value.homeVideo.enabled = true;
         value.homeVideo.autoplay = true;
         value.homeVideo.muted = false;
+      },
+    },
+    {
+      name: 'enabled video without autoplay or controls',
+      mutate(value) {
+        value.homeVideo.enabled = true;
+        value.homeVideo.autoplay = false;
+        value.homeVideo.controls = false;
       },
     },
   ];
