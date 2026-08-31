@@ -1,4 +1,6 @@
 import { DEFAULT_LOCALE, LOCALE_METADATA } from './locales.mjs';
+import rawSiteContent from '~/data/site.json';
+import { parseSiteContent, resolveHomeVideoSource } from '~/data/site-schema';
 import { assertIsoDate } from '~/utils/iso-date.mjs';
 
 export { DEFAULT_LOCALE, LOCALE_METADATA } from './locales.mjs';
@@ -10,6 +12,8 @@ export const SUPPORTED_LOCALES = Object.freeze(Object.keys(LOCALE_METADATA)) as 
 export const OPEN_GRAPH_LOCALES = Object.fromEntries(
   SUPPORTED_LOCALES.map((locale) => [locale, LOCALE_METADATA[locale].openGraphLocale])
 ) as Record<Locale, string>;
+
+const siteContent = parseSiteContent(rawSiteContent, 'src/data/site.json');
 
 export const siteConfig = {
   siteName: 'Gorani Apps',
@@ -24,12 +28,7 @@ export const siteConfig = {
   privacyLastUpdated: assertIsoDate('2026-08-02', 'siteConfig.privacyLastUpdated'),
   analyticsProvider: null,
   homeVideo: {
-    enabled: false,
-    src: '/videos/home-hero.mp4',
-    poster: '/og-gorani.webp',
-    autoplay: true,
-    muted: true,
-    loop: true,
-    controls: true,
+    ...siteContent.homeVideo,
+    src: resolveHomeVideoSource(siteContent.homeVideo),
   },
 } as const;

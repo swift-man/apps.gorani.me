@@ -1,0 +1,29 @@
+---
+import type { HomeVideo as HomeVideoSettings } from '~/data/site-schema';
+
+interface Props {
+  video: HomeVideoSettings & { src: string };
+  label: string;
+  fallbackText: string;
+}
+
+const { video, label, fallbackText } = Astro.props;
+---
+
+<div class="home-video-shell">
+  <video
+    data-home-video
+    data-autoplay={video.autoplay ? 'true' : 'false'}
+    data-controls={video.controls ? 'true' : 'false'}
+    controls={video.controls || video.autoplay}
+    muted={video.muted}
+    loop={video.loop}
+    playsinline
+    preload="metadata"
+    poster={video.poster || undefined}
+    aria-label={label}
+  >
+    <source src={video.src} type="video/mp4" />
+    {fallbackText}
+  </video>
+</div>

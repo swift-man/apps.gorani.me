@@ -27,6 +27,8 @@ pnpm astro dev stop
 ```bash
 pnpm check:astro
 pnpm test:apps
+pnpm test:site
+pnpm test:components
 pnpm test:cms
 pnpm test:workflows
 pnpm build
@@ -67,6 +69,8 @@ pnpm build
 ```text
 src/
 ├─ config/site.ts              # 사이트 URL, 이메일, 언어, 개인정보 날짜
+├─ data/site.json              # Pages CMS에서 편집하는 메인 동영상 설정
+├─ data/site-schema.ts         # 사이트 설정 타입과 런타임 검증
 ├─ data/app-slugs.ts           # 앱 식별자 단일 목록과 타입
 ├─ data/app-schema.ts          # 앱 JSON 타입과 런타임 검증
 ├─ data/apps.ts                # 앱별 JSON 로더
@@ -108,27 +112,29 @@ https://apps.gorani.me/answer-by-chance
 
 Pages CMS에서는 실수로 URL이 바뀌거나 앱이 삭제되지 않도록 기존 앱의 생성·이름 변경·삭제를 비활성화했습니다. 새 앱 등록은 위 절차로 코드와 이미지를 함께 준비한 뒤 UI 편집 대상으로 자동 표시됩니다.
 
-## Pages CMS로 앱 콘텐츠 수정
+## Pages CMS로 사이트와 앱 콘텐츠 수정
 
-저장소 루트의 `.pages.yml`이 앱 편집 화면을 정의합니다. Pages CMS는 별도 콘텐츠 데이터베이스 없이 `src/data/apps/*.json`과 `public/images/apps/`를 GitHub에 저장하며, 저장된 브랜치가 `main`이면 기존 GitHub Actions가 사이트를 자동으로 다시 배포합니다.
+저장소 루트의 `.pages.yml`이 사이트 설정과 앱 편집 화면을 정의합니다. Pages CMS는 별도 콘텐츠 데이터베이스 없이 `src/data/site.json`, `src/data/apps/*.json`, `public/videos/`와 `public/images/`를 GitHub에 저장하며, 저장된 브랜치가 `main`이면 기존 GitHub Actions가 사이트를 자동으로 다시 배포합니다.
 
 1. [Pages CMS](https://app.pagescms.org)에 GitHub 계정으로 로그인합니다.
 2. GitHub App 설치 범위를 `swift-man/apps.gorani.me` 저장소로만 제한합니다.
 3. 저장소와 편집할 브랜치를 선택합니다.
-4. **앱 콘텐츠**에서 앱을 선택해 일반 정보, 출시 상태, 이미지, 한국어·영어·일본어 문구를 수정합니다.
+4. 메인 동영상은 **사이트 설정**, 앱 정보는 **앱 콘텐츠**에서 수정합니다.
 5. 저장 후 GitHub Actions의 Check와 Build 결과를 확인합니다.
 
 바로 배포하려면 `main`에서 저장합니다. 코드리뷰를 거치려면 먼저 GitHub에서 콘텐츠용 브랜치를 만들고 Pages CMS에서 그 브랜치를 선택해 저장한 뒤 PR을 생성합니다.
 
 편집 화면에서 지원하는 항목:
 
+- 메인 동영상 사용 여부, MP4 업로드 또는 외부 HTTPS 링크 선택
+- 포스터 이미지, 자동 재생, 음소거, 반복 재생, 컨트롤 표시
 - 앱 이름, 플랫폼, 카테고리, 출시 및 개인정보처리방침 상태
 - App Store URL, 테마, 사용하는 Apple 서비스
 - 앱 아이콘, Hero, 스크린샷, 공유 이미지 선택과 업로드
 - 한국어·영어·일본어 제목, 설명, 기능, 사용 방법, FAQ, SEO 문구
 - 이미지의 실제 너비와 높이
 
-앱 이미지 경로는 반드시 `/images/apps/<slug>/` 안에 있어야 합니다. JSON 형식, 필수 번역, 출시 상태와 App Store URL의 조합, 이미지 파일 존재 여부와 실제 크기는 `pnpm test:apps`와 정적 빌드에서 검증되고, `.pages.yml`과 JSON의 중첩 필드 대응은 `pnpm test:cms`에서 검증됩니다.
+앱 이미지 경로는 반드시 `/images/apps/<slug>/` 안에 있어야 합니다. JSON 형식, 필수 번역, 출시 상태와 App Store URL의 조합, 이미지 파일 존재 여부와 실제 크기는 `pnpm test:apps`와 정적 빌드에서 검증됩니다. 동영상 입력 방식, 경로, HTTPS URL과 자동 재생·음소거 조합은 `pnpm test:site`에서 검사하며, `.pages.yml`과 JSON의 중첩 필드 대응은 `pnpm test:cms`에서 검증됩니다.
 
 ## 앱 이미지 교체
 
@@ -155,26 +161,51 @@ og.webp            1200×630
 
 ## 메인 동영상 설정
 
-정적 사이트에서도 HTML5 동영상을 사용할 수 있습니다. MP4 파일을 `public/videos/home-hero.mp4`에 넣고 `src/config/site.ts`에서 다음 값을 변경합니다.
+Pages CMS의 **사이트 설정 → 메인 동영상**에서 파일 업로드와 외부 링크 중 하나를 선택할 수 있습니다.
 
-```ts
-homeVideo: {
-  enabled: true,
-  src: '/videos/home-hero.mp4',
-  poster: '/images/home-video-poster.webp',
-  autoplay: true,
-  muted: true,
-  loop: true,
-  controls: true,
-},
+### MP4 파일 업로드
+
+1. **동영상 입력 방식**을 `MP4 파일 업로드`로 선택합니다.
+2. **업로드한 MP4 파일**에서 기존 파일을 선택하거나 새 파일을 업로드합니다.
+3. **동영상 사용**을 켜고 저장합니다.
+
+업로드 파일은 `public/videos/`에 저장되고 `/videos/<파일명>.mp4` 주소로 제공됩니다. Git 기록에 파일이 계속 남으므로 짧고 용량이 작은 메인 영상에 적합합니다.
+
+### 외부 MP4 링크
+
+1. **동영상 입력 방식**을 `외부 MP4 링크`로 선택합니다.
+2. **외부 MP4 URL**에 `https://`로 시작하는 직접 재생 주소를 입력합니다.
+3. **동영상 사용**을 켜고 저장합니다.
+
+YouTube나 Vimeo의 영상 페이지 주소는 HTML5 `<video>`에서 직접 재생되지 않습니다. 외부 링크는 브라우저가 MP4 파일을 바로 받을 수 있는 HTTPS 주소를 사용해야 합니다. 큰 영상은 저장소 크기에 영향을 주지 않는 외부 미디어 저장소나 CDN 링크를 권장합니다.
+
+코드에서 직접 수정할 때는 `src/data/site.json`의 `homeVideo` 값을 변경합니다.
+
+```json
+{
+  "homeVideo": {
+    "enabled": true,
+    "sourceMode": "upload",
+    "uploadedFile": "/videos/home-hero.mp4",
+    "externalUrl": "",
+    "poster": "/og-gorani.webp",
+    "autoplay": true,
+    "muted": true,
+    "loop": true,
+    "controls": true
+  }
+}
 ```
 
 - 자동 재생은 브라우저 정책상 `muted: true`가 필요합니다.
 - iPhone 인라인 재생을 위해 `playsinline`이 이미 적용되어 있습니다.
-- `controls: true`로 사용자가 일시정지할 수 있습니다.
-- `prefers-reduced-motion` 사용자는 자동 재생을 중지합니다.
+- 활성 동영상은 자동 재생 또는 컨트롤 중 하나를 제공해야 합니다.
+- 자동 재생이 브라우저 정책으로 거부되면 컨트롤을 자동으로 표시합니다.
+- `prefers-reduced-motion` 사용자는 초기 자동 재생 없이 컨트롤을 표시하며, 실행 중 설정 변경도 즉시 반영됩니다.
+- CMS 업로드 파일명은 URL에서 안전한 형태로 자동 정리되며, 수동 설정도 안전한 `/videos/*.mp4` 이름만 허용합니다.
+- 포스터는 지원되는 이미지 확장자와 실제 이미지 메타데이터를 모두 검증합니다.
 - 첫 화면 용량을 줄이기 위해 H.264 MP4, 짧은 길이, 적절한 비트레이트와 별도 poster 이미지를 권장합니다.
-- 동영상 파일이 준비되기 전에는 `enabled: false`를 유지해야 깨진 미디어 요청이 생기지 않습니다.
+- 업로드 방식에서 파일이 없거나 외부 방식에서 URL이 비어 있으면 검사가 실패합니다. 동영상 준비 전에는 `enabled: false`를 유지하세요.
 
 ## App Store URL과 출시 상태 변경
 
